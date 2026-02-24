@@ -12,10 +12,11 @@ Usage:
 """
 
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.rest import router as api_router
+from api.metrics import init_metrics, get_metrics, get_metrics_content_type
 
 app = FastAPI(
     title="Swarm-It Sidecar",
@@ -46,6 +47,21 @@ async def health():
 async def ready():
     """Readiness check endpoint."""
     return {"status": "ready"}
+
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus metrics endpoint."""
+    return Response(
+        content=get_metrics(),
+        media_type=get_metrics_content_type(),
+    )
+
+
+@app.on_event("startup")
+async def startup():
+    """Initialize on startup."""
+    init_metrics(version="0.1.0")
 
 
 if __name__ == "__main__":

@@ -15,6 +15,16 @@ from pydantic import BaseModel, Field
 
 from engine.rsct import RSCTEngine
 from store.certificates import CertificateStore
+from api.metrics import (
+    record_certification,
+    record_validation,
+    record_audit,
+    update_store_gauge,
+    update_thresholds,
+    update_failure_rates,
+    CERTIFICATION_LATENCY,
+    VALIDATION_LATENCY,
+)
 
 router = APIRouter()
 
@@ -114,6 +124,9 @@ async def certify(request: CertifyRequest) -> Certificate:
     Evaluates prompt/context and returns RSCT certificate
     with gate decision (EXECUTE, REPAIR, DELEGATE, BLOCK, REJECT).
     """
+    import time
+    start = time.perf_counter()
+
     cert = engine.certify(
         prompt=request.prompt,
         model_id=request.model_id,
@@ -123,6 +136,12 @@ async def certify(request: CertifyRequest) -> Certificate:
 
     # Store certificate
     store.store(cert)
+
+    # Record metrics
+    if CERTIFICATION_LATENCY:
+        CERTIFICATION_LATENCY.observe(time.perf_counter() - start)
+    record_certification(cert)
+    update_store_gauge(store.count())
 
     return cert
 
@@ -135,6 +154,9 @@ async def validate(request: ValidateRequest) -> ValidateResponse:
     Records Type I-VI validation results for feedback loop.
     May trigger threshold adjustments.
     """
+    import time
+    start = time.perf_counter()
+
     # Verify certificate exists
     cert = store.get(request.certificate_id)
     if cert is None:
@@ -147,6 +169,12 @@ async def validate(request: ValidateRequest) -> ValidateResponse:
         score=request.score,
         failed=request.failed,
     )
+
+    # Record metrics
+    if VALIDATION_LATENCY:
+        VALIDATION_LATENCY.observe(time.perf_counter() - start)
+    record_validation(request.validation_type.value, request.failed)
+    update_failure_rates(engine.get_failure_rates())
 
     return ValidateResponse(
         recorded=True,
@@ -168,6 +196,9 @@ async def audit(request: AuditRequest) -> AuditResponse:
         records = [engine.format_sr117(c) for c in certs]
     else:
         records = [c.dict() if hasattr(c, 'dict') else c for c in certs]
+
+    # Record metrics
+    record_audit(request.format)
 
     return AuditResponse(
         certificate_count=len(records),

@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package sgci;
+
+option go_package = "github.com/NextShiftConsulting/swarm-it/proto";
+
+// SGCI - Swarm Gate Certification Interface
+// Inspired by Tendermint ABCI
+service SGCI {
+  // Pre-execution gate check
+  rpc Certify(CertifyRequest) returns (Certificate);
+
+  // Post-execution validation feedback
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+
+  // Compliance audit export
+  rpc Audit(AuditRequest) returns (AuditResponse);
+
+  // Get certificate by ID
+  rpc GetCertificate(GetCertificateRequest) returns (Certificate);
+
+  // Health check
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+// === Certify ===
+
+message CertifyRequest {
+  string prompt = 1;
+  optional string model_id = 2;
+  optional string context = 3;
+  optional string swarm_id = 4;
+  optional string policy = 5;
+}
+
+message Certificate {
+  string id = 1;
+  string timestamp = 2;
+  double R = 3;
+  double S = 4;
+  double N = 5;
+  double kappa_gate = 6;
+  double sigma = 7;
+  GateDecision decision = 8;
+  int32 gate_reached = 9;
+  string reason = 10;
+  bool allowed = 11;
+
+  // Multimodal hierarchy (optional)
+  optional double kappa_H = 12;
+  optional double kappa_L = 13;
+  optional double kappa_interface = 14;
+  optional string weak_modality = 15;
+  bool is_multimodal = 16;
+}
+
+enum GateDecision {
+  GATE_DECISION_UNSPECIFIED = 0;
+  EXECUTE = 1;
+  REPAIR = 2;
+  DELEGATE = 3;
+  BLOCK = 4;
+  REJECT = 5;
+}
+
+// === Validate ===
+
+message ValidateRequest {
+  string certificate_id = 1;
+  ValidationType validation_type = 2;
+  double score = 3;
+  bool failed = 4;
+}
+
+enum ValidationType {
+  VALIDATION_TYPE_UNSPECIFIED = 0;
+  TYPE_I = 1;   // Groundedness
+  TYPE_II = 2;  // Contradiction
+  TYPE_III = 3; // Inversion
+  TYPE_IV = 4;  // Drift
+  TYPE_V = 5;   // Reasoning
+  TYPE_VI = 6;  // Domain
+}
+
+message ValidateResponse {
+  bool recorded = 1;
+  optional ThresholdAdjustment adjustment = 2;
+}
+
+message ThresholdAdjustment {
+  string type = 1;
+  double failure_rate = 2;
+  double threshold = 3;
+  string recommendation = 4;
+}
+
+// === Audit ===
+
+message AuditRequest {
+  optional string start_time = 1;
+  optional string end_time = 2;
+  string format = 3;  // JSON, SR11-7, CSV
+  int32 limit = 4;
+}
+
+message AuditResponse {
+  int32 certificate_count = 1;
+  string format = 2;
+  repeated bytes records = 3;  // JSON-encoded records
+}
+
+// === GetCertificate ===
+
+message GetCertificateRequest {
+  string certificate_id = 1;
+}
+
+// === Health ===
+
+message HealthRequest {}
+
+message HealthResponse {
+  string status = 1;
+  string service = 2;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@swarmit/client",
+  "version": "0.1.0",
+  "description": "Swarm-It TypeScript client for RSCT certification",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["swarm-it", "rsct", "ai", "llm", "certification"],
+  "author": "Next Shift Consulting LLC",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "files": ["dist/"]
+}
