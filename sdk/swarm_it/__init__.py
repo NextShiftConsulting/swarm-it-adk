@@ -1,26 +1,102 @@
 """
-Swarm It - Execution Governance for AI Systems
+Swarm It SDK - Execution Governance for AI Agent Swarms
 
-Simple SDK for RSCT-certified AI execution gating.
+Provides RSCT certification for AI/LLM calls with multi-agent swarm support.
 
-Usage:
+Quick Start:
     from swarm_it import SwarmIt
 
     swarm = SwarmIt(api_key="your-key")
-
-    # Simple check
     cert = swarm.certify("What is the capital of France?")
+
     if cert.allowed:
         response = my_llm(prompt)
+    else:
+        print(f"Blocked: {cert.reason}")
 
-    # Or use decorator
-    @swarm.gate
-    def ask(prompt):
-        return openai.chat.completions.create(...)
+Modules:
+    - local: Local certification engine (RSCTCertificate, LocalEngine)
+    - taxonomy: Classification and validation (RSCTMode, ValidationFeedbackLoop)
+    - topology: Multi-agent swarm models (Agent, Swarm, SwarmCertifier)
+    - persistence: Certificate storage (MemoryStore, SQLiteStore, AuditLog)
+    - integrations: Framework integrations (LangChain, FastAPI)
 """
 
-from .client import SwarmIt, Certificate, GateDecision
+__version__ = "0.2.0"
+
+# === Local Engine ===
+from .local.engine import (
+    RSCTCertificate,
+    GateDecision,
+    LocalEngine,
+    certify_local,
+)
+
+# === Legacy Client (backward compatibility) ===
+from .client import SwarmIt, Certificate
+
+# === Taxonomy Classification ===
+from .taxonomy.classification import (
+    RSCTMode,
+    DegradationType,
+    Severity,
+    classify_certificate,
+    add_error_codes,
+    diagnose_multimodal,
+)
+
+from .taxonomy.feedback import (
+    ValidationFeedbackLoop,
+    ValidationType,
+    FeedbackEvent,
+)
+
+from .taxonomy.bridge import (
+    to_yrsn_dict,
+    from_yrsn_dict,
+    CertificateHierarchy,
+)
+
+# === Topology Models ===
+from .topology.models import (
+    SolverType,
+    Modality,
+    Agent,
+    Channel,
+    Swarm,
+)
+
+from .topology.certifier import (
+    SwarmCertifier,
+    SwarmCertificate,
+    certify_swarm,
+)
+
+from .topology.patterns import (
+    SwarmPattern,
+    create_pipeline_swarm,
+    create_hub_spoke_swarm,
+    create_mesh_swarm,
+    create_ring_swarm,
+)
+
+# === Persistence ===
+from .persistence.store import (
+    CertificateStore,
+    MemoryStore,
+    SQLiteStore,
+)
+
+from .persistence.audit import (
+    AuditLog,
+    AuditEntry,
+    SR117AuditFormatter,
+)
+
+# === Decorators ===
 from .decorators import gate, certified
+
+# === Exceptions ===
 from .exceptions import (
     SwarmItError,
     CertificationError,
@@ -28,13 +104,63 @@ from .exceptions import (
     AuthenticationError,
 )
 
-__version__ = "0.1.0"
+
 __all__ = [
+    # Version
+    "__version__",
+
+    # Local Engine
+    "RSCTCertificate",
+    "GateDecision",
+    "LocalEngine",
+    "certify_local",
+
+    # Legacy Client
     "SwarmIt",
     "Certificate",
-    "GateDecision",
+
+    # Taxonomy
+    "RSCTMode",
+    "DegradationType",
+    "Severity",
+    "classify_certificate",
+    "add_error_codes",
+    "diagnose_multimodal",
+    "ValidationFeedbackLoop",
+    "ValidationType",
+    "FeedbackEvent",
+    "to_yrsn_dict",
+    "from_yrsn_dict",
+    "CertificateHierarchy",
+
+    # Topology
+    "SolverType",
+    "Modality",
+    "Agent",
+    "Channel",
+    "Swarm",
+    "SwarmCertifier",
+    "SwarmCertificate",
+    "certify_swarm",
+    "SwarmPattern",
+    "create_pipeline_swarm",
+    "create_hub_spoke_swarm",
+    "create_mesh_swarm",
+    "create_ring_swarm",
+
+    # Persistence
+    "CertificateStore",
+    "MemoryStore",
+    "SQLiteStore",
+    "AuditLog",
+    "AuditEntry",
+    "SR117AuditFormatter",
+
+    # Decorators
     "gate",
     "certified",
+
+    # Exceptions
     "SwarmItError",
     "CertificationError",
     "GateBlockedError",
