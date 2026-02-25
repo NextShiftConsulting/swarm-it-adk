@@ -29,7 +29,13 @@ from api.metrics import (
 router = APIRouter()
 
 # Initialize engine and store
-engine = RSCTEngine()
+# Engine uses mock adapter by default (set USE_YRSN=1 for real yrsn)
+import os
+engine = RSCTEngine(
+    use_mock=os.environ.get("USE_YRSN", "0") != "1",
+    embed_model=os.environ.get("EMBED_MODEL", "text-embedding-3-small"),
+    rotor_checkpoint=os.environ.get("ROTOR_CHECKPOINT"),
+)
 store = CertificateStore()
 
 
@@ -46,6 +52,7 @@ class GateDecision(str, Enum):
 class CertifyRequest(BaseModel):
     """Pre-execution certification request."""
     prompt: str
+    embeddings: Optional[List[float]] = None  # User-provided embeddings (optional)
     model_id: Optional[str] = None
     context: Optional[str] = None
     swarm_id: Optional[str] = None
@@ -62,7 +69,7 @@ class Certificate(BaseModel):
     kappa_gate: float = Field(ge=0, le=1)
     sigma: float = Field(ge=0, le=1)
     decision: GateDecision
-    gate_reached: int = Field(ge=1, le=5)
+    gate_reached: int = Field(ge=0, le=5)  # 0 = pre-screen rejection
     reason: str
     allowed: bool
 
@@ -74,6 +81,10 @@ class Certificate(BaseModel):
     # Diagnostics
     weak_modality: Optional[str] = None
     is_multimodal: bool = False
+
+    # Sidecar annotations
+    pattern_flags: List[str] = []
+    pre_screen_rejection: bool = False
 
 
 class ValidationType(str, Enum):
@@ -129,6 +140,7 @@ async def certify(request: CertifyRequest) -> Certificate:
 
     cert = engine.certify(
         prompt=request.prompt,
+        embeddings=request.embeddings,
         model_id=request.model_id,
         context=request.context,
         policy=request.policy,
@@ -229,8 +241,18 @@ async def get_statistics() -> Dict[str, Any]:
 
 
 @router.post("/thresholds")
-async def update_thresholds(thresholds: Dict[str, float]) -> Dict[str, Any]:
+async def update_thresholds_endpoint(thresholds: Dict[str, float]) -> Dict[str, Any]:
     """Update certification thresholds."""
     for key, value in thresholds.items():
         engine.set_threshold(key, value)
     return {"updated": True, "thresholds": engine.get_thresholds()}
+
+
+@router.get("/health")
+async def health() -> Dict[str, Any]:
+    """
+    Health check endpoint.
+
+    Shows sidecar status and yrsn adapter health.
+    """
+    return engine.health()
