@@ -68,28 +68,26 @@ class LocalYRSNAdapter(YRSNAdapter):
 
         Args:
             embed_model: OpenAI embedding model for convenience wrapper
-            rotor_checkpoint: Path to trained rotor checkpoint (optional)
+            rotor_checkpoint: Path to trained rotor checkpoint (optional, not used yet)
         """
         self.embed_model = embed_model
         self.embed_dim = self.EMBEDDING_DIMS.get(embed_model, 1536)
 
-        # Initialize rotor if yrsn available
+        # Create rotor with correct input dimension
+        # The rotor handles dimension reduction internally:
+        # embed_dim → hidden → hidden/2 → subspace → 2D → RSN
         self.rotor = None
         if YRSN_AVAILABLE:
             try:
-                if rotor_checkpoint and os.path.exists(rotor_checkpoint):
-                    # Load trained rotor
-                    from yrsn.core.decomposition import load_rotor_from_checkpoint
-                    self.rotor = load_rotor_from_checkpoint(
-                        rotor_checkpoint,
-                        embed_dim=self.embed_dim
-                    )
-                else:
-                    # Create default rotor (untrained - for development)
-                    self.rotor = HybridSimplexRotor(embed_dim=self.embed_dim)
+                self.rotor = HybridSimplexRotor(
+                    embed_dim=self.embed_dim,
+                    hidden_dim=512,  # Larger hidden for 1536-dim input
+                    subspace_dim=64,
+                )
                 self.rotor.eval()
+                print(f"✓ Created yrsn rotor: {self.embed_dim}→512→256→64→RSN")
             except Exception as e:
-                raise YRSNError(f"Failed to initialize rotor: {e}")
+                print(f"Warning: Failed to create rotor: {e}")
 
     def certify(self, request: CertifyRequest) -> CertifyResponse:
         """
@@ -97,22 +95,22 @@ class LocalYRSNAdapter(YRSNAdapter):
 
         Flow:
         1. Get embeddings (from request or call OpenAI)
-        2. Pass to yrsn rotor -> get R, S, N
-        3. Compute kappa, sigma, gate decision (yrsn logic)
+        2. Pass to yrsn rotor (handles dimension reduction internally)
+        3. Compute kappa, sigma, gate decision
         4. Return certificate
         """
         if not YRSN_AVAILABLE:
             raise YRSNError("yrsn core not available - pip install yrsn")
 
         if self.rotor is None:
-            raise YRSNError("Rotor not initialized")
+            raise YRSNError("No yrsn rotor available")
 
         # Step 1: Get embeddings
         embeddings = request.embeddings
         if embeddings is None:
             embeddings = self._get_embeddings(request.prompt)
 
-        # Step 2: Call yrsn rotor
+        # Step 2: Pass to rotor (handles all dimension reduction internally)
         with torch.no_grad():
             embed_tensor = torch.tensor([embeddings], dtype=torch.float32)
             rsn_output = self.rotor(embed_tensor)
@@ -168,7 +166,7 @@ class LocalYRSNAdapter(YRSNAdapter):
         """Check yrsn core health."""
         return {
             "yrsn_available": YRSN_AVAILABLE,
-            "rotor_initialized": self.rotor is not None,
+            "rotor_ready": self.rotor is not None,
             "openai_available": OPENAI_AVAILABLE,
             "embed_model": self.embed_model,
             "embed_dim": self.embed_dim,
