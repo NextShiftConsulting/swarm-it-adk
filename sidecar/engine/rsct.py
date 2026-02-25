@@ -139,7 +139,11 @@ class RSCTEngine:
 
         # Severe patterns = immediate rejection
         if max_severity >= self.REJECT_SEVERITY:
-            severe_categories = {'jailbreak', 'xss', 'code_injection'}
+            severe_categories = {
+                'jailbreak', 'xss', 'code_injection',
+                'injection', 'fake_system', 'format_injection',
+                'spam',  # High-score spam is also rejected
+            }
             if matches[0].category in severe_categories:
                 return PreScreenOutput(
                     result=PreScreenResult.REJECT,
