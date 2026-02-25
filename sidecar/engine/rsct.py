@@ -4,10 +4,12 @@ RSCT Engine - Core certification logic.
 This wraps yrsn core or provides standalone computation.
 """
 
+from __future__ import annotations
+
 import hashlib
 import math
 from datetime import datetime
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 from collections import deque
 
 
