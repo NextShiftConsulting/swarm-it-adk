@@ -8,7 +8,21 @@
       "Bash(git push:*)",
       "Bash(gh repo create:*)",
       "Bash(gh repo list:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh:*)",
+      "Bash(brew list:*)",
+      "Bash(brew --prefix:*)",
+      "Bash(brew install:*)",
+      "Bash(cat:*)",
+      "Bash(git reset:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(source:*)",
+      "Bash(conda activate:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:sidecar\" python:*)"
     ]
   }
 }
