@@ -27,6 +27,7 @@ from .interface import (
 )
 from .patterns import get_detector, PatternMatch
 from .yrsn_adapter import get_adapter
+from .semantic import get_semantic_analyzer
 
 
 class RSCTEngine:
@@ -58,8 +59,11 @@ class RSCTEngine:
             embed_model: OpenAI embedding model for convenience wrapper
             rotor_checkpoint: Path to trained yrsn rotor checkpoint
         """
-        # Pattern detector for pre-screening
+        # Pattern detector for pre-screening (regex-based)
         self.pattern_detector = get_detector()
+
+        # Semantic analyzer (embedding-based - catches paraphrased attacks)
+        self.semantic_analyzer = get_semantic_analyzer()
 
         # yrsn adapter for actual RSN computation
         self.adapter: YRSNAdapter = get_adapter(
@@ -122,20 +126,42 @@ class RSCTEngine:
         """
         Pre-screen prompt for obvious attacks.
 
-        This is the sidecar's value-add - catching obvious attacks
+        Two layers:
+        1. Regex patterns (fast, catches known attacks)
+        2. Semantic analysis (slower, catches paraphrased attacks)
+
+        This is the sidecar's value-add - catching attacks
         before they hit yrsn (like Tendermint's CheckTx).
         """
-        matches = self.pattern_detector.detect(prompt)
+        patterns = []
+        max_severity = 0.0
 
-        if not matches:
+        # Layer 1: Regex pattern detection (fast)
+        matches = self.pattern_detector.detect(prompt)
+        if matches:
+            max_severity = matches[0].score
+            patterns = [m.category for m in matches[:5]]
+
+        # Layer 2: Semantic analysis (if available)
+        semantic_result = None
+        if self.semantic_analyzer.available:
+            semantic_result = self.semantic_analyzer.analyze(prompt)
+            if semantic_result.get("is_attack"):
+                # Semantic analysis detected attack
+                attack_sim = semantic_result.get("attack_similarity", 0)
+                if attack_sim > max_severity:
+                    max_severity = attack_sim
+                semantic_cat = semantic_result.get("top_attack_match")
+                if semantic_cat and semantic_cat.category not in patterns:
+                    patterns.insert(0, f"semantic:{semantic_cat.category}")
+
+        # No issues found
+        if max_severity == 0:
             return PreScreenOutput(
                 result=PreScreenResult.PASS,
                 patterns=[],
                 max_severity=0.0,
             )
-
-        max_severity = matches[0].score
-        patterns = [m.category for m in matches[:5]]
 
         # Severe patterns = immediate rejection
         if max_severity >= self.REJECT_SEVERITY:
@@ -144,12 +170,26 @@ class RSCTEngine:
                 'injection', 'fake_system', 'format_injection',
                 'spam',  # High-score spam is also rejected
             }
-            if matches[0].category in severe_categories:
+            top_pattern = patterns[0] if patterns else "unknown"
+            # Check both regex and semantic categories
+            base_category = top_pattern.replace("semantic:", "")
+            if base_category in severe_categories:
                 return PreScreenOutput(
                     result=PreScreenResult.REJECT,
                     patterns=patterns,
                     max_severity=max_severity,
-                    reason=f"Dangerous pattern: {matches[0].category}",
+                    reason=f"Dangerous pattern: {top_pattern}",
+                )
+
+        # Semantic attack detection (even if regex didn't catch it)
+        if semantic_result and semantic_result.get("is_attack"):
+            confidence = semantic_result.get("confidence", 0)
+            if confidence > 0.15:  # High confidence semantic attack
+                return PreScreenOutput(
+                    result=PreScreenResult.REJECT,
+                    patterns=patterns,
+                    max_severity=max_severity,
+                    reason=f"Semantic attack detected (confidence={confidence:.2f})",
                 )
 
         # Otherwise, pass to yrsn with warning
@@ -221,6 +261,7 @@ class RSCTEngine:
         return {
             "sidecar": "healthy",
             "pattern_detector": "ready",
+            "semantic_analyzer": "ready" if self.semantic_analyzer.available else "unavailable (no API key)",
             "yrsn_adapter": self.adapter.health(),
         }
 
