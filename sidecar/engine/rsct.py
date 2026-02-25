@@ -47,7 +47,6 @@ class RSCTEngine:
 
     def __init__(
         self,
-        use_mock: bool = False,
         embed_model: str = "text-embedding-3-small",
         rotor_checkpoint: Optional[str] = None,
     ):
@@ -55,19 +54,17 @@ class RSCTEngine:
         Initialize sidecar engine.
 
         Args:
-            use_mock: Use mock adapter (for testing without yrsn)
-            embed_model: OpenAI embedding model for convenience wrapper
+            embed_model: OpenAI embedding model
             rotor_checkpoint: Path to trained yrsn rotor checkpoint
         """
-        # Pattern detector for pre-screening (regex-based)
+        # Pattern detector for pre-screening
         self.pattern_detector = get_detector()
 
-        # Semantic analyzer (embedding-based - catches paraphrased attacks)
+        # Semantic analyzer (embedding-based)
         self.semantic_analyzer = get_semantic_analyzer()
 
-        # yrsn adapter for actual RSN computation
+        # yrsn adapter for RSN computation
         self.adapter: YRSNAdapter = get_adapter(
-            use_mock=use_mock,
             embed_model=embed_model,
             rotor_checkpoint=rotor_checkpoint,
         )
