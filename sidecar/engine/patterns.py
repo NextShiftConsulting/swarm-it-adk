@@ -37,7 +37,7 @@ class PatternDetector:
 
     # Injection patterns
     INJECTION_PATTERNS = [
-        (r'ignore\s+(all\s+)?previous\s+instructions', 0.9, 'injection'),
+        (r'ignore\s+(all\s+)?(previous\s+)?instructions', 0.9, 'injection'),
         (r'disregard\s+(all\s+)?(prior|previous|above)', 0.9, 'injection'),
         (r'forget\s+(everything|all|what)', 0.8, 'injection'),
         (r'you\s+are\s+now\s+(a|in)', 0.7, 'roleplay_injection'),
