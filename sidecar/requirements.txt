@@ -1,8 +1,15 @@
 fastapi>=0.100.0
 uvicorn>=0.23.0
+mangum>=0.17.0  # Lambda adapter
 pydantic>=2.0.0
 httpx>=0.24.0
 pyyaml>=6.0.0
+openai>=1.0.0   # Embeddings API
+
+# yrsn dependencies
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-image>=0.20.0  # shannon_entropy in rsn_labeler.py
 
 # Optional: Metrics
 prometheus-client>=0.17.0
