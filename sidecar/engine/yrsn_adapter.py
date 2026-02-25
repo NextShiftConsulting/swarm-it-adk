@@ -15,9 +15,14 @@ This adapter handles:
 from __future__ import annotations
 
 import hashlib
+import sys
 import os
 from datetime import datetime
 from typing import Dict, Any, Optional, List
+
+# Use infra port
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from infra import get_embeddings, get_rotor, config
 
 from .interface import (
     YRSNAdapter,
@@ -27,67 +32,23 @@ from .interface import (
     YRSNError,
 )
 
-# Try to import yrsn core
+# Check yrsn availability
 try:
     import torch
-    from yrsn.core.decomposition import HybridSimplexRotor
     YRSN_AVAILABLE = True
 except ImportError:
     YRSN_AVAILABLE = False
-    HybridSimplexRotor = None
-
-# Try to import OpenAI for convenience embeddings
-try:
-    import openai
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
 
 
 class LocalYRSNAdapter(YRSNAdapter):
     """
-    Local adapter - calls yrsn core directly (same process).
-
-    This is the standard deployment: sidecar + yrsn in same Python process.
+    Local adapter - calls yrsn core directly via infra port.
     """
 
-    # OpenAI embedding model dimensions
-    EMBEDDING_DIMS = {
-        "text-embedding-3-small": 1536,
-        "text-embedding-3-large": 3072,
-        "text-embedding-ada-002": 1536,
-    }
-
-    def __init__(
-        self,
-        embed_model: str = "text-embedding-3-small",
-        rotor_checkpoint: Optional[str] = None,
-    ):
-        """
-        Initialize local yrsn adapter.
-
-        Args:
-            embed_model: OpenAI embedding model for convenience wrapper
-            rotor_checkpoint: Path to trained rotor checkpoint (optional, not used yet)
-        """
-        self.embed_model = embed_model
-        self.embed_dim = self.EMBEDDING_DIMS.get(embed_model, 1536)
-
-        # Create rotor with correct input dimension
-        # The rotor handles dimension reduction internally:
-        # embed_dim → hidden → hidden/2 → subspace → 2D → RSN
-        self.rotor = None
-        if YRSN_AVAILABLE:
-            try:
-                self.rotor = HybridSimplexRotor(
-                    embed_dim=self.embed_dim,
-                    hidden_dim=512,  # Larger hidden for 1536-dim input
-                    subspace_dim=64,
-                )
-                self.rotor.eval()
-                print(f"✓ Created yrsn rotor: {self.embed_dim}→512→256→64→RSN")
-            except Exception as e:
-                print(f"Warning: Failed to create rotor: {e}")
+    def __init__(self, embed_dim: int = 1536, **kwargs):
+        """Initialize with rotor from infra."""
+        self.embed_dim = embed_dim
+        self.rotor = get_rotor(embed_dim) if YRSN_AVAILABLE else None
 
     def certify(self, request: CertifyRequest) -> CertifyResponse:
         """
@@ -105,10 +66,10 @@ class LocalYRSNAdapter(YRSNAdapter):
         if self.rotor is None:
             raise YRSNError("No yrsn rotor available")
 
-        # Step 1: Get embeddings
+        # Step 1: Get embeddings (from request or via infra)
         embeddings = request.embeddings
         if embeddings is None:
-            embeddings = self._get_embeddings(request.prompt)
+            embeddings = get_embeddings(request.prompt)
 
         # Step 2: Pass to rotor (handles all dimension reduction internally)
         with torch.no_grad():
@@ -163,43 +124,13 @@ class LocalYRSNAdapter(YRSNAdapter):
         )
 
     def health(self) -> Dict[str, Any]:
-        """Check yrsn core health."""
+        """Check health via infra."""
         return {
             "yrsn_available": YRSN_AVAILABLE,
             "rotor_ready": self.rotor is not None,
-            "openai_available": OPENAI_AVAILABLE,
-            "embed_model": self.embed_model,
+            "openai_ready": config.has_openai,
             "embed_dim": self.embed_dim,
         }
-
-    def _get_embeddings(self, text: str) -> List[float]:
-        """
-        Get embeddings using OpenAI (convenience wrapper).
-
-        Users can bypass this by providing embeddings directly.
-        """
-        if not OPENAI_AVAILABLE:
-            raise EmbeddingsRequired(
-                "Embeddings required but OpenAI not available. "
-                "Either pip install openai, or provide embeddings in request."
-            )
-
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise EmbeddingsRequired(
-                "Embeddings required but OPENAI_API_KEY not set. "
-                "Either set the key, or provide embeddings in request."
-            )
-
-        try:
-            client = openai.OpenAI(api_key=api_key)
-            response = client.embeddings.create(
-                model=self.embed_model,
-                input=text,
-            )
-            return response.data[0].embedding
-        except Exception as e:
-            raise YRSNError(f"OpenAI embedding failed: {e}")
 
     def _generate_id(self, prompt: str) -> str:
         """Generate unique certificate ID."""
@@ -344,17 +275,8 @@ class MockYRSNAdapter(YRSNAdapter):
         return {"mock": True, "yrsn_available": False}
 
 
-def get_adapter(
-    use_mock: bool = False,
-    **kwargs
-) -> YRSNAdapter:
-    """
-    Factory to get appropriate adapter.
-
-    Args:
-        use_mock: Force mock adapter (for testing)
-        **kwargs: Passed to LocalYRSNAdapter
-    """
-    if use_mock or not YRSN_AVAILABLE:
-        return MockYRSNAdapter()
+def get_adapter(**kwargs) -> YRSNAdapter:
+    """Get yrsn adapter."""
+    if not YRSN_AVAILABLE:
+        raise ImportError("yrsn not available - install torch and set PYTHONPATH")
     return LocalYRSNAdapter(**kwargs)

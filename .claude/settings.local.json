@@ -22,7 +22,19 @@
       "Bash(python:*)",
       "Bash(source:*)",
       "Bash(conda activate:*)",
-      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:sidecar\" python:*)"
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:sidecar\" python:*)",
+      "Bash(find:*)",
+      "Bash(export:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src\" python:*)",
+      "Bash(conda info:*)",
+      "Bash(/Users/rudy/opt/anaconda3/bin/python:*)",
+      "Bash(/Users/rudy/opt/anaconda3/envs/py311/bin/python --version)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:/Users/rudy/GitHub/yrsn/keys:.\" /Users/rudy/opt/anaconda3/envs/py311/bin/python:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:/Users/rudy/GitHub/yrsn/keys:.\" /Users/rudy/opt/anaconda3/envs/py39/bin/python:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:/Users/rudy/GitHub/yrsn/keys:.\" /Users/rudy/opt/anaconda3/envs/py311/bin/pip install:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:/Users/rudy/GitHub/yrsn/keys\" /Users/rudy/opt/anaconda3/envs/py311/bin/python:*)",
+      "Bash(/Users/rudy/opt/anaconda3/envs/py311/bin/pip install:*)",
+      "Bash(PYTHONPATH=\"/Users/rudy/GitHub/yrsn/src:/Users/rudy/GitHub/yrsn/keys:.\" /Users/rudy/opt/anaconda3/envs/py311/bin/python -c \"\n# Check if OpenAI supports 768-dim output\nfrom openai import OpenAI\nimport os\n\n# Load key\nkey_file = ''/Users/rudy/GitHub/yrsn/keys/OPENAI_API_KEY.txt''\nwith open(key_file) as f:\n    content = f.read().strip()\n    if ''='' in content:\n        content = content.split(''='', 1)[1].strip(''\"\"'')\n    os.environ[''OPENAI_API_KEY''] = content\n\nclient = OpenAI()\n# text-embedding-3-small supports dimensions parameter\nresp = client.embeddings.create(\n    model=''text-embedding-3-small'',\n    input=''test'',\n    dimensions=768  # Request 768-dim output\n)\nprint(''Embedding dim:'', len(resp.data[0].embedding))\n\")"
     ]
   }
 }

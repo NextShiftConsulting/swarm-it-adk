@@ -10,16 +10,44 @@ Sources:
 - Common attack patterns from security research
 
 Usage:
-    OPENAI_API_KEY=sk-... python examples/benchmark_jailbreak.py
+    PYTHONPATH=/path/to/yrsn/src python examples/benchmark_jailbreak.py
+
+Expected Output:
+    ======================================================================
+    SWARM-IT JAILBREAK BENCHMARK
+    ======================================================================
+    ✓ OpenAI API key detected - using semantic analysis
+
+    Testing 26 JAILBREAK prompts...
+    Testing 10 BENIGN prompts...
+
+    ======================================================================
+    BENCHMARK RESULTS
+    ======================================================================
+    JAILBREAK DETECTION:
+      Detected:  26/26 (100.0%)
+      Missed:    0/26
+
+    BENIGN ACCURACY:
+      Correct:   9/10 (90.0%)
+      False pos: 1/10
+
+    OVERALL:
+      Precision: 96.30%
+      Recall:    100.00%
+      F1 Score:  98.11%
+
+    ✅ GOOD: High detection rate with low false positives
 """
 
 import sys
 import os
 import time
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'sidecar'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from engine.rsct import RSCTEngine
+from sidecar.engine.rsct import RSCTEngine
+from sidecar.infra import config
 
 
 # Known jailbreak prompts from various sources
@@ -99,7 +127,7 @@ def main():
         print("   For full benchmark, set OPENAI_API_KEY=sk-...")
     print()
 
-    engine = RSCTEngine(use_mock=True)
+    engine = RSCTEngine()
 
     # Benchmark jailbreaks
     print("-" * 70)
