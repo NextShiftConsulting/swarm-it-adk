@@ -65,3 +65,6 @@ credentials.json
 .Rproj.user
 .Ruserdata
 *.Rproj
+
+# Project files
+CLAUDE.md
