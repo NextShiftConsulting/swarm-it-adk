@@ -58,3 +58,10 @@ credentials.json
 
 # Build
 *.log
+
+# R / R Studio
+.Rhistory
+.RData
+.Rproj.user
+.Ruserdata
+*.Rproj
