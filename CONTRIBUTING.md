@@ -1,96 +1,197 @@
-# Contributing to Swarm It
+# Contributing to Swarm-It API
 
-Thanks for your interest in contributing to Swarm It.
+Thank you for your interest in contributing to the Swarm-It platform!
 
-## Patent Notice
+## License Agreement
 
-This project includes material that is the subject of one or more pending patent applications.
-See [PATENT_NOTICE.md](PATENT_NOTICE.md) for details.
+By contributing to this repository, you agree that:
 
-## License of Contributions
+1. **Your contributions are licensed under Apache License 2.0**
+   - Same license as the project (see [LICENSE](LICENSE))
+   - Grants perpetual, worldwide, royalty-free copyright license
 
-By submitting a contribution (pull request, patch, issue content, or code), you agree that:
+2. **Patent Grant**
+   - You grant Next Shift Consulting LLC a patent license for any patents covering your contributions
+   - This allows us to use your contributions in both open source and commercial offerings
 
-1. **Ownership**: You have the right to submit the contribution and it does not violate any third-party rights.
+3. **Right to Contribute**
+   - You have the legal right to make these contributions
+   - No conflicting obligations (employer IP agreements, etc.)
+   - You have not knowingly included third-party patented technology without disclosure
 
-2. **License Grant**: Your contribution is licensed under the same terms as this project's LICENSE file.
+4. **Commercial Use Rights**
+   - You grant Next Shift Consulting LLC the right to use your contributions in commercial licenses
+   - This allows us to offer commercial support and licensing while keeping the base project open source
 
-3. **Usage Rights**: You grant the project maintainer(s) the right to use, modify, sublicense, and distribute your contribution as part of the project.
+## What This Means
 
-## No Separate Patent License From Contributors
+- ✓ Your contributions remain open source (Apache 2.0)
+- ✓ You retain copyright to your contributions
+- ✓ Next Shift Consulting can use your contributions commercially
+- ✓ You can use your own contributions however you like
+- ✓ Everyone benefits from your improvements
 
-Unless stated otherwise in writing, contributors do not grant a separate patent license beyond what is included in the project LICENSE (if any) and applicable law.
+## How to Contribute
 
-## Developer Certificate of Origin (DCO)
-
-This project uses the [Developer Certificate of Origin](https://developercertificate.org/).
-
-By signing off on your commits, you certify the DCO:
-
-```
-Developer Certificate of Origin
-Version 1.1
-
-Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
-
-Everyone is permitted to copy and distribute verbatim copies of this
-license document, but changing it is not allowed.
-
-Developer's Certificate of Origin 1.1
-
-By making a contribution to this project, I certify that:
-
-(a) The contribution was created in whole or in part by me and I
-    have the right to submit it under the open source license
-    indicated in the file; or
-
-(b) The contribution is based upon previous work that, to the best
-    of my knowledge, is covered under an appropriate open source
-    license and I have the right under that license to submit that
-    work with modifications, whether created in whole or in part
-    by me, under the same open source license (unless I am
-    permitted to submit under a different license), as indicated
-    in the file; or
-
-(c) The contribution was provided directly to me by some other
-    person who certified (a), (b) or (c) and I have not modified
-    it.
-
-(d) I understand and agree that this project and the contribution
-    are public and that a record of the contribution (including all
-    personal information I submit with it, including my sign-off) is
-    maintained indefinitely and may be redistributed consistent with
-    this project or the open source license(s) involved.
-```
-
-### How to Sign Off
-
-Add a sign-off line to your commit messages:
+### 1. Fork and Clone
 
 ```bash
-git commit -s -m "Your commit message"
+git clone https://github.com/NextShiftConsulting/swarm-it-api.git
+cd swarm-it-api
 ```
 
-This adds:
-```
-Signed-off-by: Your Name <your@email.com>
+### 2. Create a Branch
+
+```bash
+git checkout -b feature/your-feature-name
 ```
 
-## Code Standards
+### 3. Make Your Changes
 
 - Follow existing code style
 - Add tests for new functionality
 - Update documentation as needed
-- Keep commits focused and atomic
+- Ensure all tests pass
 
-## Line Endings (Cross-Platform)
+### 4. Commit Your Changes
 
-To avoid whitespace conflicts between Windows and macOS/Linux:
+```bash
+git add .
+git commit -m "Add feature: brief description"
+```
 
-- This repo enforces LF via `.gitattributes` and `.editorconfig`.
-- On Windows, set `git config core.autocrlf false` in this repo.
-- If you see line-ending churn, run `git add --renormalize .` once.
+**Important**: Do not include Claude attribution per CLAUDE.md project instructions.
+
+### 5. Push and Create Pull Request
+
+```bash
+git push origin feature/your-feature-name
+```
+
+Then create a pull request on GitHub.
+
+## Code Review Process
+
+1. **Automated Checks**
+   - CI/CD pipeline runs tests
+   - Pre-commit hooks check for credentials
+   - Code style validation
+
+2. **Manual Review**
+   - Maintainers review code quality
+   - Check for security issues
+   - Verify patent/IP compliance
+
+3. **Merge**
+   - Once approved, maintainers will merge
+   - Your contribution is now part of the project!
+
+## Contribution Guidelines
+
+### Code Style
+
+- **Python**: Follow PEP 8
+- **Type hints**: Use for function signatures
+- **Docstrings**: Required for public APIs
+- **Comments**: Explain "why", not "what"
+
+### Testing
+
+- Write unit tests for new code
+- Ensure integration tests pass
+- Aim for >80% code coverage
+
+### Documentation
+
+- Update README if changing user-facing features
+- Add inline comments for complex logic
+- Update API documentation
+
+### Security
+
+- Never commit credentials or secrets
+- Follow secure coding practices
+- Report security issues privately to security@nextshiftconsulting.com
+
+## Patent and IP Considerations
+
+### What You Can Contribute
+
+✓ Bug fixes and improvements
+✓ New features and functionality
+✓ Documentation and examples
+✓ Tests and tooling
+
+### What Requires Disclosure
+
+If your contribution includes:
+- Implementation of a third-party patent
+- Algorithms from published papers (cite the paper)
+- Code based on existing libraries (mention the source)
+
+Please disclose this in your pull request description.
+
+### RSCT Patent
+
+The core RSCT (Representation-Space Compatibility Theory) algorithms are patent-pending by Next Shift Consulting LLC. You don't need to worry about this for contributions - we handle the patent licensing.
+
+## Types of Contributions
+
+### 🐛 Bug Reports
+
+Create an issue with:
+- Description of the bug
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment (OS, Python version, etc.)
+
+### 💡 Feature Requests
+
+Create an issue with:
+- Problem you're trying to solve
+- Proposed solution
+- Alternative solutions considered
+- Impact on existing functionality
+
+### 📝 Documentation
+
+- Fix typos
+- Clarify confusing sections
+- Add examples
+- Improve API documentation
+
+### 🧪 Tests
+
+- Increase test coverage
+- Add edge case tests
+- Improve test performance
+
+## Community Guidelines
+
+- Be respectful and inclusive
+- Provide constructive feedback
+- Help others learn and grow
+- Follow our [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Questions?
 
-Open an issue for questions about contributing.
+- **General questions**: Open a GitHub Discussion
+- **Bug reports**: Create an issue
+- **Commercial licensing**: legal@nextshiftconsulting.com
+- **Security issues**: security@nextshiftconsulting.com
+
+## Contributor License Agreement (CLA)
+
+For significant contributions (>100 lines), we may ask you to sign a formal CLA. This:
+
+- Confirms you have the right to contribute
+- Grants necessary patent and copyright licenses
+- Protects both you and the project
+
+We'll notify you if a CLA is required for your contribution.
+
+---
+
+Thank you for contributing to Swarm-It! 🚀
+
+© 2026 Next Shift Consulting LLC
