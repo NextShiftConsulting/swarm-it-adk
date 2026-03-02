@@ -1,154 +1,70 @@
-# Swarm-It
+# Swarm‑It Monorepo
 
-**RSCT Certification for AI/LLM Execution Governance**
+**RSCT certification (via `yrsn`) delivered as a sidecar runtime + multi‑language clients.**
 
-[![Patent Pending](https://img.shields.io/badge/Patent-Pending-blue)](PATENT_NOTICE.md)
+This repository is intentionally a **monorepo**. It contains:
 
----
+| Component | Folder | What it is | Owns | Does *not* own |
+|---|---|---|---|---|
+| Sidecar Runtime | `sidecar/` | Deployable HTTP service | Network boundary, auth hooks, storage adapters, audit export | RSN/rotor math implementation (delegated to `yrsn`) |
+| Reference Clients | `clients/` | Thin clients (Python/TS/Go/Rust) | Transport, retries, typed models, DX | RSN/rotor/κ computation |
+| Python SDK (batteries‑included) | `adk/` | Higher‑level Python SDK + integrations | DX helpers, middleware/integrations, testing utilities | Re‑implementing `yrsn` core |
+| Examples | `examples/` | End‑to‑end demos | “Hello cert” + integrations | Canonical API/spec |
+| Docs | `docs/` | Architecture + ops notes | Specs, deployment notes | Runtime code |
 
-## What Is This?
+## Boundary: where RSCT math lives
 
-Swarm-It is a **sidecar service** that certifies AI/LLM calls before execution. Think of it as a safety gate that answers: "Should I run this prompt?"
+**All certificate computation is owned by `yrsn`** (rotor, RSN decomposition, κ/metrics).  
+This repo **wraps** that compute behind a **sidecar service** and ships **clients** to call it.
 
-```
-┌─────────────────────────────────────┐
-│     Your AI App (any language)      │
-├─────────────────────────────────────┤
-│         Swarm-It Sidecar            │
-│   Certify → Execute → Validate      │
-└─────────────────────────────────────┘
-```
+If you ever feel tempted to add RSN/rotor/κ math into a client package, treat that as a bug.
 
-**Inspired by Tendermint:** Just as Tendermint separated consensus from application (ABCI), Swarm-It separates certification from AI execution.
+## Quick start
 
----
-
-## Quick Start (30 seconds)
+### 1) Run the sidecar
 
 ```bash
-# 1. Start sidecar
 cd sidecar
 docker-compose up -d
 
-# 2. Test it
 curl http://localhost:8080/health
-# {"status": "healthy"}
-
-# 3. Certify a prompt
-curl -X POST http://localhost:8080/api/v1/certify \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "What is 2+2?"}'
-# {"id": "abc123", "decision": "EXECUTE", "allowed": true, ...}
 ```
 
----
+More: see **`sidecar/README.md`**.
 
-## Integration (Python)
+### 2) Call it from a client
+
+**Python (batteries‑included SDK)**
 
 ```bash
-pip install httpx  # Thin client has no dependencies except HTTP
+pip install swarm-it
 ```
 
 ```python
 from swarm_it import SwarmIt
 
-swarm = SwarmIt(url="http://localhost:8080")
+swarm = SwarmIt(base_url="http://localhost:8080")
 
-# Before LLM call
-cert = swarm.certify("Summarize this document")
-
+cert = swarm.certify("What is 2+2?")
 if cert.allowed:
-    response = my_llm(prompt)
-
-    # After LLM call (feedback loop)
-    swarm.validate(cert.id, "TYPE_I", score=0.9)
+    print("execute")
 else:
-    print(f"Blocked: {cert.reason}")
+    print("blocked:", cert.reason)
 ```
 
----
+**Other languages / thin clients:** see `clients/`.
 
-## Why Sidecar?
+## Where to go next
 
-| Library (import) | Sidecar (service) |
-|------------------|-------------------|
-| Python only | Any language |
-| Per-process state | Centralized |
-| Redeploy all apps | Update one container |
-| Scattered logs | Single audit point |
-
----
-
-## SGCI: Three Methods
-
-**Swarm Gate Certification Interface** (like Tendermint's ABCI):
-
-| Method | When | Purpose |
-|--------|------|---------|
-| `Certify` | Pre-execution | Should I run this prompt? |
-| `Validate` | Post-execution | How did the output perform? |
-| `Audit` | Compliance | Export certificates for SR 11-7 |
-
----
-
-## Gate Decisions
-
-| Decision | Gate | Meaning |
-|----------|------|---------|
-| `EXECUTE` | 5 | All checks passed - safe to run |
-| `REPAIR` | 4 | Low compatibility - re-encode first |
-| `DELEGATE` | 3 | Unstable - route to specialist |
-| `BLOCK` | 2 | Relevance too low |
-| `REJECT` | 1 | Noise too high - do not run |
-
----
-
-## Clients
-
-| Language | Package |
-|----------|---------|
-| Python | `clients/python/` |
-| TypeScript | `clients/typescript/` |
-| Go | `clients/go/` |
-| Rust | `clients/rust/` |
-
----
-
-## Deployment
-
-```bash
-# Docker
-docker run -p 8080:8080 swarmit/sidecar
-
-# Kubernetes (sidecar pattern)
-# See docs/sidecar_analysis/DEPLOYMENT.md
-```
-
----
-
-## Metrics
-
-```
-GET /metrics
-
-swarm_it_certifications_total{decision="EXECUTE"} 1234
-swarm_it_certification_latency_seconds{quantile="0.99"} 0.015
-```
-
----
-
-## Documentation
-
-- [Requirements (I/O specs)](docs/sidecar_analysis/REQUIREMENTS.md)
-- [Deployment Guide](docs/sidecar_analysis/DEPLOYMENT.md)
-- [Integration Examples](docs/sidecar_analysis/INTEGRATION.md)
-- [Operations](docs/sidecar_analysis/OPERATIONS.md)
-- [Architecture](docs/architecture/SIDECAR_ARCHITECTURE.md)
-
----
+- Sidecar runtime: **`sidecar/README.md`**
+- Client SDKs: **`clients/README.md`**
+- Docs: `docs/sidecar_analysis/` and `docs/architecture/`
 
 ## License
 
-Patent Pending. See [PATENT_NOTICE.md](PATENT_NOTICE.md).
+Licensed under the **Apache License 2.0**. See `LICENSE`.
+
+- Patent status / disclosures: `PATENT_NOTICE.md` (informational)
+- Trademarks: `TRADEMARK_NOTICE.md`
 
 © 2026 Next Shift Consulting LLC

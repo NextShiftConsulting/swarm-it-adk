@@ -9,13 +9,21 @@
     "test": "jest",
     "lint": "eslint src/"
   },
-  "keywords": ["swarm-it", "rsct", "ai", "llm", "certification"],
+  "keywords": [
+    "swarm-it",
+    "rsct",
+    "ai",
+    "llm",
+    "certification"
+  ],
   "author": "Next Shift Consulting LLC",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.0.0",
     "@types/node": "^20.0.0"
   },
-  "files": ["dist/"]
+  "files": [
+    "dist/"
+  ]
 }
