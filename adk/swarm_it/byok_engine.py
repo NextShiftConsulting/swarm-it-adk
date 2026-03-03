@@ -103,7 +103,8 @@ class BYOKEngine:
         if self.rotor is None:
             try:
                 from yrsn.core.decomposition import HybridSimplexRotor
-                self.rotor = HybridSimplexRotor.from_checkpoint(self.rotor_checkpoint)
+                # HybridSimplexRotor is instantiated directly (embed_dim=64 is standard)
+                self.rotor = HybridSimplexRotor(embed_dim=64)
             except Exception as e:
                 print(f"[BYOK] Warning: Failed to load rotor: {e}")
                 print(f"[BYOK] Falling back to hash-based approximation")
@@ -165,8 +166,15 @@ class BYOKEngine:
 
         if self.rotor is not None:
             # Use real yrsn rotor
-            R, S, N = self.rotor.decompose(embedding)
-            R, S, N = float(R), float(S), float(N)
+            # Ensure embedding has batch dimension [1, embed_dim]
+            if embedding.dim() == 1:
+                embedding = embedding.unsqueeze(0)
+
+            # Rotor returns dict with 'R', 'S', 'N' tensors
+            rsn_dict = self.rotor(embedding)
+            R = float(rsn_dict['R'][0])
+            S = float(rsn_dict['S'][0])
+            N = float(rsn_dict['N'][0])
         else:
             # Fall back to hash-based approximation
             R, S, N = self._hash_based_rsn(prompt)
