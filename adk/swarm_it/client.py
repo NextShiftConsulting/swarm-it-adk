@@ -9,7 +9,7 @@ import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, Dict, Any, Callable
+from typing import Optional, Dict, Any, Callable, List
 import httpx
 
 
@@ -144,6 +144,9 @@ class SwarmIt:
 
         # Local fallback mode (when API unavailable)
         self._local_mode = False
+
+        # Models cache
+        self._models_cache: Optional[List[Dict[str, Any]]] = None
 
     def _headers(self) -> Dict[str, str]:
         """Build request headers."""
@@ -333,6 +336,59 @@ class SwarmIt:
         if func is not None:
             return decorator(func)
         return decorator
+
+    def get_models(self) -> List[Dict[str, Any]]:
+        """
+        Get available certification models (Copilot SDK pattern).
+
+        Returns:
+            List of model configurations
+
+        Example:
+            >>> swarm = SwarmIt()
+            >>> models = swarm.get_models()
+            >>> for model in models:
+            ...     print(f"{model['id']}: {model['name']}")
+            universal64: Universal Rotor (64-dim)
+            strict: Strict Policy
+            ...
+        """
+        if self._models_cache:
+            return self._models_cache
+
+        # Try API first
+        if not self._local_mode and self.api_key:
+            try:
+                response = self._client.get("/models")
+                if response.status_code == 200:
+                    self._models_cache = response.json().get("models", [])
+                    return self._models_cache
+            except httpx.RequestError:
+                pass
+
+        # Fall back to local model registry
+        from .models import get_models
+        self._models_cache = get_models()
+        return self._models_cache
+
+    def create_conversation(self, conversation_id: Optional[str] = None):
+        """
+        Create a multi-turn conversation context (Copilot SDK pattern).
+
+        Args:
+            conversation_id: Optional conversation ID
+
+        Returns:
+            Conversation instance
+
+        Example:
+            >>> swarm = SwarmIt()
+            >>> conv = swarm.create_conversation()
+            >>> cert1 = conv.send("What is quantum computing?")
+            >>> cert2 = conv.send("Can you give an example?")  # Has context
+        """
+        from .conversation import Conversation
+        return Conversation(client=self, conversation_id=conversation_id)
 
     def close(self):
         """Close HTTP client."""
