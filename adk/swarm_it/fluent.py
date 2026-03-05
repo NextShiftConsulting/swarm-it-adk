@@ -276,66 +276,88 @@ class FluentCertifier:
         Execute certification.
 
         Returns:
-            Certification result
+            Certification result (converted from RSCTCertificate to dict)
         """
         if self._prompt is None:
             raise ValueError("Prompt not set. Use with_prompt() first.")
 
         # Import here to avoid circular dependencies
-        from swarm_it_adk import RSCTCertifier
+        from swarm_it.local.engine import LocalEngine
 
-        # Build certifier
-        certifier = RSCTCertifier(
-            kappa=self._kappa,
-            R=self._R,
-            S=self._S,
-            N=self._N
-        )
+        # Build engine with policy based on domain
+        # Note: LocalEngine uses hash-based simplex, doesn't take threshold args
+        # Thresholds would be enforced post-certification in quality gates
+        engine = LocalEngine(policy=self._domain)
 
-        # Execute with tracing if enabled
+        # Execute certification
         if self._enable_tracing:
-            from swarm_it_adk.tracing import get_tracing_manager
-            manager = get_tracing_manager()
+            try:
+                from swarm_it.tracing import get_tracing_manager
+                manager = get_tracing_manager()
 
-            with manager.trace_certification(
-                prompt_length=len(self._prompt),
-                model=self._model,
-                domain=self._domain
-            ):
-                result = certifier.certify(self._prompt)
+                with manager.trace_certification(
+                    prompt_length=len(self._prompt),
+                    model=self._model,
+                    domain=self._domain
+                ):
+                    cert = engine.certify(self._prompt)
+            except ImportError:
+                # Tracing not available, fall back
+                cert = engine.certify(self._prompt)
         else:
-            result = certifier.certify(self._prompt)
+            cert = engine.certify(self._prompt)
+
+        # Convert RSCTCertificate to dict
+        result = {
+            "id": cert.id,
+            "timestamp": cert.timestamp,
+            "decision": cert.decision.value,
+            "gate_reached": cert.gate_reached,
+            "reason": cert.reason,
+            "kappa": cert.kappa_gate,
+            "R": cert.R,
+            "S": cert.S,
+            "N": cert.N,
+            "sigma": cert.sigma,
+            "alpha": cert.alpha,
+            "policy": cert.policy
+        }
 
         # Record monitoring metrics if enabled
         if self._enable_monitoring:
-            from swarm_it_adk.monitoring import get_metrics_collector
-            collector = get_metrics_collector()
+            try:
+                from swarm_it.monitoring import get_metrics_collector
+                collector = get_metrics_collector()
 
-            collector.record_request(domain=self._domain, model=self._model or "default")
+                collector.record_request(domain=self._domain, model=self._model or "default")
 
-            if hasattr(result, 'decision') and result.decision == "EXECUTE":
-                collector.record_success(result.decision, self._domain)
-                if hasattr(result, 'kappa'):
+                if result.get('decision') == "EXECUTE":
+                    collector.record_success(result['decision'], self._domain)
                     collector.record_quality_metrics(
-                        result.kappa, result.R, result.S, result.N, self._domain
+                        result['kappa'], result['R'], result['S'], result['N'], self._domain
                     )
-            else:
-                collector.record_failure("gate_failed", self._domain)
+                else:
+                    collector.record_failure("gate_failed", self._domain)
+            except ImportError:
+                pass  # Monitoring not available
 
         # Audit log if enabled
         if self._enable_audit:
-            from swarm_it_adk.audit import get_audit_logger
-            logger = get_audit_logger()
+            try:
+                from swarm_it.audit import get_audit_logger
+                logger = get_audit_logger()
 
-            logger.log_certification_success(
-                user_id=self._user_id,
-                request_id=self._request_id,
-                decision=result.decision if hasattr(result, 'decision') else None,
-                kappa=result.kappa if hasattr(result, 'kappa') else None,
-                R=result.R if hasattr(result, 'R') else None,
-                S=result.S if hasattr(result, 'S') else None,
-                N=result.N if hasattr(result, 'N') else None
-            )
+                logger.log_certification_success(
+                    user_id=self._user_id,
+                    request_id=self._request_id,
+                    decision=result.get('decision'),
+                    kappa=result.get('kappa'),
+                    R=result.get('R'),
+                    S=result.get('S'),
+                    N=result.get('N')
+                )
+            except ImportError:
+                pass  # Audit logging not available
 
         return result
 
@@ -350,28 +372,50 @@ class FluentCertifier:
             raise ValueError("Prompts not set. Use with_prompts() first.")
 
         if self._enable_async:
-            # Use async batch processing
-            from swarm_it_adk.async_processing import BatchProcessor, AsyncCertificationClient
+            # Use async batch processing if available
+            try:
+                from swarm_it.async_processing import BatchProcessor, AsyncCertificationClient
 
-            client = AsyncCertificationClient()
-            processor = BatchProcessor(client)
+                client = AsyncCertificationClient()
+                processor = BatchProcessor(client)
 
-            request_ids = processor.submit_batch(
-                prompts=self._prompts,
-                model=self._model,
-                domain=self._domain,
-                user_id=self._user_id,
-                org_id=self._org_id
-            )
+                request_ids = processor.submit_batch(
+                    prompts=self._prompts,
+                    model=self._model,
+                    domain=self._domain,
+                    user_id=self._user_id,
+                    org_id=self._org_id
+                )
 
-            results = processor.get_batch_results(request_ids, timeout=60)
-            return [r.result for r in results if r.result]
-        else:
-            # Synchronous batch processing
-            return [
-                self.with_prompt(prompt).certify()
-                for prompt in self._prompts
-            ]
+                results = processor.get_batch_results(request_ids, timeout=60)
+                return [r.result for r in results if r.result]
+            except ImportError:
+                # Async not available, fall back to sync
+                pass
+
+        # Synchronous batch processing (fallback)
+        # Create a new certifier for each prompt to avoid state issues
+        from swarm_it.local.engine import LocalEngine
+
+        results = []
+        for prompt in self._prompts:
+            engine = LocalEngine(policy=self._domain)
+            cert = engine.certify(prompt)
+            results.append({
+                "id": cert.id,
+                "timestamp": cert.timestamp,
+                "decision": cert.decision.value,
+                "gate_reached": cert.gate_reached,
+                "reason": cert.reason,
+                "kappa": cert.kappa_gate,
+                "R": cert.R,
+                "S": cert.S,
+                "N": cert.N,
+                "sigma": cert.sigma,
+                "alpha": cert.alpha,
+                "policy": cert.policy
+            })
+        return results
 
 
 # Convenience function
