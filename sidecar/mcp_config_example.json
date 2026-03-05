@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "swarm-it": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "/Users/rudy/GitHub/swarm-it/sidecar",
+      "env": {
+        "PYTHONPATH": "/Users/rudy/GitHub/yrsn/src"
+      }
+    }
+  }
+}
