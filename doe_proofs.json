@@ -1,0 +1,2299 @@
+[
+  {
+    "experiment_id": "EXP_0001",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5588413425825093,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "3a8d6e98...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0002",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5588413425825093,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "a39cd3af...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0003",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5588413425825093,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "0a75e1e7...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0004",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5588413425825093,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "cd0a2702...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0005",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "42e625be...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0006",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "6b026c89...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0007",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "46f91046...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0008",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "7b06b2d2...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0009",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "eed30176...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0010",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "aeb25097...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0011",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "e8257f4b...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0012",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "2daa91bf...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0013",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "5875557a...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0014",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "428db336...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0015",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "79c1caf1...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0016",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "af9017e4...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0017",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5940172573683203,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "1b87c15e...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0018",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5940172573683203,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "01d641ea...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0019",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5940172573683203,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "1f4ae0db...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0020",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5940172573683203,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "c6309d70...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0021",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "1216491b...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0022",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "9f262514...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0023",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "792303e9...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0024",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "15b2453f...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0025",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "b1c509df...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0026",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "38ed7a59...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0027",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "055b782e...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0028",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "d03cac2e...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0029",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "aed0e8c3...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0030",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "b76f44b3...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0031",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "47d93f34...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0032",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "92eb7e8e...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0033",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.6804775693032263,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "59fb69a9...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0034",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.7789262616443426,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "842dafc9...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "EXP_0035",
+    "pass_fail": "PASS",
+    "verdict": "All 8 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "A1_RETURN_TYPE",
+        "description": "Returns RSCTCertificate object",
+        "expected": "RSCTCertificate",
+        "actual": "RSCTCertificate",
+        "pass": true
+      },
+      {
+        "id": "A2_DECISION_PROPERTY",
+        "description": "Certificate has decision property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A3_ALLOWED_PROPERTY",
+        "description": "Decision has allowed property",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "A4_SIMPLEX_CONSTRAINT",
+        "description": "R + S + N = 1.0 (\u00b10.001)",
+        "expected": 1.0,
+        "actual": 1.0,
+        "pass": true
+      },
+      {
+        "id": "A5_KAPPA_RANGE",
+        "description": "Kappa in [0, 1]",
+        "expected": "0.0 <= kappa <= 1.0",
+        "actual": 0.5831518648060517,
+        "pass": true
+      },
+      {
+        "id": "A6_VALID_DECISION",
+        "description": "Decision is valid GateDecision",
+        "expected": "One of ['EXECUTE', 'REJECT', 'BLOCK', 'RE_ENCODE', 'REPAIR', 'HALT', 'TIMEOUT', 'ESCALATE']",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "A7_GATE_REACHED",
+        "description": "Gate reached in [0, 5]",
+        "expected": "0-5",
+        "actual": 5,
+        "pass": true
+      },
+      {
+        "id": "A8_UNIQUE_ID",
+        "description": "Certificate has unique ID",
+        "expected": "Non-empty string",
+        "actual": "732d58f8...",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "BATCH_0036",
+    "pass_fail": "PASS",
+    "verdict": "Batch processing: 2/2 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "B1_BATCH_TYPE",
+        "description": "Returns List[RSCTCertificate]",
+        "expected": "List[RSCTCertificate]",
+        "actual": "List (all RSCTCertificate: True)",
+        "pass": true
+      },
+      {
+        "id": "B2_BATCH_COUNT",
+        "description": "Correct number of results",
+        "expected": 3,
+        "actual": 3,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "ERROR_0037",
+    "pass_fail": "PASS",
+    "verdict": "Valid input processed correctly",
+    "confidence": 1.0,
+    "assertions": []
+  },
+  {
+    "experiment_id": "ERROR_0038",
+    "pass_fail": "WARN",
+    "verdict": "Expected error but got valid certificate",
+    "confidence": 0.5,
+    "assertions": []
+  },
+  {
+    "experiment_id": "ERROR_0039",
+    "pass_fail": "WARN",
+    "verdict": "Expected error but got valid certificate",
+    "confidence": 0.5,
+    "assertions": []
+  },
+  {
+    "experiment_id": "ERROR_0040",
+    "pass_fail": "WARN",
+    "verdict": "Cannot test None input (type error)",
+    "confidence": 0.5,
+    "assertions": []
+  },
+  {
+    "experiment_id": "ERROR_0041",
+    "pass_fail": "WARN",
+    "verdict": "Expected error but got valid certificate",
+    "confidence": 0.5,
+    "assertions": []
+  }
+]
