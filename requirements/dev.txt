@@ -1,0 +1,22 @@
+# Development requirements - testing, linting, type checking
+
+-r ui.txt
+
+# Testing frameworks
+pytest>=7.4.0
+pytest-cov>=4.1.0  # Coverage reporting
+pytest-asyncio>=0.21.0  # Async test support
+pytest-mock>=3.11.0  # Mocking support
+
+# Linting and formatting
+black>=23.7.0  # Code formatter
+ruff>=0.0.285  # Fast linter
+mypy>=1.5.0  # Type checker
+
+# Type stubs
+types-redis>=4.6.0
+types-requests>=2.31.0
+
+# Documentation
+mkdocs>=1.5.0  # Documentation generator
+mkdocs-material>=9.2.0  # Material theme

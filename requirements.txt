@@ -1,0 +1,6 @@
+# Default requirements - recommended setup
+# For minimal install: pip install -r requirements/base.txt
+# For full install: pip install -r requirements/ui.txt
+# For development: pip install -r requirements/dev.txt
+
+-r requirements/recommended.txt

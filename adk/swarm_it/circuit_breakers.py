@@ -141,6 +141,11 @@ class CircuitBreaker:
         self._recovery_attempts = 0
         self._open_since: Optional[datetime] = None
 
+    @property
+    def state(self) -> CircuitState:
+        """Get current circuit state."""
+        return self.metrics.state
+
     def __enter__(self):
         """Context manager entry."""
         self._check_state()

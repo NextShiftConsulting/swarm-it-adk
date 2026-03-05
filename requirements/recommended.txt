@@ -1,0 +1,13 @@
+# Recommended requirements for better developer experience
+# Adds: validation, basic monitoring, health checks
+
+-r base.txt
+
+# Validation framework
+pydantic>=2.0.0
+
+# Health checks (memory/disk monitoring)
+psutil>=5.9.0
+
+# Metrics collection (optional but recommended)
+prometheus-client>=0.17.0

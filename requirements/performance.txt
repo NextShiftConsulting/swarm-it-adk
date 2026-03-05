@@ -1,0 +1,15 @@
+# Performance requirements - caching and async processing
+# Adds: Redis caching, Celery async processing, rate limiting
+# External services needed: Redis server, RabbitMQ (for Celery)
+
+-r recommended.txt
+
+# Redis client (for caching and rate limiting)
+redis>=4.0.0
+
+# Async task processing
+celery>=5.3.0
+
+# Celery dependencies
+kombu>=5.3.0  # Messaging library
+billiard>=4.1.0  # Process pool

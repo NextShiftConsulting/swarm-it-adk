@@ -1,0 +1,20 @@
+# Cloud storage and secrets management requirements
+# Adds: AWS S3, Google Cloud Storage, Azure Blob, Vault integration
+# External services needed: AWS/GCP/Azure accounts, Hashicorp Vault
+
+-r observability.txt
+
+# AWS integration
+boto3>=1.28.0  # S3 storage, Secrets Manager
+
+# Google Cloud integration
+google-cloud-storage>=2.10.0  # GCS storage
+
+# Azure integration
+azure-storage-blob>=12.18.0  # Azure Blob storage
+
+# Hashicorp Vault client
+hvac>=1.2.0  # Vault secrets management
+
+# HTTP client for webhooks
+requests>=2.31.0  # Used by notification plugins

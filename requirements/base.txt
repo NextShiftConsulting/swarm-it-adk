@@ -1,0 +1,5 @@
+# Base requirements - minimal install for core functionality
+# Works: LocalEngine, errors, circuit_breakers, audit, chaos, local storage
+
+# HTTP client (already in adk/pyproject.toml)
+httpx>=0.24.0
