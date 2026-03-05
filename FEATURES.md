@@ -660,17 +660,23 @@ def certify_with_monitoring(prompt):
 Chainable method calls for better developer experience:
 
 ```python
-from swarm_it_adk.fluent import FluentCertifier
+from swarm_it import FluentCertifier
 
 # Simple certification
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Your text here")
     .certify()
 )
 
+# Use the returned RSCTCertificate object
+if cert.decision.allowed:
+    print(f"Approved: kappa={cert.kappa_gate:.3f}")
+else:
+    print(f"Rejected: {cert.reason}")
+
 # Advanced configuration
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Medical diagnosis text")
     .for_domain("medical")
@@ -684,70 +690,93 @@ result = (
     .certify()
 )
 
+# Access certificate properties
+print(f"Decision: {cert.decision.value}")
+print(f"R={cert.R:.3f}, S={cert.S:.3f}, N={cert.N:.3f}")
+
 # Batch processing
-results = (
+certs = (
     FluentCertifier()
     .with_prompts(["Text 1", "Text 2", "Text 3"])
     .for_domain("research")
     .enable_async()
     .certify_batch()
 )
+
+# Process batch results
+for cert in certs:
+    print(f"{cert.id}: {cert.decision.value}")
 ```
 
 **Preset Configurations:**
 
 ```python
 # Medical domain (strict)
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Medical diagnosis...")
-    .for_medical()  # Sets kappa=0.9, R=0.5, S=0.6, N=0.3 + audit + evidence
+    .for_medical()  # Sets domain=medical + audit + monitoring
     .certify()
 )
+print(f"Medical cert: {cert.decision.value}, policy={cert.policy}")
 
 # Legal domain (strict)
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Legal opinion...")
-    .for_legal()  # Sets kappa=0.85, R=0.5, S=0.5, N=0.4 + audit + evidence
+    .for_legal()  # Sets domain=legal + audit + monitoring
     .certify()
 )
+print(f"Legal cert: {cert.decision.value}, kappa={cert.kappa_gate:.3f}")
 
 # Research domain (moderate)
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Research paper...")
-    .for_research()  # Sets kappa=0.7, R=0.3, S=0.4, N=0.5
+    .for_research()  # Sets domain=research
     .certify()
 )
+print(f"Research cert: R={cert.R:.3f}, N={cert.N:.3f}")
 
 # Development domain (permissive)
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Generated code...")
-    .for_development()  # Sets kappa=0.5, R=0.2, S=0.2, N=0.7
+    .for_development()  # Sets domain=development
     .certify()
 )
+print(f"Dev cert: {cert.decision.value}")
 
 # Production features (all observability + performance)
-result = (
+cert = (
     FluentCertifier()
     .with_prompt("Production request...")
-    .with_production()  # Enables caching, async, tracing, monitoring, audit, evidence
+    .with_production()  # Enables caching, async, tracing, monitoring, audit
     .certify()
 )
+print(f"Production: {cert.decision.value} (gate {cert.gate_reached}/5)")
 ```
 
 **Convenience Functions:**
 
 ```python
-from swarm_it_adk.fluent import certify, certify_batch
+from swarm_it import certify, certify_batch
 
 # Quick certification
-result = certify("Your text here")
+cert = certify("Your text here")
+
+# Use returned RSCTCertificate
+if cert.decision.allowed:
+    print(f"Executing with kappa={cert.kappa_gate:.3f}")
+else:
+    print(f"Blocked: {cert.reason}")
 
 # Quick batch certification
-results = certify_batch(["Text 1", "Text 2", "Text 3"])
+certs = certify_batch(["Text 1", "Text 2", "Text 3"])
+
+# Process results
+for cert in certs:
+    print(f"{cert.id}: {cert.decision.value} (R={cert.R:.3f})")
 ```
 
 ### 2. Interactive Playground (Streamlit)
