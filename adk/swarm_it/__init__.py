@@ -32,6 +32,13 @@ from .local.engine import (
     certify_local,
 )
 
+# === Fluent API ===
+from .fluent import (
+    FluentCertifier,
+    certify,
+    certify_batch,
+)
+
 # === Legacy Client (backward compatibility) ===
 from .client import SwarmIt, Certificate
 
@@ -99,9 +106,30 @@ from .decorators import gate, certified
 # === Exceptions ===
 from .exceptions import (
     SwarmItError,
-    CertificationError,
     GateBlockedError,
     AuthenticationError,
+)
+
+# === Structured Errors ===
+# NOTE: errors.py provides a more detailed CertificationError than exceptions.py
+# TODO: Consolidate duplicate CertificationError classes
+from .errors import (
+    CertificationError,  # Overrides exceptions.CertificationError
+    ErrorCode,
+)
+
+# === Circuit Breakers ===
+from .circuit_breakers import (
+    CircuitBreaker,
+    CircuitBreakerConfig,
+    CircuitState,
+    CircuitBreakerError,
+)
+
+# === Chaos Engineering ===
+from .chaos import (
+    ChaosManager,
+    ChaosScenario,
 )
 
 
@@ -114,6 +142,11 @@ __all__ = [
     "GateDecision",
     "LocalEngine",
     "certify_local",
+
+    # Fluent API
+    "FluentCertifier",
+    "certify",
+    "certify_batch",
 
     # Legacy Client
     "SwarmIt",
@@ -162,7 +195,20 @@ __all__ = [
 
     # Exceptions
     "SwarmItError",
-    "CertificationError",
     "GateBlockedError",
     "AuthenticationError",
+
+    # Structured Errors
+    "CertificationError",
+    "ErrorCode",
+
+    # Circuit Breakers
+    "CircuitBreaker",
+    "CircuitBreakerConfig",
+    "CircuitState",
+    "CircuitBreakerError",
+
+    # Chaos Engineering
+    "ChaosManager",
+    "ChaosScenario",
 ]

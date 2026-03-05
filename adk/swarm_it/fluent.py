@@ -18,8 +18,11 @@ Implements:
 - Method chaining for all operations
 """
 
-from typing import Optional, Dict, Any, List, Callable
+from typing import Optional, Dict, Any, List, Callable, TYPE_CHECKING
 from dataclasses import dataclass
+
+if TYPE_CHECKING:
+    from swarm_it.local.engine import RSCTCertificate
 
 
 class FluentCertifier:
@@ -271,15 +274,19 @@ class FluentCertifier:
 
     # Execution methods
 
-    def certify(self) -> Dict[str, Any]:
+    def certify(self) -> "RSCTCertificate":
         """
         Execute certification.
 
         Returns:
-            Certification result (converted from RSCTCertificate to dict)
+            RSCTCertificate object with full certification details
         """
         if self._prompt is None:
-            raise ValueError("Prompt not set. Use with_prompt() first.")
+            from swarm_it.errors import CertificationError, ErrorCode
+            raise CertificationError(
+                code=ErrorCode.PROMPT_TOO_SHORT,
+                message="Prompt not set. Use with_prompt() first."
+            )
 
         # Import here to avoid circular dependencies
         from swarm_it.local.engine import LocalEngine
@@ -307,22 +314,6 @@ class FluentCertifier:
         else:
             cert = engine.certify(self._prompt)
 
-        # Convert RSCTCertificate to dict
-        result = {
-            "id": cert.id,
-            "timestamp": cert.timestamp,
-            "decision": cert.decision.value,
-            "gate_reached": cert.gate_reached,
-            "reason": cert.reason,
-            "kappa": cert.kappa_gate,
-            "R": cert.R,
-            "S": cert.S,
-            "N": cert.N,
-            "sigma": cert.sigma,
-            "alpha": cert.alpha,
-            "policy": cert.policy
-        }
-
         # Record monitoring metrics if enabled
         if self._enable_monitoring:
             try:
@@ -331,10 +322,10 @@ class FluentCertifier:
 
                 collector.record_request(domain=self._domain, model=self._model or "default")
 
-                if result.get('decision') == "EXECUTE":
-                    collector.record_success(result['decision'], self._domain)
+                if cert.decision.value == "EXECUTE":
+                    collector.record_success(cert.decision.value, self._domain)
                     collector.record_quality_metrics(
-                        result['kappa'], result['R'], result['S'], result['N'], self._domain
+                        cert.kappa_gate, cert.R, cert.S, cert.N, self._domain
                     )
                 else:
                     collector.record_failure("gate_failed", self._domain)
@@ -350,26 +341,30 @@ class FluentCertifier:
                 logger.log_certification_success(
                     user_id=self._user_id,
                     request_id=self._request_id,
-                    decision=result.get('decision'),
-                    kappa=result.get('kappa'),
-                    R=result.get('R'),
-                    S=result.get('S'),
-                    N=result.get('N')
+                    decision=cert.decision.value,
+                    kappa=cert.kappa_gate,
+                    R=cert.R,
+                    S=cert.S,
+                    N=cert.N
                 )
             except ImportError:
                 pass  # Audit logging not available
 
-        return result
+        return cert
 
-    def certify_batch(self) -> List[Dict[str, Any]]:
+    def certify_batch(self) -> List["RSCTCertificate"]:
         """
         Execute batch certification.
 
         Returns:
-            List of certification results
+            List of RSCTCertificate objects
         """
         if self._prompts is None:
-            raise ValueError("Prompts not set. Use with_prompts() first.")
+            from swarm_it.errors import CertificationError, ErrorCode
+            raise CertificationError(
+                code=ErrorCode.PROMPT_TOO_SHORT,
+                message="Prompts not set. Use with_prompts() first."
+            )
 
         if self._enable_async:
             # Use async batch processing if available
@@ -401,40 +396,39 @@ class FluentCertifier:
         for prompt in self._prompts:
             engine = LocalEngine(policy=self._domain)
             cert = engine.certify(prompt)
-            results.append({
-                "id": cert.id,
-                "timestamp": cert.timestamp,
-                "decision": cert.decision.value,
-                "gate_reached": cert.gate_reached,
-                "reason": cert.reason,
-                "kappa": cert.kappa_gate,
-                "R": cert.R,
-                "S": cert.S,
-                "N": cert.N,
-                "sigma": cert.sigma,
-                "alpha": cert.alpha,
-                "policy": cert.policy
-            })
+            results.append(cert)
         return results
 
 
-# Convenience function
+# Convenience functions
 
-def certify(prompt: str) -> Dict[str, Any]:
+def certify(prompt: str) -> "RSCTCertificate":
     """
     Quick certification with defaults.
 
     Usage:
-        result = certify("Your text here")
+        from swarm_it.fluent import certify
+        cert = certify("Your text here")
+        if cert.decision.allowed:
+            # Proceed with execution
+
+    Returns:
+        RSCTCertificate object
     """
     return FluentCertifier().with_prompt(prompt).certify()
 
 
-def certify_batch(prompts: List[str]) -> List[Dict[str, Any]]:
+def certify_batch(prompts: List[str]) -> List["RSCTCertificate"]:
     """
     Quick batch certification with defaults.
 
     Usage:
-        results = certify_batch(["Text 1", "Text 2", "Text 3"])
+        from swarm_it.fluent import certify_batch
+        certs = certify_batch(["Text 1", "Text 2", "Text 3"])
+        for cert in certs:
+            print(f"{cert.id}: {cert.decision.value}")
+
+    Returns:
+        List of RSCTCertificate objects
     """
     return FluentCertifier().with_prompts(prompts).certify_batch()

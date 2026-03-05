@@ -51,32 +51,32 @@ try:
     from swarm_it.fluent import FluentCertifier, certify
 
     # Test convenience function
-    result1 = certify("Quick test")
+    cert1 = certify("Quick test")
     print(f"[OK] certify() convenience function works")
-    print(f"   Decision: {result1['decision']}")
-    print(f"   Kappa: {result1['kappa']:.3f}")
+    print(f"   Decision: {cert1.decision.value}")
+    print(f"   Kappa: {cert1.kappa_gate:.3f}")
 
     # Test fluent builder
-    result2 = (
+    cert2 = (
         FluentCertifier()
         .with_prompt("Medical diagnosis of patient symptoms")
         .for_medical()
         .certify()
     )
     print(f"[OK] FluentCertifier works")
-    print(f"   Decision: {result2['decision']}")
-    print(f"   Kappa: {result2['kappa']:.3f}")
-    print(f"   R: {result2['R']:.3f}, S: {result2['S']:.3f}, N: {result2['N']:.3f}")
+    print(f"   Decision: {cert2.decision.value}")
+    print(f"   Kappa: {cert2.kappa_gate:.3f}")
+    print(f"   R: {cert2.R:.3f}, S: {cert2.S:.3f}, N: {cert2.N:.3f}")
 
     # Test batch
-    results = (
+    certs = (
         FluentCertifier()
         .with_prompts(["Text 1", "Text 2", "Text 3"])
         .for_research()
         .certify_batch()
     )
     print(f"[OK] Batch processing works")
-    print(f"   Processed: {len(results)} prompts")
+    print(f"   Processed: {len(certs)} prompts")
 
     print()
 except Exception as e:
