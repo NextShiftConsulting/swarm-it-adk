@@ -94,7 +94,7 @@ try:
     config = CircuitBreakerConfig(
         failure_threshold=3,
         success_threshold=2,
-        timeout_seconds=5
+        timeout_duration=5.0  # Fixed: was timeout_seconds, should be timeout_duration
     )
     breaker = CircuitBreaker("test_service", config)
 
@@ -259,7 +259,7 @@ try:
     from swarm_it.errors import CertificationError, ErrorCode
 
     error = CertificationError(
-        code=ErrorCode.E101_PROMPT_TOO_SHORT,
+        code=ErrorCode.PROMPT_TOO_SHORT,  # Fixed: enum name is PROMPT_TOO_SHORT, value is "E101"
         message="Prompt too short: 5 characters",
         guidance="Provide a more detailed prompt (min 10 characters)",
         context={"prompt_length": 5, "min_length": 10}

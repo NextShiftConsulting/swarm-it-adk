@@ -1,0 +1,14 @@
+# Observability requirements - distributed tracing and monitoring
+# Adds: OpenTelemetry tracing, Prometheus metrics
+# External services needed: Jaeger/Zipkin (for tracing)
+
+-r performance.txt
+
+# OpenTelemetry distributed tracing
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+opentelemetry-exporter-jaeger>=1.20.0
+opentelemetry-instrumentation-requests>=0.41b0
+
+# Note: OpenTelemetry has many sub-packages, these are the core ones
+# For additional instrumentation, see: https://opentelemetry.io/docs/instrumentation/python/
