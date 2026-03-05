@@ -13,7 +13,8 @@ Comprehensive guide to swarm-it-adk capabilities and recent improvements.
 5. [Phase 4: Observability](#phase-4-observability)
 6. [Phase 5: Developer Experience Polish](#phase-5-developer-experience-polish)
 7. [Security & Reliability](#security--reliability-week-1-3)
-8. [Advanced Features](#advanced-features)
+8. [Phase 6: Extensibility](#phase-6-extensibility)
+9. [Advanced Features](#advanced-features)
 
 ---
 
@@ -898,16 +899,299 @@ logger.log_certification_success(
 
 ---
 
-## Coming Soon
+## Phase 6: Extensibility
 
-### Phase 6: Extensibility (Week 13-16)
-- Enhanced plugin architecture
-- Custom rotors, quality gates, embeddings
-- Storage plugins (S3, GCS, Azure)
-- Notification plugins (Slack, PagerDuty)
-- Chaos engineering experiments
+### 1. Chaos Engineering
+
+Resilience testing with fault and latency injection:
+
+```python
+from swarm_it_adk.chaos import (
+    ChaosManager, LatencyInjection, FaultInjection,
+    ErrorRateInjection, ResourceExhaustionInjection
+)
+
+# Create chaos manager
+manager = ChaosManager()
+
+# Add scenarios
+manager.add_scenario(LatencyInjection(
+    mean_ms=100,
+    std_ms=20,
+    probability=0.1  # 10% of requests
+))
+
+manager.add_scenario(FaultInjection(
+    exception_type=TimeoutError,
+    exception_message="Simulated timeout",
+    probability=0.05  # 5% of requests
+))
+
+manager.add_scenario(ErrorRateInjection(
+    target_error_rate=0.1,  # 10% error rate
+    error_response={"error": "Service unavailable"}
+))
+
+# Run chaos experiment
+with manager.run_experiment("resilience_test"):
+    for i in range(100):
+        try:
+            # This will inject chaos randomly
+            result = certifier.certify(prompts[i])
+        except Exception as e:
+            # Circuit breaker should handle failures
+            print(f"Handled: {e}")
+
+# Get metrics
+metrics = manager.get_experiment_metrics("resilience_test")
+for m in metrics:
+    print(f"{m.scenario_name}: {m.injection_rate:.1%} success rate")
+    print(f"  Errors caused: {m.errors_caused}")
+    print(f"  Latency added: {m.latency_added_ms:.1f}ms")
+```
+
+**Chaos Scenarios**:
+- **LatencyInjection**: Simulates slow network/database/API calls
+- **FaultInjection**: Raises exceptions to simulate failures
+- **ErrorRateInjection**: Returns errors without exceptions
+- **ResourceExhaustionInjection**: Allocates memory/CPU resources
+
+**Decorator Support**:
+```python
+from swarm_it_adk.chaos import with_chaos
+
+@with_chaos(manager)
+def certify_with_chaos(prompt):
+    return certifier.certify(prompt)
+```
+
+**Metrics Collected**:
+- Injections attempted/succeeded
+- Errors caused
+- Latency added
+- Requests affected
+- Circuit breakers triggered
+
+### 2. Storage Plugins
+
+Multi-cloud storage for evidence and certificates:
+
+```python
+from swarm_it_adk.storage_plugins import (
+    S3StorageProvider, GCSStorageProvider,
+    AzureBlobStorageProvider, LocalStorageProvider,
+    get_storage_registry
+)
+
+# AWS S3
+s3_storage = S3StorageProvider(
+    bucket_name="rsct-evidence",
+    region_name="us-east-1",
+    prefix="prod/"
+)
+
+# Google Cloud Storage
+gcs_storage = GCSStorageProvider(
+    bucket_name="rsct-evidence-gcs",
+    credentials_path="/path/to/service-account.json"
+)
+
+# Azure Blob Storage
+azure_storage = AzureBlobStorageProvider(
+    container_name="rsct-evidence",
+    connection_string="DefaultEndpointsProtocol=https;..."
+)
+
+# Register providers
+registry = get_storage_registry()
+registry.register("s3", s3_storage)
+registry.register("gcs", gcs_storage)
+registry.register("azure", azure_storage)
+registry.set_default("s3")
+
+# Store evidence
+storage = registry.get_provider("s3")
+location = storage.store_evidence(
+    evidence_id="cert_12345",
+    evidence_data={"decision": "EXECUTE", "kappa": 0.842},
+    metadata={"user_id": "user_123", "domain": "medical"}
+)
+print(f"Stored at: {location}")  # s3://rsct-evidence/prod/cert_12345.json
+
+# Retrieve evidence
+evidence = storage.retrieve_evidence("cert_12345")
+
+# List evidence
+evidence_ids = storage.list_evidence(prefix="cert_", limit=100)
+```
+
+**Storage Providers**:
+- **LocalStorageProvider**: Filesystem storage (default)
+- **S3StorageProvider**: AWS S3 (requires `boto3`)
+- **GCSStorageProvider**: Google Cloud Storage (requires `google-cloud-storage`)
+- **AzureBlobStorageProvider**: Azure Blob (requires `azure-storage-blob`)
+
+**Features**:
+- Pluggable architecture (register custom providers)
+- Consistent API across all providers
+- Metadata support
+- List/search capabilities
+- Certificate storage (delegates to evidence storage)
+
+### 3. Notification Plugins
+
+Multi-channel alerting for SLO violations and incidents:
+
+```python
+from swarm_it_adk.notification_plugins import (
+    SlackNotificationProvider, PagerDutyNotificationProvider,
+    EmailNotificationProvider, WebhookNotificationProvider,
+    NotificationSeverity, get_notification_registry
+)
+
+# Slack notifications
+slack = SlackNotificationProvider(
+    webhook_url="https://hooks.slack.com/services/...",
+    channel="#rsct-alerts"
+)
+
+# PagerDuty incidents
+pagerduty = PagerDutyNotificationProvider(
+    integration_key="your-integration-key"
+)
+
+# Email notifications
+email = EmailNotificationProvider(
+    smtp_host="smtp.gmail.com",
+    smtp_port=587,
+    smtp_username="alerts@example.com",
+    smtp_password="password",
+    from_email="rsct@example.com",
+    to_emails=["oncall@example.com"]
+)
+
+# Generic webhook
+webhook = WebhookNotificationProvider(
+    webhook_url="https://your-api.com/webhooks/alerts",
+    headers={"Authorization": "Bearer token"}
+)
+
+# Register providers
+registry = get_notification_registry()
+registry.register("slack", slack)
+registry.register("pagerduty", pagerduty)
+registry.register("email", email)
+registry.set_default("slack")
+
+# Send alert
+slack.send_alert(
+    title="SLO Violation",
+    message="Availability SLO dropped to 99.85% (target: 99.9%)",
+    severity=NotificationSeverity.WARNING,
+    slo_name="availability",
+    current_value=99.85,
+    target_value=99.9
+)
+
+# Broadcast to all providers
+from swarm_it_adk.notification_plugins import broadcast_alert
+
+results = broadcast_alert(
+    title="Circuit Breaker Opened",
+    message="OpenAI circuit breaker opened after 5 failures",
+    severity=NotificationSeverity.CRITICAL,
+    circuit_name="openai",
+    failure_count=5
+)
+print(results)  # {"slack": True, "pagerduty": True, "email": True}
+```
+
+**Notification Providers**:
+- **SlackNotificationProvider**: Slack webhooks (requires `requests`)
+- **PagerDutyNotificationProvider**: PagerDuty incidents (requires `requests`)
+- **EmailNotificationProvider**: SMTP email
+- **WebhookNotificationProvider**: Generic HTTP webhooks (requires `requests`)
+
+**Severity Levels**:
+- `INFO`: Informational events
+- `WARNING`: Warning conditions (e.g., approaching SLO threshold)
+- `ERROR`: Error conditions (e.g., SLO violated)
+- `CRITICAL`: Critical conditions (e.g., circuit breaker opened)
+
+**Integration Examples**:
+
+```python
+# Alert on SLO violation
+from swarm_it_adk.monitoring import get_slo_monitor
+from swarm_it_adk.notification_plugins import send_alert
+
+monitor = get_slo_monitor()
+status = monitor.get_slo_status("availability")
+
+if status.is_violated:
+    send_alert(
+        title=f"SLO Violated: {status.slo.name}",
+        message=f"Current: {status.current_value:.2f}%, Target: {status.slo.target:.2f}%",
+        severity=NotificationSeverity.CRITICAL,
+        error_budget_remaining=status.error_budget_remaining
+    )
+
+# Alert on circuit breaker
+from swarm_it_adk.circuit_breakers import CircuitBreakerError
+from swarm_it_adk.notification_plugins import send_alert
+
+try:
+    with circuit_breaker:
+        result = external_api.call()
+except CircuitBreakerError as e:
+    send_alert(
+        title="Circuit Breaker Opened",
+        message=f"Circuit '{e.circuit_name}' opened",
+        severity=NotificationSeverity.ERROR,
+        circuit_name=e.circuit_name,
+        failure_count=e.failure_count
+    )
+```
+
+---
+
+## Advanced Features
+
+### Plugin Architecture
+
+All extensibility features use consistent plugin patterns:
+
+**Storage Plugins**:
+```python
+from swarm_it_adk.storage_plugins import StorageProvider, StorageRegistry
+
+class CustomStorageProvider(StorageProvider):
+    def store_evidence(self, evidence_id, evidence_data, metadata=None):
+        # Custom implementation
+        pass
+
+registry = StorageRegistry()
+registry.register("custom", CustomStorageProvider())
+```
+
+**Notification Plugins**:
+```python
+from swarm_it_adk.notification_plugins import NotificationProvider
+
+class CustomNotificationProvider(NotificationProvider):
+    def send_notification(self, notification):
+        # Custom implementation
+        return True
+```
+
+**Benefits**:
+- Consistent API across all plugin types
+- Easy to add custom providers
+- Registry-based discovery
+- Default provider support
+- Broadcast capabilities (notifications)
 
 ---
 
 **Last Updated**: 2026-03-05
-**Version**: Phase 1-5 Complete (Observability & DevEx)
+**Version**: Phase 1-6 Complete (100% Unified Roadmap)
