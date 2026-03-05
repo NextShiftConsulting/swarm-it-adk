@@ -68,12 +68,12 @@ class CertificationError(Exception):
         self,
         code: ErrorCode,
         message: str,
-        guidance: str,
+        guidance: Optional[str] = None,
         context: Optional[Dict[str, Any]] = None
     ):
         self.code = code
         self.message = message
-        self.guidance = guidance
+        self.guidance = guidance or "See documentation for error code details"
         self.context = context or {}
 
         super().__init__(self.format_message())
