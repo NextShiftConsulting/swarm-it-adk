@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 780" role="img" aria-labelledby="title desc">
+  <title id="title">FIG. 12 Capacity-Competence Quadrant Diagram</title>
+  <desc id="desc">A four-quadrant diagram showing capacity on the vertical axis and competence on the horizontal axis, with labeled regions REPAIR, EXECUTE, REJECT, and RE_ENCODE.</desc>
+
+  <rect width="860" height="780" fill="#fff"/>
+
+  <!-- Main quadrant box -->
+  <rect x="140" y="70" width="560" height="480" fill="none" stroke="#000" stroke-width="2"/>
+  <line x1="420" y1="70" x2="420" y2="550" stroke="#000" stroke-width="2"/>
+  <line x1="140" y1="310" x2="700" y2="310" stroke="#000" stroke-width="2"/>
+
+  <!-- Top labels -->
+  <text x="280" y="55" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Low</text>
+  <text x="560" y="55" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">High</text>
+
+  <!-- Side labels -->
+  <text x="110" y="195" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">High</text>
+  <text x="110" y="435" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Low</text>
+
+  <!-- Axis titles -->
+  <text x="85" y="355" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700"
+        text-anchor="middle" transform="rotate(-90 85 355)">CAPACITY →</text>
+  <text x="420" y="632" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700"
+        text-anchor="middle">COMPETENCE →</text>
+
+  <!-- Quadrant 1 -->
+  <text x="280" y="140" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="700" text-anchor="middle">POWERFUL BUT BRITTLE</text>
+  <text x="280" y="172" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">High capacity wasted on</text>
+  <text x="280" y="194" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">incompatible encodings</text>
+  <text x="280" y="230" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle">REPAIR</text>
+  <text x="280" y="256" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-style="italic" text-anchor="middle">1202</text>
+
+  <!-- Quadrant 2 -->
+  <text x="560" y="140" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="700" text-anchor="middle">ROBUST INTELLIGENCE</text>
+  <text x="560" y="172" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">High κ_gate, low σ</text>
+  <text x="560" y="194" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">Full factorization</text>
+  <text x="560" y="230" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle">EXECUTE</text>
+  <text x="560" y="256" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-style="italic" text-anchor="middle">1204</text>
+
+  <!-- Quadrant 3 -->
+  <text x="280" y="380" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="700" text-anchor="middle">BRITTLE &amp; WEAK</text>
+  <text x="280" y="412" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">Low κ_gate, high σ</text>
+  <text x="280" y="434" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">Cascade risk</text>
+  <text x="280" y="470" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle">REJECT</text>
+  <text x="280" y="496" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-style="italic" text-anchor="middle">1206</text>
+
+  <!-- Quadrant 4 -->
+  <text x="560" y="380" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="700" text-anchor="middle">EFFICIENT BUT LIMITED</text>
+  <text x="560" y="412" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">Optimal encoding,</text>
+  <text x="560" y="434" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle">capped by solver</text>
+  <text x="560" y="470" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle">RE_ENCODE</text>
+  <text x="560" y="496" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-style="italic" text-anchor="middle">1208</text>
+
+  <!-- Footer equations -->
+  <text x="420" y="650" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-weight="700" text-anchor="middle">System Intelligence = f(Solver Capacity, Solver Competence)</text>
+  <text x="420" y="676" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="14" text-anchor="middle">Capacity and competence jointly determine execution state.</text>
+
+  <!-- Figure reference numeral -->
+  <text x="715" y="55" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" ></text>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 720">
+  <rect width="100%" height="100%" fill="white"/>
+
+  <!-- Outer dashed boundary -->
+  <rect x="30" y="20" width="620" height="680" fill="none" stroke="black" stroke-width="2" stroke-dasharray="8,4"/>
+
+  <!-- Header + 1 blank row below -->
+  <text x="340" y="44" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">TRAINING INFRASTRUCTURE  (No runtime execution)</text>
+
+  <!-- 3102: Training Data Batch (pushed down one blank row) -->
+  <rect x="230" y="72" width="220" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="230" y="70" font-family="Arial" font-size="11" font-weight="bold">3102</text>
+  <text x="340" y="102" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Training Data</text>
+
+  <line x1="340" y1="122" x2="340" y2="162" stroke="black" stroke-width="2"/>
+  <polygon points="335,157 345,157 340,167" fill="black"/>
+
+  <!-- 3104: Compute Compatibility Functional -->
+  <rect x="175" y="167" width="330" height="58" fill="none" stroke="black" stroke-width="2"/>
+  <text x="175" y="165" font-family="Arial" font-size="11" font-weight="bold">3104</text>
+  <text x="340" y="191" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Compute Representation-Solver</text>
+  <text x="340" y="210" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Compatibility Functional &#8594; Certificate</text>
+
+  <line x1="340" y1="225" x2="340" y2="295" stroke="black" stroke-width="2"/>
+  <polygon points="335,290 345,290 340,300" fill="black"/>
+
+  <!-- 3106: Threshold Adaptation diamond -->
+  <polygon points="340,300 460,360 340,420 220,360" fill="none" stroke="black" stroke-width="2"/>
+  <text x="220" y="345" font-family="Arial" font-size="11" font-weight="bold">3106</text>
+  <text x="340" y="364" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Threshold Adaptation</text>
+
+  <!-- YES path down from diamond -->
+  <line x1="340" y1="420" x2="340" y2="492" stroke="black" stroke-width="2"/>
+  <polygon points="335,487 345,487 340,497" fill="black"/>
+  <text x="355" y="460" font-family="Arial" font-size="12" font-weight="bold">Threshold Met</text>
+
+  <!-- 3108: Advance to Next Cognitive Phase (no "Bloom's") -->
+  <rect x="175" y="497" width="330" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="175" y="495" font-family="Arial" font-size="11" font-weight="bold">3108</text>
+  <text x="340" y="527" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Advance to Next Cognitive Phase</text>
+
+  <!-- Modulate side branch — from right of diamond down to 3110, clear of 3108 -->
+  <line x1="460" y1="360" x2="572" y2="360" stroke="black" stroke-width="2"/>
+  <line x1="572" y1="360" x2="572" y2="558" stroke="black" stroke-width="2"/>
+  <polygon points="567,553 577,553 572,563" fill="black"/>
+  <text x="600" y="430" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Modulate</text>
+
+  <!-- 3110: Memristor box — positioned below 3108 bottom (547), no overlap -->
+  <rect x="435" y="563" width="200" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="435" y="561" font-family="Arial" font-size="11" font-weight="bold">3110</text>
+  <text x="535" y="588" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Memristor-Modulated</text>
+  <text x="535" y="606" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Update (Write-Endurance</text>
+  <text x="535" y="624" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Calibrated)</text>
+
+  <!-- Footer notes -->
+  <text x="340" y="655" font-family="Arial" font-size="11" text-anchor="middle">No weight updates, policy networks, or gradient descent at runtime.</text>
+  <text x="340" y="672" font-family="Arial" font-size="11" text-anchor="middle">&#964; = 1/&#945;_&#969; is scheduling instrument only; not in gates.</text>
+
+</svg>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 740">
+  <rect width="100%" height="100%" fill="white"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L8,4 z"/>
+    </marker>
+  </defs>
+
+  <!-- 1000: figure numeral top-left -->
+  <text x="22" y="16" font-family="Arial" font-size="14" font-weight="bold"></text>
+
+  <!-- 1002: Contextual Input Data -->
+  <rect x="265" y="48" width="230" height="40" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="380" y="73" font-family="Arial" font-size="14" text-anchor="middle">Contextual Input Data</text>
+  <text x="505" y="68" font-family="Arial" font-size="14" font-style="italic">1002</text>
+
+  <!-- Arrow 1002 to 1004 -->
+  <line x1="380" y1="88" x2="380" y2="108" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 1004: PROJECTION box -->
+  <rect x="190" y="108" width="380" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="380" y="128" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">PROJECTION</text>
+  <text x="578" y="125" font-family="Arial" font-size="14" font-style="italic">1004</text>
+
+  <!-- Arrow 1004 to triangle -->
+  <line x1="380" y1="158" x2="380" y2="208" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="390" y="188" font-family="Arial" font-size="14">projects onto simplex</text>
+
+  <!-- DECOMPOSITION SIMPLEX triangle -->
+  <polygon points="380,225 155,510 605,510" fill="none" stroke="black" stroke-width="2.5"/>
+
+  <!-- Dashed centroid lines -->
+  <line x1="380" y1="225" x2="380" y2="415" stroke="black" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="155" y1="510" x2="380" y2="415" stroke="black" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="605" y1="510" x2="380" y2="415" stroke="black" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- 1006: R vertex — top -->
+  <text x="380" y="227" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">1006  R (Relevant)</text>
+
+  <!-- 1008: S_sup vertex — lower-left -->
+  <text x="110" y="535" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">1008  S_sup (Superfluous)</text>
+
+  <!-- 1010: N vertex — lower-right -->
+  <text x="648" y="535" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">1010  N (Noise)</text>
+
+  <!-- 1012: operating point at centroid -->
+  <circle cx="380" cy="415" r="7" fill="black"/>
+  <text x="394" y="410" font-family="Arial" font-size="14" font-weight="bold">1012</text>
+  <text x="394" y="425" font-family="Arial" font-size="14">R + S_sup + N = 1</text>
+  <text x="394" y="440" font-family="Arial" font-size="14">(Normalized)</text>
+
+
+</svg>

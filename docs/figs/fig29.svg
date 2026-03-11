@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 990" role="img" aria-labelledby="title desc">
+  <title id="title">FIG. 29 On-Chip Certificate Enforcement Architecture</title>
+  <desc id="desc">Patent-style architecture diagram showing a certificate input feeding a fixed sequential four-gate enforcement unit with enabled and suppressed execution outputs.</desc>
+
+  <rect width="980" height="990" fill="#fff"/>
+
+  <!-- Outer dashed boundary -->
+  <rect x="45" y="45" width="890" height="920" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="16 10"/>
+
+  <!-- Figure numeral -->
+  <text x="904" y="43" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22"></text>
+
+  <!-- Main title -->
+  <text x="490" y="82" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="middle">On-Chip Certificate Enforcement Unit</text>
+
+  <!-- Left certificate input -->
+  <text x="66" y="104" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2902</text>
+  <rect x="75" y="120" width="225" height="150" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="188" y="150" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Certificate Input</text>
+  <text x="188" y="182" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">(R, S_sup, N,</text>
+  <text x="188" y="212" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">α, ω, κ_gate,</text>
+  <text x="188" y="242" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">σ, c)</text>
+
+  <!-- Arrow to gate unit -->
+  <line x1="300" y1="195" x2="365" y2="195" stroke="#000" stroke-width="1.5"/>
+  <polygon points="365,195 350,187 350,203" fill="#000"/>
+
+  <!-- Oracle-free note -->
+  <text x="83" y="340" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2912</text>
+  <rect x="98" y="345" width="227" height="82" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="8 6"/>
+  <text x="212" y="377" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Oracle-Free</text>
+  <text x="212" y="397" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">N operationalizes</text>
+  <text x="212" y="417" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">substrate health</text>
+
+  <!-- Execution boxes -->
+  <text x="82" y="585" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2910</text>
+  <rect x="75" y="590" width="225" height="80" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="188" y="620" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Execution</text>
+  <text x="188" y="648" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Suppressed</text>
+
+  <text x="82" y="813" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2908</text>
+  <rect x="75" y="814" width="225" height="80" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="188" y="844" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Execution</text>
+  <text x="188" y="872" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Enabled</text>
+
+  <!-- Right enforcement block -->
+  <text x="820" y="138" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2904</text>
+  <rect x="367" y="114" width="514" height="59" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="151" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Memory-Resident Certificate State + Parameters</text>
+
+  <text x="820" y="208" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22">2906</text>
+  <rect x="367" y="180" width="514" height="710" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="210" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Silicon / Memristor Gate Logic </text>
+
+  <!-- Gate 1 -->
+  <rect x="398" y="232" width="453" height="107" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="260" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Gate 1: Integrity Guard</text>
+  <text x="624" y="286" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Check: N ≥ 0.50 (noise threshold)</text>
+  <text x="624" y="307" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Fail → REJECT · Disable instruction issuance</text>
+  <text x="624" y="328" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Fano bound: no solver recovers correct inference</text>
+
+  <!-- Pass 1 -->
+  <line x1="624" y1="339" x2="624" y2="374" stroke="#000" stroke-width="1.5"/>
+  <polygon points="624,374 616,359 632,359" fill="#000"/>
+  <text x="654" y="361" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20">PASS</text>
+
+  <!-- Gate 2 -->
+  <rect x="398" y="375" width="453" height="106" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="403" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Gate 2: Consensus Gate</text>
+  <text x="624" y="429" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Check: c &lt; c_min (default 0.4)</text>
+  <text x="624" y="450" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Fail → BLOCK · Disable memory access</text>
+  <text x="624" y="471" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Sub-model interpretations structurally incoherent</text>
+
+  <!-- Pass 2 -->
+  <line x1="624" y1="482" x2="624" y2="518" stroke="#000" stroke-width="1.5"/>
+  <polygon points="624,518 616,503 632,503" fill="#000"/>
+  <text x="654" y="506" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20">PASS</text>
+
+  <!-- Gate 3 -->
+  <rect x="398" y="519" width="453" height="119" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="547" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Gate 3: Admissibility Gate (Oobleck)</text>
+  <text x="624" y="573" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Dynamic: κ_req(σ) = κ_base + λ·σ</text>
+  <text x="624" y="594" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Hard barrier: σ &gt; σ_thr → RE_ENCODE</text>
+  <text x="624" y="615" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Fail → RE_ENCODE · Disable solver invocation</text>
+  <text x="624" y="636" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Landauer buffer: tie-breaker in gray zone</text>
+
+  <!-- Pass 3 -->
+  <line x1="624" y1="638" x2="624" y2="676" stroke="#000" stroke-width="1.5"/>
+  <polygon points="624,676 616,661 632,661" fill="#000"/>
+  <text x="654" y="664" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20">PASS</text>
+
+  <!-- Gate 4 -->
+  <rect x="398" y="676" width="453" height="107" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="704" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Gate 4: Grounding Gate</text>
+  <text x="624" y="730" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Check: κ_L &lt; κ_L_min (default 0.3)</text>
+  <text x="624" y="751" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Fail → REPAIR · Disable pathway activation</text>
+  <text x="624" y="772" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Low-level modal health below grounding threshold</text>
+
+  <!-- Pass 4 -->
+  <line x1="624" y1="783" x2="624" y2="826" stroke="#000" stroke-width="1.5"/>
+  <polygon points="624,826 616,811 632,811" fill="#000"/>
+  <text x="654" y="812" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="20">PASS</text>
+
+  <!-- Execute box -->
+  <rect x="458" y="825" width="331" height="54" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="624" y="860" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" font-weight="700" text-anchor="middle">All Gates Passed → EXECUTE</text>
+
+  <!-- Output arrow -->
+  <line x1="789" y1="852" x2="873" y2="852" stroke="#000" stroke-width="1.5"/>
+  <polygon points="873,852 858,844 858,860" fill="#000"/>
+
+  <!-- Non-execute routing lines -->
+  <line x1="398" y1="286" x2="300" y2="637" stroke="#000" stroke-width="1" stroke-dasharray="8 6"/>
+  <line x1="398" y1="428" x2="300" y2="637" stroke="#000" stroke-width="1" stroke-dasharray="8 6"/>
+  <line x1="398" y1="586" x2="300" y2="637" stroke="#000" stroke-width="1" stroke-dasharray="8 6"/>
+  <line x1="398" y1="728" x2="300" y2="637" stroke="#000" stroke-width="1" stroke-dasharray="8 6"/>
+  <text x="336" y="540" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="22" transform="rotate(-67 336 540)">Any gate FAIL</text>
+
+  <!-- Footer (inside boundary) -->
+  <text x="490" y="920" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="19" text-anchor="middle">Gates evaluated in fixed sequential order; may not be reordered.</text>
+  <text x="490" y="942" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="19" text-anchor="middle">Each non-execute decision triggers exactly one graph transformation operator.</text>
+</svg>

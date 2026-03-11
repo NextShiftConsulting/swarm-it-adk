@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 880">
+  <rect width="900" height="880" fill="white"/>
+
+  <!-- Reference numbers at top -->
+  <text x="40" y="18" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold">802</text>
+  <text x="200" y="18" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold">804</text>
+  <text x="430" y="18" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold">806</text>
+
+  <!-- Column headers -->
+  <rect x="30" y="30" width="160" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="110" y="62" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" text-anchor="middle">Problem</text>
+
+  <rect x="190" y="30" width="230" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="305" y="50" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Traditional</text>
+  <text x="305" y="72" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Approach</text>
+
+  <rect x="420" y="30" width="450" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="645" y="62" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Compatibility-Governed Approach</text>
+
+  <!-- Row 1: LLM hallucination -->
+  <rect x="30" y="80" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="110" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">LLM</text>
+  <text x="110" y="132" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">hallucination</text>
+
+  <rect x="190" y="80" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="110" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Post-hoc</text>
+  <text x="305" y="132" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">fact checking</text>
+
+  <rect x="420" y="80" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="110" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Measure context quality α</text>
+  <text x="645" y="132" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">before generation</text>
+
+  <!-- Row 2: RAG retrieval noise -->
+  <rect x="30" y="148" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="178" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">RAG retrieval</text>
+  <text x="110" y="200" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">noise</text>
+
+  <rect x="190" y="148" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="188" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Rerank and hope</text>
+
+  <rect x="420" y="148" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="178" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Decompose into R/S/N,</text>
+  <text x="645" y="200" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">filter by α threshold</text>
+
+  <!-- Row 3: Context window bloat -->
+  <rect x="30" y="216" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="246" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Context window</text>
+  <text x="110" y="268" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">bloat</text>
+
+  <rect x="190" y="216" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="256" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Truncate arbitrarily</text>
+
+  <rect x="420" y="216" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="246" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Remove S (superfluous),</text>
+  <text x="645" y="268" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">keeping R (relevant)</text>
+
+  <!-- Row 4: Model routing decisions -->
+  <rect x="30" y="284" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="314" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Model routing</text>
+  <text x="110" y="336" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">decisions</text>
+
+  <rect x="190" y="284" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="314" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Static rules or</text>
+  <text x="305" y="336" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">latency-based</text>
+
+  <rect x="420" y="284" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="324" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Route by quality α → tier mapping</text>
+
+  <!-- Row 5: Temperature tuning -->
+  <rect x="30" y="352" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="382" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Temperature</text>
+  <text x="110" y="404" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">tuning</text>
+
+  <rect x="190" y="352" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="392" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Manual experimentation</text>
+
+  <rect x="420" y="352" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="392" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Derive τ = f(α) from context quality</text>
+
+  <!-- Row 6: Multi-source conflicts -->
+  <rect x="30" y="420" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="450" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Multi-source</text>
+  <text x="110" y="472" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">conflicts</text>
+
+  <rect x="190" y="420" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="460" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Pick "best" source</text>
+
+  <rect x="420" y="420" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="450" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Detect CLASH collapse,</text>
+  <text x="645" y="472" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">trigger decomposition</text>
+
+  <!-- Row 7: Distribution shift -->
+  <rect x="30" y="488" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="528" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Distribution shift</text>
+
+  <rect x="190" y="488" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="528" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Retrain periodically</text>
+
+  <rect x="420" y="488" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="518" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Monitor ω drift, detect</text>
+  <text x="645" y="540" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">RELIABILITY collapse</text>
+
+  <!-- Row 8: Adversarial inputs -->
+  <rect x="30" y="556" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="586" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Adversarial</text>
+  <text x="110" y="608" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">inputs</text>
+
+  <rect x="190" y="556" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="596" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Blocklists, classifiers</text>
+
+  <rect x="420" y="556" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="586" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Detect O_POISONING via</text>
+  <text x="645" y="608" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">novelty + low ω</text>
+
+  <!-- Row 9: Uncertainty estimation -->
+  <rect x="30" y="624" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="654" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Uncertainty</text>
+  <text x="110" y="676" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">estimation</text>
+
+  <rect x="190" y="624" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="664" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">MC Dropout (slow)</text>
+
+  <rect x="420" y="624" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="654" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Two-stage: O(1) heuristic +</text>
+  <text x="645" y="676" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">O(N) confirmation</text>
+
+  <!-- Row 10: Drift detection -->
+  <rect x="30" y="692" width="160" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="110" y="732" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Drift detection</text>
+
+  <rect x="190" y="692" width="230" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="305" y="732" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">Periodic retraining</text>
+
+  <rect x="420" y="692" width="450" height="68" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="645" y="722" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">GRADUAL_DRIFT +</text>
+  <text x="645" y="744" font-family="Liberation Sans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">CONFIRMED_DRIFT signals</text>
+</svg>

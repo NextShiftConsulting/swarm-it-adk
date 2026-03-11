@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 770">
+  <rect width="100%" height="100%" fill="white"/>
+
+  <!-- 2600: outside and above the dashed boundary -->
+  <text x="22" y="16" font-family="Arial" font-size="11" font-weight="bold"></text>
+
+  <!-- Outer dashed boundary around entire figure -->
+  <rect x="20" y="22" width="700" height="733" fill="none" stroke="black" stroke-width="2" stroke-dasharray="8,4"/>
+
+  <!-- Stage 1: Proxy Estimation -->
+  <rect x="35" y="58" width="670" height="210" fill="none" stroke="black" stroke-width="2"/>
+  <text x="370" y="80" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Stage 1: Proxy Estimation (Three Axes)</text>
+  <!-- two blank rows before sub-boxes -->
+
+  <!-- 2602: Purity -->
+  <rect x="50" y="106" width="194" height="140" fill="none" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="50" y="104" font-family="Arial" font-size="11" font-weight="bold">2602</text>
+  <text x="147" y="126" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Purity (&#945;)</text>
+  <text x="147" y="146" font-family="Arial" font-size="11" text-anchor="middle">Perplexity ratio</text>
+  <text x="147" y="163" font-family="Arial" font-size="11" text-anchor="middle">Embedding coherence</text>
+  <text x="147" y="180" font-family="Arial" font-size="11" text-anchor="middle">Imputation precision</text>
+
+  <!-- 2604: Compatibility -->
+  <rect x="273" y="106" width="194" height="140" fill="none" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="273" y="104" font-family="Arial" font-size="11" font-weight="bold">2604</text>
+  <text x="370" y="126" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Compatibility (&#954;)</text>
+  <text x="370" y="146" font-family="Arial" font-size="11" text-anchor="middle">Retrieval precision@k</text>
+  <text x="370" y="163" font-family="Arial" font-size="11" text-anchor="middle">Schema coverage</text>
+  <text x="370" y="180" font-family="Arial" font-size="11" text-anchor="middle">Cross-modal alignment</text>
+  <text x="370" y="197" font-family="Arial" font-size="11" text-anchor="middle">Graph edge integrity</text>
+
+  <!-- 2606: Turbulence -->
+  <rect x="496" y="106" width="194" height="140" fill="none" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="496" y="104" font-family="Arial" font-size="11" font-weight="bold">2606</text>
+  <text x="593" y="126" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Turbulence (&#963;)</text>
+  <text x="593" y="146" font-family="Arial" font-size="11" text-anchor="middle">Softmax entropy</text>
+  <text x="593" y="163" font-family="Arial" font-size="11" text-anchor="middle">Conformal non-conformity</text>
+  <text x="593" y="180" font-family="Arial" font-size="11" text-anchor="middle">MC Dropout variance</text>
+  <text x="593" y="197" font-family="Arial" font-size="11" text-anchor="middle">Looped model exit count</text>
+
+  <text x="370" y="260" font-family="Arial" font-size="11" text-anchor="middle">Requirement: &#8805; 2 structurally different estimators per axis</text>
+
+  <!-- 2608: Ensembling -->
+  <rect x="35" y="276" width="670" height="44" fill="none" stroke="black" stroke-width="2"/>
+  <text x="37" y="294" font-family="Arial" font-size="11" font-weight="bold">2608</text>
+  <text x="370" y="294" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">Ensembling: Recursive Weakest-Link</text>
+  <text x="370" y="312" font-family="Arial" font-size="11" text-anchor="middle">&#945;&#x302;_final = min(&#945;&#x302;_1, &#945;&#x302;_2)     &#954;&#x302;_final = min(&#954;&#x302;_1, &#954;&#x302;_2)     &#963;&#x302;_final = max(&#963;&#x302;_1, &#963;&#x302;_2)</text>
+
+  <line x1="370" y1="320" x2="370" y2="344" stroke="black" stroke-width="2"/>
+  <polygon points="365,339 375,339 370,349" fill="black"/>
+
+  <!-- 2610: Proxy Drift Monitor -->
+  <rect x="35" y="349" width="670" height="62" fill="none" stroke="black" stroke-width="2"/>
+  <text x="37" y="367" font-family="Arial" font-size="11" font-weight="bold">2610</text>
+  <text x="370" y="367" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Stage 2: Proxy Drift Monitor</text>
+  <text x="60"  y="391" font-family="Arial" font-size="11" font-weight="bold">Check:</text>
+  <text x="110" y="391" font-family="Arial" font-size="11">Sudden shift in (&#954;, &#963;) distribution?</text>
+  <text x="410" y="391" font-family="Arial" font-size="11" font-weight="bold">On Drift:</text>
+  <text x="463" y="391" font-family="Arial" font-size="11">&#8594; Recalibrate proxies before gatekeeper</text>
+
+  <line x1="370" y1="411" x2="370" y2="435" stroke="black" stroke-width="2"/>
+  <polygon points="365,430 375,430 370,440" fill="black"/>
+
+  <!-- 2612: Asymmetric Error Tolerance -->
+  <rect x="35" y="440" width="670" height="62" fill="none" stroke="black" stroke-width="2"/>
+  <text x="37" y="458" font-family="Arial" font-size="11" font-weight="bold">2612</text>
+  <text x="370" y="458" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Stage 3: Asymmetric Error Tolerance</text>
+  <text x="60"  y="483" font-family="Arial" font-size="11" font-weight="bold">High-stakes:</text>
+  <text x="148" y="483" font-family="Arial" font-size="11">&#949;_L = 0.02  (tight Landauer buffer)</text>
+  <text x="410" y="483" font-family="Arial" font-size="11" font-weight="bold">Low-stakes:</text>
+  <text x="490" y="483" font-family="Arial" font-size="11">&#949;_L = 0.10  (wider Landauer buffer)</text>
+
+  <line x1="370" y1="502" x2="370" y2="526" stroke="black" stroke-width="2"/>
+  <polygon points="365,521 375,521 370,531" fill="black"/>
+
+  <!-- 2614: Four-Gate Gatekeeper -->
+  <rect x="35" y="531" width="670" height="58" fill="none" stroke="black" stroke-width="2"/>
+  <text x="37" y="549" font-family="Arial" font-size="11" font-weight="bold">2614</text>
+  <text x="370" y="549" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Stage 4: Four-Gate Gatekeeper</text>
+  <text x="370" y="571" font-family="Arial" font-size="11" text-anchor="middle">Input: (&#945;&#x302;_final, &#954;&#x302;_final, &#963;&#x302;_final, c) &#8594; Gate 1 &#8594; 2 &#8594; 3 &#8594; 4 &#8594; Decision   |   See FIG. 24 for gate details</text>
+
+  <line x1="370" y1="589" x2="370" y2="613" stroke="black" stroke-width="2"/>
+  <polygon points="365,608 375,608 370,618" fill="black"/>
+
+  <!-- 2616: Pipeline Compositionality Bound -->
+  <rect x="35" y="618" width="670" height="103" fill="none" stroke="black" stroke-width="2"/>
+  <text x="37" y="636" font-family="Arial" font-size="11" font-weight="bold">2616</text>
+  <text x="370" y="636" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Stage 5: Pipeline Compositionality Bound</text>
+  <text x="60"  y="660" font-family="Arial" font-size="11" font-weight="bold">For n-stage pipeline:</text>
+  <text x="60"  y="677" font-family="Arial" font-size="11">Pipeline reliability &#8804; p^n</text>
+  <text x="60"  y="694" font-family="Arial" font-size="11" font-weight="bold">Noise amplification:</text>
+  <text x="60"  y="711" font-family="Arial" font-size="11">NAF = 1 + (1&#8722;r)(n&#8722;1)   — certificate filtering reduces realized NAF</text>
+
+</svg>
