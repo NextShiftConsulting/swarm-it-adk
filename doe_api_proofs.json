@@ -1,0 +1,755 @@
+[
+  {
+    "experiment_id": "TH_0001",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TH_A1_INITIAL_VALUE",
+        "description": "Initial threshold at baseline",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A2_STABLE",
+        "description": "Threshold stable with low failures",
+        "expected": "~0.5",
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A3_FLOOR_RESPECTED",
+        "description": "Threshold respects floor (0.3)",
+        "expected": ">= 0.3",
+        "actual": 0.5,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TH_0002",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TH_A1_INITIAL_VALUE",
+        "description": "Initial threshold at baseline",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A2_STABLE",
+        "description": "Threshold stable with low failures",
+        "expected": "~0.5",
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A3_FLOOR_RESPECTED",
+        "description": "Threshold respects floor (0.3)",
+        "expected": ">= 0.3",
+        "actual": 0.5,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TH_0003",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TH_A1_INITIAL_VALUE",
+        "description": "Initial threshold at baseline",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A2_TIGHTENING",
+        "description": "Threshold tightened under failures",
+        "expected": "< 0.5",
+        "actual": 0.3,
+        "pass": true
+      },
+      {
+        "id": "TH_A3_FLOOR_RESPECTED",
+        "description": "Threshold respects floor (0.3)",
+        "expected": ">= 0.3",
+        "actual": 0.3,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TH_0004",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TH_A1_INITIAL_VALUE",
+        "description": "Initial threshold at baseline",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A2_TIGHTENING",
+        "description": "Threshold tightened under failures",
+        "expected": "< 0.5",
+        "actual": 0.3,
+        "pass": true
+      },
+      {
+        "id": "TH_A3_FLOOR_RESPECTED",
+        "description": "Threshold respects floor (0.3)",
+        "expected": ">= 0.3",
+        "actual": 0.3,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TH_0005",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TH_A1_INITIAL_VALUE",
+        "description": "Initial threshold at baseline",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "TH_A2_TIGHTENING",
+        "description": "Threshold tightened under failures",
+        "expected": "< 0.5",
+        "actual": 0.3,
+        "pass": true
+      },
+      {
+        "id": "TH_A3_FLOOR_RESPECTED",
+        "description": "Threshold respects floor (0.3)",
+        "expected": ">= 0.3",
+        "actual": 0.3,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TR_0006",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TR_A1_EXPECTED_TIER",
+        "description": "Constraint reaches emergent tier",
+        "expected": "emergent",
+        "actual": "emergent",
+        "pass": true
+      },
+      {
+        "id": "TR_A2_ACTIVATIONS",
+        "description": "Activations recorded correctly",
+        "expected": 1,
+        "actual": 1,
+        "pass": true
+      },
+      {
+        "id": "TR_A3_VIOLATIONS",
+        "description": "Violations recorded correctly",
+        "expected": 0,
+        "actual": 0,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TR_0007",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TR_A1_EXPECTED_TIER",
+        "description": "Constraint reaches emergent tier",
+        "expected": "emergent",
+        "actual": "emergent",
+        "pass": true
+      },
+      {
+        "id": "TR_A2_ACTIVATIONS",
+        "description": "Activations recorded correctly",
+        "expected": 15,
+        "actual": 15,
+        "pass": true
+      },
+      {
+        "id": "TR_A3_VIOLATIONS",
+        "description": "Violations recorded correctly",
+        "expected": 0,
+        "actual": 0,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TR_0008",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TR_A1_EXPECTED_TIER",
+        "description": "Constraint reaches learned tier",
+        "expected": "learned",
+        "actual": "learned",
+        "pass": true
+      },
+      {
+        "id": "TR_A2_ACTIVATIONS",
+        "description": "Activations recorded correctly",
+        "expected": 25,
+        "actual": 25,
+        "pass": true
+      },
+      {
+        "id": "TR_A3_VIOLATIONS",
+        "description": "Violations recorded correctly",
+        "expected": 0,
+        "actual": 0,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TR_0009",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TR_A1_EXPECTED_TIER",
+        "description": "Constraint reaches learned tier",
+        "expected": "learned",
+        "actual": "learned",
+        "pass": true
+      },
+      {
+        "id": "TR_A2_ACTIVATIONS",
+        "description": "Activations recorded correctly",
+        "expected": 25,
+        "actual": 25,
+        "pass": true
+      },
+      {
+        "id": "TR_A3_VIOLATIONS",
+        "description": "Violations recorded correctly",
+        "expected": 40,
+        "actual": 40,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "TR_0010",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "TR_A1_EXPECTED_TIER",
+        "description": "Constraint reaches actual tier",
+        "expected": "actual",
+        "actual": "actual",
+        "pass": true
+      },
+      {
+        "id": "TR_A2_ACTIVATIONS",
+        "description": "Activations recorded correctly",
+        "expected": 25,
+        "actual": 25,
+        "pass": true
+      },
+      {
+        "id": "TR_A3_VIOLATIONS",
+        "description": "Violations recorded correctly",
+        "expected": 55,
+        "actual": 55,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "CG_0011",
+    "pass_fail": "PASS",
+    "verdict": "All 4 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "CG_A1_ACTUAL_DECISION",
+        "description": "yrsn_adapter decision matches expected",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "CG_A2_ACTUAL_GATE",
+        "description": "yrsn_adapter gate matches expected",
+        "expected": 4,
+        "actual": 4,
+        "pass": true
+      },
+      {
+        "id": "CG_A3_ENRICHMENT",
+        "description": "Enrichment provides diagnosis",
+        "expected": "Non-empty string",
+        "actual": "Certified. Paper passes all quality gates....",
+        "pass": true
+      },
+      {
+        "id": "CG_A4_CONSISTENCY",
+        "description": "yrsn_adapter and constraint_graph agree",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "CG_0012",
+    "pass_fail": "PASS",
+    "verdict": "All 4 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "CG_A1_ACTUAL_DECISION",
+        "description": "yrsn_adapter decision matches expected",
+        "expected": "REJECT",
+        "actual": "REJECT",
+        "pass": true
+      },
+      {
+        "id": "CG_A2_ACTUAL_GATE",
+        "description": "yrsn_adapter gate matches expected",
+        "expected": 1,
+        "actual": 1,
+        "pass": true
+      },
+      {
+        "id": "CG_A3_ENRICHMENT",
+        "description": "Enrichment provides diagnosis",
+        "expected": "Non-empty string",
+        "actual": "Rejected at Gate 1 (Integrity): Adversarial noise ...",
+        "pass": true
+      },
+      {
+        "id": "CG_A4_CONSISTENCY",
+        "description": "yrsn_adapter and constraint_graph agree",
+        "expected": "REJECT",
+        "actual": "REJECT",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "CG_0013",
+    "pass_fail": "PASS",
+    "verdict": "All 4 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "CG_A1_ACTUAL_DECISION",
+        "description": "yrsn_adapter decision matches expected",
+        "expected": "BLOCK",
+        "actual": "BLOCK",
+        "pass": true
+      },
+      {
+        "id": "CG_A2_ACTUAL_GATE",
+        "description": "yrsn_adapter gate matches expected",
+        "expected": 2,
+        "actual": 2,
+        "pass": true
+      },
+      {
+        "id": "CG_A3_ENRICHMENT",
+        "description": "Enrichment provides diagnosis",
+        "expected": "Non-empty string",
+        "actual": "Blocked at Gate 2 (Consensus): Representational in...",
+        "pass": true
+      },
+      {
+        "id": "CG_A4_CONSISTENCY",
+        "description": "yrsn_adapter and constraint_graph agree",
+        "expected": "BLOCK",
+        "actual": "BLOCK",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "CG_0014",
+    "pass_fail": "PASS",
+    "verdict": "All 4 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "CG_A1_ACTUAL_DECISION",
+        "description": "yrsn_adapter decision matches expected",
+        "expected": "RE_ENCODE",
+        "actual": "RE_ENCODE",
+        "pass": true
+      },
+      {
+        "id": "CG_A2_ACTUAL_GATE",
+        "description": "yrsn_adapter gate matches expected",
+        "expected": 3,
+        "actual": 3,
+        "pass": true
+      },
+      {
+        "id": "CG_A3_ENRICHMENT",
+        "description": "Enrichment provides diagnosis",
+        "expected": "Non-empty string",
+        "actual": "Needs re-encoding at Gate 3 (Admissibility): Compa...",
+        "pass": true
+      },
+      {
+        "id": "CG_A4_CONSISTENCY",
+        "description": "yrsn_adapter and constraint_graph agree",
+        "expected": "RE_ENCODE",
+        "actual": "RE_ENCODE",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "CG_0015",
+    "pass_fail": "PASS",
+    "verdict": "All 5 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "CG_A1_ACTUAL_DECISION",
+        "description": "yrsn_adapter decision matches expected",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "CG_A2_ACTUAL_GATE",
+        "description": "yrsn_adapter gate matches expected",
+        "expected": 4,
+        "actual": 4,
+        "pass": true
+      },
+      {
+        "id": "CG_A3_ENRICHMENT",
+        "description": "Enrichment provides diagnosis",
+        "expected": "Non-empty string",
+        "actual": "Certified. This is a bridge paper with high backgr...",
+        "pass": true
+      },
+      {
+        "id": "CG_A4_CONSISTENCY",
+        "description": "yrsn_adapter and constraint_graph agree",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "pass": true
+      },
+      {
+        "id": "CG_A5_BRIDGE",
+        "description": "Bridge paper detected",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "OB_0016",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "OB_A1_FORMULA",
+        "description": "\u03ba_req = 0.5 + 0.4\u03c3",
+        "expected": 0.5,
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "OB_A2_MONOTONIC",
+        "description": "Higher \u03c3 \u2192 higher \u03ba_req",
+        "expected": "\u03ba_req(0.0) >= \u03ba_req(0)",
+        "actual": 0.5,
+        "pass": true
+      },
+      {
+        "id": "OB_A3_BOUNDED",
+        "description": "\u03ba_req in [0.5, 0.9]",
+        "expected": "0.5 <= \u03ba_req <= 0.9",
+        "actual": 0.5,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "OB_0017",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "OB_A1_FORMULA",
+        "description": "\u03ba_req = 0.5 + 0.4\u03c3",
+        "expected": 0.6,
+        "actual": 0.6,
+        "pass": true
+      },
+      {
+        "id": "OB_A2_MONOTONIC",
+        "description": "Higher \u03c3 \u2192 higher \u03ba_req",
+        "expected": "\u03ba_req(0.25) >= \u03ba_req(0)",
+        "actual": 0.6,
+        "pass": true
+      },
+      {
+        "id": "OB_A3_BOUNDED",
+        "description": "\u03ba_req in [0.5, 0.9]",
+        "expected": "0.5 <= \u03ba_req <= 0.9",
+        "actual": 0.6,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "OB_0018",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "OB_A1_FORMULA",
+        "description": "\u03ba_req = 0.5 + 0.4\u03c3",
+        "expected": 0.7,
+        "actual": 0.7,
+        "pass": true
+      },
+      {
+        "id": "OB_A2_MONOTONIC",
+        "description": "Higher \u03c3 \u2192 higher \u03ba_req",
+        "expected": "\u03ba_req(0.5) >= \u03ba_req(0)",
+        "actual": 0.7,
+        "pass": true
+      },
+      {
+        "id": "OB_A3_BOUNDED",
+        "description": "\u03ba_req in [0.5, 0.9]",
+        "expected": "0.5 <= \u03ba_req <= 0.9",
+        "actual": 0.7,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "OB_0019",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "OB_A1_FORMULA",
+        "description": "\u03ba_req = 0.5 + 0.4\u03c3",
+        "expected": 0.8,
+        "actual": 0.8,
+        "pass": true
+      },
+      {
+        "id": "OB_A2_MONOTONIC",
+        "description": "Higher \u03c3 \u2192 higher \u03ba_req",
+        "expected": "\u03ba_req(0.75) >= \u03ba_req(0)",
+        "actual": 0.8,
+        "pass": true
+      },
+      {
+        "id": "OB_A3_BOUNDED",
+        "description": "\u03ba_req in [0.5, 0.9]",
+        "expected": "0.5 <= \u03ba_req <= 0.9",
+        "actual": 0.8,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "OB_0020",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "OB_A1_FORMULA",
+        "description": "\u03ba_req = 0.5 + 0.4\u03c3",
+        "expected": 0.9,
+        "actual": 0.9,
+        "pass": true
+      },
+      {
+        "id": "OB_A2_MONOTONIC",
+        "description": "Higher \u03c3 \u2192 higher \u03ba_req",
+        "expected": "\u03ba_req(1.0) >= \u03ba_req(0)",
+        "actual": 0.9,
+        "pass": true
+      },
+      {
+        "id": "OB_A3_BOUNDED",
+        "description": "\u03ba_req in [0.5, 0.9]",
+        "expected": "0.5 <= \u03ba_req <= 0.9",
+        "actual": 0.9,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "INT_0021",
+    "pass_fail": "PASS",
+    "verdict": "All 2 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "INT_A_ThresholdL",
+        "description": "ThresholdLearner works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_ALL",
+        "description": "All components work together",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "INT_0022",
+    "pass_fail": "PASS",
+    "verdict": "All 2 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "INT_A_Constraint",
+        "description": "ConstraintEvolution works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_ALL",
+        "description": "All components work together",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "INT_0023",
+    "pass_fail": "PASS",
+    "verdict": "All 2 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "INT_A_evaluate_p",
+        "description": "evaluate_paper_constraints works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_ALL",
+        "description": "All components work together",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "INT_0024",
+    "pass_fail": "PASS",
+    "verdict": "All 3 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "INT_A_ThresholdL",
+        "description": "ThresholdLearner works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_A_Constraint",
+        "description": "ConstraintEvolution works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_ALL",
+        "description": "All components work together",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  },
+  {
+    "experiment_id": "INT_0025",
+    "pass_fail": "PASS",
+    "verdict": "All 4 assertions passed",
+    "confidence": 1.0,
+    "assertions": [
+      {
+        "id": "INT_A_ThresholdL",
+        "description": "ThresholdLearner works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_A_Constraint",
+        "description": "ConstraintEvolution works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_A_evaluate_p",
+        "description": "evaluate_paper_constraints works",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "id": "INT_ALL",
+        "description": "All components work together",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      }
+    ]
+  }
+]
