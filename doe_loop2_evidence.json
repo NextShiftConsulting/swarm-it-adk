@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-03-11T19:43:22.958778Z",
+  "factors": {
+    "single_agent": [
+      {
+        "name": "SA1_CLEAN",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "passed": true
+      },
+      {
+        "name": "SA2_NOISY",
+        "expected": "REJECT",
+        "actual": "REJECT",
+        "passed": true
+      },
+      {
+        "name": "SA3_TURBULENT",
+        "expected": "RE_ENCODE",
+        "actual": "RE_ENCODE",
+        "passed": true
+      },
+      {
+        "name": "SA4_LOW_COHERENCE",
+        "expected": "BLOCK",
+        "actual": "BLOCK",
+        "passed": true
+      },
+      {
+        "name": "SA5_BRIDGE",
+        "expected": "EXECUTE",
+        "actual": "EXECUTE",
+        "passed": true
+      }
+    ],
+    "handoff": [
+      {
+        "name": "HO1_HIGH_QUALITY",
+        "source_decision": "EXECUTE",
+        "expected_decision": "EXECUTE",
+        "handoff_allowed": true,
+        "expected_handoff": true,
+        "reason": "Handoff successful",
+        "passed": true
+      },
+      {
+        "name": "HO2_BORDER",
+        "source_decision": "EXECUTE",
+        "expected_decision": "EXECUTE",
+        "handoff_allowed": true,
+        "expected_handoff": true,
+        "reason": "Handoff successful",
+        "passed": true
+      },
+      {
+        "name": "HO3_LOW_KAPPA",
+        "source_decision": "EXECUTE",
+        "expected_decision": "EXECUTE",
+        "handoff_allowed": false,
+        "expected_handoff": false,
+        "reason": "\u03ba=0.65 < \u03ba_interface=0.7",
+        "passed": true
+      },
+      {
+        "name": "HO4_SOURCE_REJECT",
+        "source_decision": "REJECT",
+        "expected_decision": "REJECT",
+        "handoff_allowed": false,
+        "expected_handoff": false,
+        "reason": "Source event decision=REJECT, need EXECUTE",
+        "passed": true
+      },
+      {
+        "name": "HO5_SOURCE_REENCODE",
+        "source_decision": "RE_ENCODE",
+        "expected_decision": "RE_ENCODE",
+        "handoff_allowed": false,
+        "expected_handoff": false,
+        "reason": "Source event decision=RE_ENCODE, need EXECUTE",
+        "passed": true
+      }
+    ],
+    "chain": [
+      {
+        "name": "CH1_SHORT",
+        "num_hops": 2,
+        "successful_hops": 2,
+        "expected_hops": 2,
+        "final_kappa": 0.8122499999999999,
+        "passed": true
+      },
+      {
+        "name": "CH2_MEDIUM",
+        "num_hops": 4,
+        "successful_hops": 4,
+        "expected_hops": 4,
+        "final_kappa": 0.7330556249999999,
+        "passed": true
+      },
+      {
+        "name": "CH3_LONG",
+        "num_hops": 6,
+        "successful_hops": 5,
+        "expected_hops": 5,
+        "final_kappa": 0.6964028437499998,
+        "passed": true
+      },
+      {
+        "name": "CH4_STRICT",
+        "num_hops": 3,
+        "successful_hops": 2,
+        "expected_hops": 2,
+        "final_kappa": 0.767125,
+        "passed": true
+      },
+      {
+        "name": "CH5_RELAXED",
+        "num_hops": 5,
+        "successful_hops": 5,
+        "expected_hops": 5,
+        "final_kappa": 0.6190247499999999,
+        "passed": true
+      }
+    ],
+    "g_r": [
+      {
+        "name": "GR1_ACCUMULATION",
+        "events": 12,
+        "edges": 2,
+        "passed": true
+      },
+      {
+        "name": "GR2_RETRIEVAL",
+        "expected": 3,
+        "actual": 3,
+        "passed": true
+      }
+    ],
+    "pipeline": [
+      {
+        "name": "PL1_PIPELINE",
+        "trace": [
+          {
+            "agent": "architect",
+            "decision": "EXECUTE",
+            "kappa": 0.85
+          },
+          {
+            "agent": "developer",
+            "decision": "EXECUTE",
+            "kappa": 0.82
+          },
+          {
+            "agent": "tester",
+            "decision": "EXECUTE",
+            "kappa": 0.79
+          },
+          {
+            "agent": "reviewer",
+            "decision": "EXECUTE",
+            "kappa": 0.76
+          }
+        ],
+        "passed": true
+      },
+      {
+        "name": "PL2_CHAIN",
+        "chain_length": 4,
+        "expected": 4,
+        "passed": true
+      }
+    ]
+  },
+  "summary": {
+    "pass": 19,
+    "fail": 0,
+    "warn": 0
+  }
+}
