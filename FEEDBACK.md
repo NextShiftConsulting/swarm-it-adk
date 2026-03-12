@@ -2,9 +2,20 @@
 
 We're actively seeking feedback from testers! Here's how to participate.
 
-## Quick Start (2 min)
+## Round 1 Testing (Detailed)
 
-**First time?** Use our [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSeKLGv49IieXanF3zVxE5YwB_I6mLxANe3NP6_ApsY1XR1-eA/viewform) - simple questions, no GitHub account needed.
+**Assigned a module?** Use the [Round 1 Feedback Form](https://docs.google.com/forms/d/e/ROUND1_FORM_ID/viewform) for detailed module-specific feedback.
+
+Modules:
+- **Module A** — Install Test
+- **Module C** — Docs Clarity Review
+- **Module G** — Video Walkthrough Feedback
+
+See [docs/ROUND1_FEEDBACK_FORM.md](docs/ROUND1_FEEDBACK_FORM.md) for form structure.
+
+## Quick Feedback (2 min)
+
+**Just exploring?** Use our [Quick Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSeKLGv49IieXanF3zVxE5YwB_I6mLxANe3NP6_ApsY1XR1-eA/viewform) - simple questions, no GitHub account needed.
 
 ## Ongoing Collaboration
 

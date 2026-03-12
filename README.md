@@ -429,9 +429,21 @@ with breaker:
 
 We're actively seeking feedback! Multiple ways to participate:
 
+### Round 1 Module Testing
+
+Assigned testers: use the **Round 1 Feedback Form** for detailed module-specific feedback.
+
+| Module | Focus |
+|--------|-------|
+| **Module A** | Install Test |
+| **Module C** | Docs Clarity Review |
+| **Module G** | Video Walkthrough Feedback |
+
+### All Testers
+
 | Your situation | Best option |
 |----------------|-------------|
-| **First time tester** | [Quick Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSeKLGv49IieXanF3zVxE5YwB_I6mLxANe3NP6_ApsY1XR1-eA/viewform) (2 min, no account needed) |
+| **Quick feedback** | [Quick Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSeKLGv49IieXanF3zVxE5YwB_I6mLxANe3NP6_ApsY1XR1-eA/viewform) (2 min) |
 | **Have a question** | [GitHub Discussions](https://github.com/NextShiftConsulting/swarm-it-adk/discussions) |
 | **Found a bug** | [Report Bug](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=bug_report.yml) |
 | **Docs confusing** | [Docs Problem](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=docs_problem.yml) |
