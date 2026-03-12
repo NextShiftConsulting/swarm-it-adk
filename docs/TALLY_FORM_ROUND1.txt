@@ -1,0 +1,231 @@
+Title:
+Swarm-It ADK Round 1 Feedback
+
+Intro:
+Please complete this form only after testing one Round 1 module:
+- Module A: Install Test
+- Module C: Docs Clarity Review
+- Module G: Video Walkthrough
+
+This form is for developer testing feedback, not general app feedback.
+
+Please give:
+- exact steps
+- exact errors
+- exact pages or files
+- honest feedback from real use
+
+You may use AI for translation or clarification, but please tell us when you used it.
+
+Important links:
+1. Main repo: https://github.com/NextShiftConsulting/swarm-it-adk
+2. Auth repo: https://github.com/NextShiftConsulting/swarm-it-auth
+3. Website overview: https://swarmit.nextshiftconsulting.com/
+
+Important:
+Start with the ADK repo first.
+Only use the auth repo if your task requires authentication.
+
+Questions:
+
+1. Name or Fiverr username
+Type: Short text
+Required: Yes
+
+2. Email address
+Type: Email
+Required: Yes
+
+3. Where did you come from?
+Type: Multiple choice
+Options:
+- Fiverr
+- GitHub
+- Website
+- Direct invite
+- Other
+Required: Yes
+
+4. Which module did you test?
+Type: Multiple choice
+Options:
+- Module A — Install Test
+- Module C — Docs Clarity Review
+- Module G — Video Walkthrough
+Required: Yes
+
+5. Date of testing
+Type: Date
+Required: Yes
+
+6. Which link did you start with first?
+Type: Multiple choice
+Options:
+- Swarm-It ADK repo
+- Swarm-It Auth repo
+- Swarm-It website
+- Another link
+Required: Yes
+
+7. If you selected "Another link," paste it here
+Type: Short text
+Required: No
+
+8. Did you follow the recommended path?
+Type: Multiple choice
+Options:
+- Yes
+- No
+- Partly
+Required: Yes
+
+9. Which resource helped you the most?
+Type: Multiple choice
+Options:
+- ADK README
+- ADK docs
+- ADK examples
+- Auth repo
+- Website overview
+- AI tool
+- Other
+Required: Yes
+
+10. Which resource was the most confusing?
+Type: Long text
+Required: Yes
+
+11. What was the first step where you felt confused?
+Type: Long text
+Help text:
+Please include the exact page, file, step, or command.
+Required: Yes
+
+12. What was the first error or blocker you saw?
+Type: Long text
+Help text:
+Paste the exact error if possible. If no error, write "No error."
+Required: No
+
+13. Where did the issue happen?
+Type: Long text
+Help text:
+Include repo name, page/file name, step number if known, and command if relevant.
+Required: Yes
+
+14. Were you able to complete your assigned module?
+Type: Multiple choice
+Options:
+- Yes, fully
+- Partly
+- No
+Required: Yes
+
+15. How easy was the first-time experience?
+Type: Rating 1 to 5
+Labels:
+1 = Very confusing
+5 = Very clear
+Required: Yes
+
+Conditional section for Module A:
+16A. Did installation work from the written instructions?
+Type: Multiple choice
+Options:
+- Yes
+- Partly
+- No
+Required: Yes
+
+17A. How long did it take to reach first success or first blocker?
+Type: Short text
+Required: Yes
+
+18A. Which install or setup steps were unclear?
+Type: Long text
+Required: Yes
+
+19A. Which dependencies, config items, or commands were missing or unclear?
+Type: Long text
+Required: Yes
+
+Conditional section for Module C:
+16C. Which 3 parts of the docs were most confusing?
+Type: Long text
+Required: Yes
+
+17C. Which 3 parts of the docs were most helpful?
+Type: Long text
+Required: Yes
+
+18C. Which terms, phrases, or assumptions should be explained more simply?
+Type: Long text
+Required: Yes
+
+19C. What example, screenshot, or diagram is missing?
+Type: Long text
+Required: Yes
+
+Conditional section for Module G:
+16G. Did you record a video or screen walkthrough?
+Type: Multiple choice
+Options:
+- Yes
+- No
+Required: Yes
+
+17G. Paste the video link here
+Type: URL or short text
+Required: No
+
+18G. At what moment did you hesitate, stop, or feel unsure?
+Type: Long text
+Required: Yes
+
+19G. What should be improved first in the onboarding experience?
+Type: Long text
+Required: Yes
+
+20. Did you use AI during testing?
+Type: Multiple choice
+Options:
+- Yes
+- No
+Required: Yes
+
+21. If yes, where did you use AI?
+Type: Long text
+Help text:
+Include the step, what you asked, why you needed it, and whether it helped.
+Required: No
+
+22. Please list your top 5 concrete findings
+Type: Long text
+Help text:
+Use specific findings such as "Step 3 failed because…" or "This term was not defined…"
+Required: Yes
+
+23. What is the single most important improvement?
+Type: Long text
+Required: Yes
+
+24. Final recommendation
+Type: Multiple choice
+Options:
+- Ready for more testing
+- Promising but confusing
+- Blocked by onboarding issues
+- Not ready for new testers yet
+Required: Yes
+
+25. Any final comments?
+Type: Long text
+Required: No
+
+Thank-you message:
+Thank you for testing the Swarm-It ADK.
+Your feedback helps improve:
+- installation
+- documentation clarity
+- onboarding
+- first-time developer experience
