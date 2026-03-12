@@ -1,0 +1,41 @@
+name: Upload Results / Open Feedback
+description: Share files, screenshots, logs, or detailed feedback
+title: "[Feedback]: "
+labels: ["feedback", "tester-input"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Attach files, paste logs, or write as much as you want.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: What are you sharing?
+      options:
+        - Screenshots
+        - Error logs
+        - Test results
+        - Code samples
+        - General feedback
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Write anything - no format required
+      placeholder: |
+        Describe what you're sharing, paste logs, add context...
+
+        Drag and drop files here to attach them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      description: What were you trying to do? What module? Any other notes?
