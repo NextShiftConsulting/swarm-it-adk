@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Quick Feedback Form
-    url: https://docs.google.com/forms/d/e/1vqcuWU6M9_A5y2IGRV0R4bIc1OEjah-Z6whiutCWXg0/viewform
+    url: https://docs.google.com/forms/d/1vqcuWU6M9_A5y2IGRV0R4bIc1OEjah-Z6whiutCWXg0/viewform
     about: First time here? Start with our simple feedback form (2 min)
   - name: Questions & Discussion
     url: https://github.com/NextShiftConsulting/swarm-it-adk/discussions

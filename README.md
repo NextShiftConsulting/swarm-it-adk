@@ -431,7 +431,7 @@ We're actively seeking feedback! Multiple ways to participate:
 
 | Your situation | Best option |
 |----------------|-------------|
-| **First time tester** | [Quick Feedback Form](https://docs.google.com/forms/d/e/1vqcuWU6M9_A5y2IGRV0R4bIc1OEjah-Z6whiutCWXg0/viewform) (2 min, no account needed) |
+| **First time tester** | [Quick Feedback Form](https://docs.google.com/forms/d/1vqcuWU6M9_A5y2IGRV0R4bIc1OEjah-Z6whiutCWXg0/viewform) (2 min, no account needed) |
 | **Have a question** | [GitHub Discussions](https://github.com/NextShiftConsulting/swarm-it-adk/discussions) |
 | **Found a bug** | [Report Bug](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=bug_report.yml) |
 | **Docs confusing** | [Docs Problem](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=docs_problem.yml) |
