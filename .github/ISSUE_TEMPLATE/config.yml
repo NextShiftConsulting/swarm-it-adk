@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Quick Feedback Form
+    url: https://forms.gle/YOUR_FORM_ID_HERE
+    about: First time here? Start with our simple feedback form (2 min)
+  - name: Questions & Discussion
+    url: https://github.com/NextShiftConsulting/swarm-it-adk/discussions
+    about: General questions, ideas, or feedback

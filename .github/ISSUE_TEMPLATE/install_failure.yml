@@ -1,0 +1,58 @@
+name: Installation Failure
+description: Can't install or set up the ADK
+title: "[Install]: "
+labels: ["install", "help-wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sorry you hit a wall! Let's get you unstuck.
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How did you try to install?
+      options:
+        - pip install
+        - git clone + pip install -e .
+        - Docker
+        - Manual setup
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux (Ubuntu/Debian)
+        - Linux (Other)
+        - WSL
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.11.4"
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output
+      description: Copy/paste the full error
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Any fixes you attempted?
+      placeholder: "I tried reinstalling, checking PATH, etc."

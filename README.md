@@ -425,6 +425,22 @@ with breaker:
 
 ---
 
+## 💬 Feedback & Testing
+
+We're actively seeking feedback! Multiple ways to participate:
+
+| Your situation | Best option |
+|----------------|-------------|
+| **First time tester** | [Quick Feedback Form](https://forms.gle/YOUR_FORM_ID) (2 min, no account needed) |
+| **Have a question** | [GitHub Discussions](https://github.com/NextShiftConsulting/swarm-it-adk/discussions) |
+| **Found a bug** | [Report Bug](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=bug_report.yml) |
+| **Docs confusing** | [Docs Problem](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=docs_problem.yml) |
+| **Can't install** | [Install Help](https://github.com/NextShiftConsulting/swarm-it-adk/issues/new?template=install_failure.yml) |
+
+See [FEEDBACK.md](FEEDBACK.md) for full collaboration guide.
+
+---
+
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.

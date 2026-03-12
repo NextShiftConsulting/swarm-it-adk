@@ -1,0 +1,47 @@
+name: Documentation Problem
+description: Docs are confusing, incomplete, or incorrect
+title: "[Docs]: "
+labels: ["documentation", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the docs! Tell us what was confusing.
+
+  - type: input
+    id: page
+    attributes:
+      label: Which page or file?
+      description: Link or filename
+      placeholder: "README.md, docs/setup.md, etc."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem-type
+    attributes:
+      label: What's the problem?
+      options:
+        - Missing information
+        - Incorrect information
+        - Hard to understand
+        - Outdated
+        - Example doesn't work
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the problem
+      description: What were you trying to do? What was confusing?
+      placeholder: "I was trying to... but the docs say... which didn't work because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix (optional)
+      description: How would you improve it?

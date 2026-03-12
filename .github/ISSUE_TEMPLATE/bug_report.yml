@@ -1,0 +1,74 @@
+name: Bug Report
+description: Something isn't working as expected
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please fill in the details below.
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Which module?
+      options:
+        - fluent.py (Fluent API)
+        - validator.py (Validation)
+        - certificate.py (Certificates)
+        - mcp_server.py (MCP Server)
+        - Client example (Go/Rust/TypeScript)
+        - Other / Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug in 1-2 sentences
+      placeholder: "When I tried to... I expected... but instead..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we recreate this?
+      placeholder: |
+        1. Run `python ...`
+        2. Call `...`
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-message
+    attributes:
+      label: Error message
+      description: Copy/paste the exact error (if any)
+      render: shell
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Python 3.10+
+        - Python 3.9
+        - Go
+        - Rust
+        - TypeScript/Node
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ai-help
+    attributes:
+      label: Did you use AI assistance?
+      description: No judgment - helps us understand the workflow
+      options:
+        - "Yes"
+        - "No"
