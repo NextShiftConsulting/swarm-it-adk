@@ -4,7 +4,7 @@ We're actively seeking feedback from testers! Here's how to participate.
 
 ## Quick Start (2 min)
 
-**First time?** Use our [Feedback Form](https://forms.gle/YOUR_FORM_ID_HERE) - simple questions, no GitHub account needed.
+**First time?** Use our [Feedback Form](https://docs.google.com/forms/d/e/1vqcuWU6M9_A5y2IGRV0R4bIc1OEjah-Z6whiutCWXg0/viewform) - simple questions, no GitHub account needed.
 
 ## Ongoing Collaboration
 
