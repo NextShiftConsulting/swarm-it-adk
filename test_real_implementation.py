@@ -94,7 +94,7 @@ try:
     config = CircuitBreakerConfig(
         failure_threshold=3,
         success_threshold=2,
-        timeout_duration=5.0  # Fixed: was timeout_seconds, should be timeout_duration
+        timeout_seconds=5.0  # Now using timeout_seconds to match docs and rest of codebase
     )
     breaker = CircuitBreaker("test_service", config)
 

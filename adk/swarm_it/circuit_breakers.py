@@ -41,7 +41,7 @@ class CircuitBreakerConfig:
     # Failure threshold
     failure_threshold: int = 5  # Open after N failures
     success_threshold: int = 2  # Close after N successes in half-open
-    timeout_duration: float = 60.0  # Seconds to wait before half-open
+    timeout_seconds: float = 60.0  # Seconds to wait before half-open
 
     # Error detection
     failure_exception: tuple = (Exception,)  # Exceptions that count as failures
@@ -99,7 +99,7 @@ class CircuitBreaker:
 
     Transitions:
     - CLOSED → OPEN: After failure_threshold failures
-    - OPEN → HALF_OPEN: After timeout_duration seconds
+    - OPEN → HALF_OPEN: After timeout_seconds seconds
     - HALF_OPEN → CLOSED: After success_threshold successes
     - HALF_OPEN → OPEN: On any failure
 
@@ -107,7 +107,7 @@ class CircuitBreaker:
         breaker = CircuitBreaker(
             name="openai_api",
             failure_threshold=5,
-            timeout_duration=60.0
+            timeout_seconds=60.0
         )
 
         try:
@@ -194,15 +194,15 @@ class CircuitBreaker:
             # Check if timeout has elapsed
             if self._open_since:
                 elapsed = (datetime.utcnow() - self._open_since).total_seconds()
-                if elapsed >= self.config.timeout_duration:
+                if elapsed >= self.config.timeout_seconds:
                     # Try half-open
                     self._transition_to_half_open()
                 else:
                     # Still open
-                    retry_after = self.config.timeout_duration - elapsed
+                    retry_after = self.config.timeout_seconds - elapsed
                     raise CircuitBreakerError(self.name, retry_after)
             else:
-                raise CircuitBreakerError(self.name, self.config.timeout_duration)
+                raise CircuitBreakerError(self.name, self.config.timeout_seconds)
 
         elif self.metrics.state == CircuitState.HALF_OPEN:
             # Allow limited requests through
@@ -294,7 +294,7 @@ class CircuitBreaker:
 def circuit_breaker(
     name: str,
     failure_threshold: int = 5,
-    timeout_duration: float = 60.0,
+    timeout_seconds: float = 60.0,
     fallback: Optional[Callable] = None
 ):
     """
@@ -315,7 +315,7 @@ def circuit_breaker(
     """
     config = CircuitBreakerConfig(
         failure_threshold=failure_threshold,
-        timeout_duration=timeout_duration
+        timeout_seconds=timeout_seconds
     )
 
     breaker = CircuitBreaker(name, config, fallback)
@@ -376,20 +376,20 @@ def reset_all_circuit_breakers():
 OPENAI_CIRCUIT_CONFIG = CircuitBreakerConfig(
     failure_threshold=5,
     success_threshold=2,
-    timeout_duration=60.0,
+    timeout_seconds=60.0,
     minimum_throughput=10
 )
 
 DOWNSTREAM_CIRCUIT_CONFIG = CircuitBreakerConfig(
     failure_threshold=3,
     success_threshold=2,
-    timeout_duration=30.0,
+    timeout_seconds=30.0,
     minimum_throughput=5
 )
 
 DATABASE_CIRCUIT_CONFIG = CircuitBreakerConfig(
     failure_threshold=10,
     success_threshold=3,
-    timeout_duration=120.0,
+    timeout_seconds=120.0,
     minimum_throughput=20
 )
