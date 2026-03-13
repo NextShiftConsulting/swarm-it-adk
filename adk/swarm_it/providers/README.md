@@ -235,12 +235,66 @@ provider = get_provider("openrouter")
 | MIMO | mimo-v2-flash | $1.00/$3.00 | **60% savings** |
 | OpenAI | GPT-4o | $2.50/$10.00 | Baseline |
 
+## SwarmFactory - High-Level API
+
+For multi-agent swarms, use the SwarmFactory for one-line swarm creation:
+
+```python
+from swarm_it.swarm_factory import create_swarm
+
+# Config-driven swarm creation
+swarm = create_swarm({
+    "name": "research_team",
+    "agents": [
+        {
+            "name": "Researcher",
+            "provider": "openrouter",
+            "model": "meta-llama/llama-3.1-8b-instruct:free",
+            "role": "Research",
+            "system_prompt": "You are a researcher...",
+        },
+        {
+            "name": "Critic",
+            "provider": "bedrock",
+            "model": "deepseek-v3.2",
+            "role": "Critical analysis",
+            "system_prompt": "You are a critic...",
+        }
+    ]
+})
+
+# Execute (handles providers, credentials, certification)
+results = swarm.execute("Analyze quantum computing")
+
+# All agents RSCT certified automatically
+for result in results:
+    print(f"{result['agent'].name}: {result['certificate'].decision.allowed}")
+```
+
+**Or use presets**:
+```python
+from swarm_it.swarm_factory import create_preset_swarm
+
+# Instant research team (3 free agents)
+swarm = create_preset_swarm("research_team")
+results = swarm.execute("Your task")
+
+# Cost-optimized team (mixed providers)
+swarm = create_preset_swarm("cost_optimized")
+```
+
+**Available presets**: `research_team`, `cost_optimized`
+
+See `swarm_it/swarm_factory.py` for full API and PRESET_SWARMS.
+
 ## Examples
 
 See `examples/` directory:
 - `examples/providers/basic_usage.py`
 - `examples/providers/cost_comparison.py`
 - `examples/providers/with_certification.py`
+
+See `yrsn-experiments/exp/multi_provider_swarms/` for swarm examples.
 
 ## API Reference
 
