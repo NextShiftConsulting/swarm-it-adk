@@ -130,6 +130,17 @@ from .chaos import (
     ChaosScenario,
 )
 
+# === Swarm Factory ===
+from .swarm_factory import (
+    create_swarm,
+    create_agent,
+    create_preset_swarm,
+    ProviderAgentWrapper,
+    AgentConfig,
+    SwarmConfig,
+    PRESET_SWARMS,
+)
+
 
 __all__ = [
     # Version
@@ -209,4 +220,13 @@ __all__ = [
     # Chaos Engineering
     "ChaosManager",
     "ChaosScenario",
+
+    # Swarm Factory
+    "create_swarm",
+    "create_agent",
+    "create_preset_swarm",
+    "ProviderAgentWrapper",
+    "AgentConfig",
+    "SwarmConfig",
+    "PRESET_SWARMS",
 ]
