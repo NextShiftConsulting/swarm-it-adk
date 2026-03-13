@@ -1,0 +1,62 @@
+{
+  "hypothesis_id": "H2",
+  "statement": "Expansion enables rank-choked scenarios to cross \u03ba \u2265 50 threshold",
+  "test_cases": [
+    {
+      "target_kappa": 20,
+      "intrinsic_rank": 3,
+      "kappa_before": 26.25,
+      "kappa_after": 52.5,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    },
+    {
+      "target_kappa": 25,
+      "intrinsic_rank": 2,
+      "kappa_before": 33.5,
+      "kappa_after": 67.01,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    },
+    {
+      "target_kappa": 30,
+      "intrinsic_rank": 2,
+      "kappa_before": 33.11,
+      "kappa_after": 66.22,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    },
+    {
+      "target_kappa": 35,
+      "intrinsic_rank": 2,
+      "kappa_before": 35.63,
+      "kappa_after": 71.25,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    },
+    {
+      "target_kappa": 40,
+      "intrinsic_rank": 2,
+      "kappa_before": 35.44,
+      "kappa_after": 70.89,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    },
+    {
+      "target_kappa": 45,
+      "intrinsic_rank": 2,
+      "kappa_before": 33.71,
+      "kappa_after": 67.42,
+      "was_choked": true,
+      "now_viable": true,
+      "threshold_crossed": true
+    }
+  ],
+  "metric_value": 1.0,
+  "supported": true
+}

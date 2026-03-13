@@ -141,6 +141,17 @@ from .swarm_factory import (
     PRESET_SWARMS,
 )
 
+# === Embedding & Kappa Viability ===
+from .providers.embedding import (
+    EmbeddingProvider,
+    SentenceTransformerProvider,
+    KappaViabilityChecker,
+    KappaResult,
+    compute_kappa,
+    compute_stable_rank,
+    check_kappa,
+)
+
 
 __all__ = [
     # Version
@@ -229,4 +240,13 @@ __all__ = [
     "AgentConfig",
     "SwarmConfig",
     "PRESET_SWARMS",
+
+    # Embedding & Kappa Viability
+    "EmbeddingProvider",
+    "SentenceTransformerProvider",
+    "KappaViabilityChecker",
+    "KappaResult",
+    "compute_kappa",
+    "compute_stable_rank",
+    "check_kappa",
 ]

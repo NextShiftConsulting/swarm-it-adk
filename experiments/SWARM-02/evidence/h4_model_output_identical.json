@@ -1,0 +1,32 @@
+{
+  "hypothesis_id": "H4",
+  "statement": "Model output identical (MSE < 1e-6) before/after expansion",
+  "test_cases": [
+    {
+      "hidden_dim": 64,
+      "mlp_dim": 256,
+      "expanded_mlp_dim": 512,
+      "mse": 7.698996476034376e-20,
+      "max_abs_diff": 1.862645149230957e-09,
+      "preserved": true
+    },
+    {
+      "hidden_dim": 128,
+      "mlp_dim": 512,
+      "expanded_mlp_dim": 1024,
+      "mse": 5.54415448098921e-18,
+      "max_abs_diff": 1.4901161193847656e-08,
+      "preserved": true
+    },
+    {
+      "hidden_dim": 256,
+      "mlp_dim": 1024,
+      "expanded_mlp_dim": 2048,
+      "mse": 2.2382700047407077e-17,
+      "max_abs_diff": 2.9802322387695312e-08,
+      "preserved": true
+    }
+  ],
+  "metric_value": 1.0,
+  "supported": true
+}

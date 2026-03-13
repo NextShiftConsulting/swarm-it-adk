@@ -1,0 +1,48 @@
+{
+  "experiment_id": "SWARM-02",
+  "name": "Dimension Expansion for Rotor Capacity",
+  "timestamp": "2026-03-13T16:51:19.211856Z",
+  "reference": "arXiv:2603.08647",
+  "metadata": {
+    "hypotheses": [
+      {
+        "hypothesis_id": "H1",
+        "statement": "\u03ba scales linearly with expansion factor k",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H2",
+        "statement": "Expansion enables rank-choked scenarios to cross \u03ba \u2265 50 threshold",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H3",
+        "statement": "Rotor accuracy improves when \u03ba crosses \u226550 threshold (adaptive k)",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H3b",
+        "statement": "Higher k enables better rotor performance for severely choked cases",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H4",
+        "statement": "Model output identical (MSE < 1e-6) before/after expansion",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H5",
+        "statement": "RSN correlation with ground truth improves when \u03ba \u2265 50",
+        "supported": false,
+        "metric_value": 0.0
+      }
+    ],
+    "supported_count": 5,
+    "total_count": 6
+  }
+}

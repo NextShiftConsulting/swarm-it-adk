@@ -1,0 +1,35 @@
+{
+  "hypothesis_id": "H5",
+  "statement": "RSN correlation with ground truth improves when \u03ba \u2265 50",
+  "test_cases": [
+    {
+      "intrinsic_rank": 3,
+      "kappa_before": 25.15,
+      "kappa_after": 50.3,
+      "rsn_correlation_before": -0.003,
+      "rsn_correlation_after": 0.016,
+      "improvement": 0.019,
+      "improved": false
+    },
+    {
+      "intrinsic_rank": 5,
+      "kappa_before": 15.97,
+      "kappa_after": 31.93,
+      "rsn_correlation_before": 0.014,
+      "rsn_correlation_after": 0.018,
+      "improvement": 0.005,
+      "improved": false
+    },
+    {
+      "intrinsic_rank": 7,
+      "kappa_before": 13.53,
+      "kappa_after": 27.07,
+      "rsn_correlation_before": -0.006,
+      "rsn_correlation_after": 0.009,
+      "improvement": 0.016,
+      "improved": false
+    }
+  ],
+  "metric_value": 0.0,
+  "supported": false
+}

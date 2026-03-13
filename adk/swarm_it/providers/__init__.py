@@ -36,6 +36,17 @@ from .openai_provider import OpenAIProvider
 from .anthropic_provider import AnthropicProvider
 from .factory import get_provider, list_providers
 
+# Embedding providers
+from .embedding import (
+    EmbeddingProvider,
+    SentenceTransformerProvider,
+    KappaViabilityChecker,
+    KappaResult,
+    compute_kappa,
+    compute_stable_rank,
+    check_kappa,
+)
+
 __all__ = [
     # Base
     "LLMProvider",
@@ -52,4 +63,13 @@ __all__ = [
     # Factory
     "get_provider",
     "list_providers",
+
+    # Embedding
+    "EmbeddingProvider",
+    "SentenceTransformerProvider",
+    "KappaViabilityChecker",
+    "KappaResult",
+    "compute_kappa",
+    "compute_stable_rank",
+    "check_kappa",
 ]

@@ -1,0 +1,52 @@
+{
+  "hypothesis_id": "H3",
+  "statement": "Rotor accuracy improves when \u03ba crosses \u226550 threshold (adaptive k)",
+  "test_cases": [
+    {
+      "intrinsic_rank": 3,
+      "k_used": 3,
+      "kappa_original": 24.51,
+      "kappa_expanded": 73.53,
+      "crossed_threshold": true,
+      "accuracy_original": 0.798,
+      "accuracy_expanded": 0.9,
+      "improvement_pct": 12.8,
+      "improved": true
+    },
+    {
+      "intrinsic_rank": 5,
+      "k_used": 3,
+      "kappa_original": 17.16,
+      "kappa_expanded": 51.49,
+      "crossed_threshold": true,
+      "accuracy_original": 0.84,
+      "accuracy_expanded": 0.914,
+      "improvement_pct": 8.8,
+      "improved": true
+    },
+    {
+      "intrinsic_rank": 8,
+      "k_used": 5,
+      "kappa_original": 11.4,
+      "kappa_expanded": 57.02,
+      "crossed_threshold": true,
+      "accuracy_original": 0.808,
+      "accuracy_expanded": 0.934,
+      "improvement_pct": 15.6,
+      "improved": true
+    },
+    {
+      "intrinsic_rank": 12,
+      "k_used": 5,
+      "kappa_original": 9.05,
+      "kappa_expanded": 45.26,
+      "crossed_threshold": false,
+      "accuracy_original": 0.794,
+      "accuracy_expanded": 0.932,
+      "improvement_pct": 17.4,
+      "improved": true
+    }
+  ],
+  "metric_value": 1.0,
+  "supported": true
+}

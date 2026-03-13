@@ -1,0 +1,116 @@
+{
+  "hypothesis_id": "H1",
+  "statement": "\u03ba scales linearly with expansion factor k",
+  "test_cases": [
+    {
+      "intrinsic_rank": 3,
+      "expansion_factor": 2,
+      "kappa_original": 23.16,
+      "kappa_expanded": 46.32,
+      "kappa_ratio": 2.0,
+      "expected_ratio": 2.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 3,
+      "expansion_factor": 3,
+      "kappa_original": 23.16,
+      "kappa_expanded": 69.47,
+      "kappa_ratio": 3.0,
+      "expected_ratio": 3.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 3,
+      "expansion_factor": 4,
+      "kappa_original": 23.16,
+      "kappa_expanded": 92.63,
+      "kappa_ratio": 4.0,
+      "expected_ratio": 4.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 5,
+      "expansion_factor": 2,
+      "kappa_original": 15.53,
+      "kappa_expanded": 31.06,
+      "kappa_ratio": 2.0,
+      "expected_ratio": 2.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 5,
+      "expansion_factor": 3,
+      "kappa_original": 15.53,
+      "kappa_expanded": 46.59,
+      "kappa_ratio": 3.0,
+      "expected_ratio": 3.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 5,
+      "expansion_factor": 4,
+      "kappa_original": 15.53,
+      "kappa_expanded": 62.12,
+      "kappa_ratio": 4.0,
+      "expected_ratio": 4.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 8,
+      "expansion_factor": 2,
+      "kappa_original": 11.76,
+      "kappa_expanded": 23.53,
+      "kappa_ratio": 2.0,
+      "expected_ratio": 2.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 8,
+      "expansion_factor": 3,
+      "kappa_original": 11.76,
+      "kappa_expanded": 35.29,
+      "kappa_ratio": 3.0,
+      "expected_ratio": 3.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 8,
+      "expansion_factor": 4,
+      "kappa_original": 11.76,
+      "kappa_expanded": 47.05,
+      "kappa_ratio": 4.0,
+      "expected_ratio": 4.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 12,
+      "expansion_factor": 2,
+      "kappa_original": 9.66,
+      "kappa_expanded": 19.31,
+      "kappa_ratio": 2.0,
+      "expected_ratio": 2.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 12,
+      "expansion_factor": 3,
+      "kappa_original": 9.66,
+      "kappa_expanded": 28.97,
+      "kappa_ratio": 3.0,
+      "expected_ratio": 3.0,
+      "within_20pct": true
+    },
+    {
+      "intrinsic_rank": 12,
+      "expansion_factor": 4,
+      "kappa_original": 9.66,
+      "kappa_expanded": 38.63,
+      "kappa_ratio": 4.0,
+      "expected_ratio": 4.0,
+      "within_20pct": true
+    }
+  ],
+  "metric_value": 1.0,
+  "supported": true
+}

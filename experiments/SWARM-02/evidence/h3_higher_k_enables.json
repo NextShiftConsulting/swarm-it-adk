@@ -1,0 +1,122 @@
+{
+  "hypothesis_id": "H3b",
+  "statement": "Higher k enables better rotor performance for severely choked cases",
+  "test_cases": [
+    {
+      "intrinsic_rank": 3,
+      "kappa_base": 25.18,
+      "accuracy_base": 0.82,
+      "expansions": [
+        {
+          "k": 2,
+          "kappa": 50.37,
+          "crossed_50": true,
+          "accuracy": 0.856,
+          "improvement_vs_base": 4.4
+        },
+        {
+          "k": 3,
+          "kappa": 75.55,
+          "crossed_50": true,
+          "accuracy": 0.87,
+          "improvement_vs_base": 6.1
+        },
+        {
+          "k": 4,
+          "kappa": 100.73,
+          "crossed_50": true,
+          "accuracy": 0.852,
+          "improvement_vs_base": 3.9
+        },
+        {
+          "k": 5,
+          "kappa": 125.91,
+          "crossed_50": true,
+          "accuracy": 0.88,
+          "improvement_vs_base": 7.3
+        }
+      ],
+      "best_k": 5,
+      "best_accuracy": 0.88,
+      "improvement_with_best_k": 7.3
+    },
+    {
+      "intrinsic_rank": 4,
+      "kappa_base": 21.81,
+      "accuracy_base": 0.886,
+      "expansions": [
+        {
+          "k": 2,
+          "kappa": 43.62,
+          "crossed_50": false,
+          "accuracy": 0.902,
+          "improvement_vs_base": 1.8
+        },
+        {
+          "k": 3,
+          "kappa": 65.43,
+          "crossed_50": true,
+          "accuracy": 0.9,
+          "improvement_vs_base": 1.6
+        },
+        {
+          "k": 4,
+          "kappa": 87.24,
+          "crossed_50": true,
+          "accuracy": 0.906,
+          "improvement_vs_base": 2.3
+        },
+        {
+          "k": 5,
+          "kappa": 109.05,
+          "crossed_50": true,
+          "accuracy": 0.9,
+          "improvement_vs_base": 1.6
+        }
+      ],
+      "best_k": 4,
+      "best_accuracy": 0.906,
+      "improvement_with_best_k": 2.3
+    },
+    {
+      "intrinsic_rank": 5,
+      "kappa_base": 16.36,
+      "accuracy_base": 0.862,
+      "expansions": [
+        {
+          "k": 2,
+          "kappa": 32.71,
+          "crossed_50": false,
+          "accuracy": 0.918,
+          "improvement_vs_base": 6.5
+        },
+        {
+          "k": 3,
+          "kappa": 49.07,
+          "crossed_50": false,
+          "accuracy": 0.91,
+          "improvement_vs_base": 5.6
+        },
+        {
+          "k": 4,
+          "kappa": 65.43,
+          "crossed_50": true,
+          "accuracy": 0.906,
+          "improvement_vs_base": 5.1
+        },
+        {
+          "k": 5,
+          "kappa": 81.78,
+          "crossed_50": true,
+          "accuracy": 0.906,
+          "improvement_vs_base": 5.1
+        }
+      ],
+      "best_k": 2,
+      "best_accuracy": 0.918,
+      "improvement_with_best_k": 6.5
+    }
+  ],
+  "metric_value": 1.0,
+  "supported": true
+}

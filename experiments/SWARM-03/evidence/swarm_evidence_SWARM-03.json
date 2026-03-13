@@ -1,0 +1,106 @@
+{
+  "experiment": "SWARM-03",
+  "mode": "direct_computation",
+  "timestamp": "2026-03-13T12:20:55.238646",
+  "results": [
+    {
+      "model": "bert-base-uncased",
+      "dim": 768,
+      "stable_rank": 27.5,
+      "kappa_before": 27.93,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 83.78,
+      "k2_sufficient": true,
+      "k2_would_give": 55.85
+    },
+    {
+      "model": "bert-large-uncased",
+      "dim": 1024,
+      "stable_rank": 32.5,
+      "kappa_before": 31.51,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 94.52,
+      "k2_sufficient": true,
+      "k2_would_give": 63.02
+    },
+    {
+      "model": "gpt2",
+      "dim": 768,
+      "stable_rank": 32.5,
+      "kappa_before": 23.63,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 70.89,
+      "k2_sufficient": false,
+      "k2_would_give": 47.26
+    },
+    {
+      "model": "gpt2-medium",
+      "dim": 1024,
+      "stable_rank": 37.5,
+      "kappa_before": 27.31,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 81.92,
+      "k2_sufficient": true,
+      "k2_would_give": 54.61
+    },
+    {
+      "model": "distilbert-base",
+      "dim": 768,
+      "stable_rank": 30.0,
+      "kappa_before": 25.6,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 76.8,
+      "k2_sufficient": true,
+      "k2_would_give": 51.2
+    },
+    {
+      "model": "all-MiniLM-L6-v2",
+      "dim": 384,
+      "stable_rank": 25.0,
+      "kappa_before": 15.36,
+      "is_choked": true,
+      "k_optimal": 5,
+      "kappa_after": 76.8,
+      "k2_sufficient": false,
+      "k2_would_give": 30.72
+    },
+    {
+      "model": "all-mpnet-base-v2",
+      "dim": 768,
+      "stable_rank": 32.5,
+      "kappa_before": 23.63,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 70.89,
+      "k2_sufficient": false,
+      "k2_would_give": 47.26
+    },
+    {
+      "model": "roberta-base",
+      "dim": 768,
+      "stable_rank": 29.0,
+      "kappa_before": 26.48,
+      "is_choked": true,
+      "k_optimal": 3,
+      "kappa_after": 79.45,
+      "k2_sufficient": true,
+      "k2_would_give": 52.97
+    }
+  ],
+  "summary": {
+    "total_models": 8,
+    "rank_choked_count": 8,
+    "rank_choked_pct": 100.0,
+    "k2_insufficient_count": 3,
+    "k2_insufficient_pct": 37.5
+  },
+  "hypotheses": {
+    "H1_most_choked": true,
+    "H4_k2_insufficient": true
+  }
+}
