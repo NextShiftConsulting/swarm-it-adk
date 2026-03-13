@@ -442,18 +442,64 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
 
         return dialogue_script, cert
 
+    def _save_individual_audio_files(self, dialogue_script: List[Dict], output_path: str):
+        """
+        Fallback: Save individual MP3 files when pydub/ffmpeg not available
+        """
+        from pathlib import Path
+        output_dir = Path(output_path).parent / f"{Path(output_path).stem}_segments"
+        output_dir.mkdir(exist_ok=True)
+
+        print(f"   [!] Saving individual MP3 segments to: {output_dir}/")
+
+        for i, segment in enumerate(dialogue_script):
+            speaker = segment['speaker']
+            text = segment['text']
+
+            # Generate filename
+            filename = f"{i+1:02d}_{speaker}_{text[:30].replace(' ', '_')}.mp3"
+            filepath = output_dir / filename
+
+            print(f"   Generating {speaker} audio {i+1}/{len(dialogue_script)}...")
+
+            # Generate TTS
+            audio_bytes = self.text_to_speech(speaker, text)
+
+            # Save to file
+            with open(filepath, 'wb') as f:
+                f.write(audio_bytes)
+
+        print(f"\n[+] Individual MP3 segments saved to: {output_dir}/")
+        print(f"   Total segments: {len(dialogue_script)}")
+        print(f"\n[!] To combine segments, install ffmpeg:")
+        print(f"   Windows: choco install ffmpeg")
+        print(f"   Then re-run the script to generate combined MP3")
+
+        return str(output_dir)
+
     def text_to_speech(self, speaker: str, text: str) -> bytes:
         """
         Convert text to speech using AWS Polly
         """
-        response = self.polly.synthesize_speech(
-            Engine='neural',
-            Text=text,
-            OutputFormat='mp3',
-            VoiceId=self.voices[speaker]
-        )
+        try:
+            response = self.polly.synthesize_speech(
+                Engine='neural',
+                Text=text,
+                OutputFormat='mp3',
+                VoiceId=self.voices[speaker]
+            )
 
-        return response['AudioBody'].read()
+            # AWS Polly returns 'AudioStream' not 'AudioBody'
+            if 'AudioStream' in response:
+                return response['AudioStream'].read()
+            else:
+                print(f"[!] Polly response keys: {response.keys()}")
+                raise KeyError("AudioStream not in Polly response")
+        except Exception as e:
+            print(f"[!] AWS Polly TTS failed: {e}")
+            print(f"    Speaker: {speaker}, Voice: {self.voices.get(speaker)}")
+            print(f"    Text length: {len(text)} chars")
+            raise
 
     def mix_audio(self, dialogue_script: List[Dict], output_path: str):
         """
@@ -461,38 +507,50 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
         """
         try:
             from pydub import AudioSegment
+            HAS_PYDUB = True
         except ImportError:
             print("[!]  pydub not installed. Skipping audio mixing.")
             print("   Install with: pip install pydub")
-            return None
+            HAS_PYDUB = False
 
         print("\n[4] Step 4: Generating audio...")
 
-        combined = AudioSegment.silent(duration=0)
+        # Fallback: Save individual MP3 files if pydub/ffmpeg not available
+        if not HAS_PYDUB:
+            return self._save_individual_audio_files(dialogue_script, output_path)
 
-        for i, segment in enumerate(dialogue_script):
-            print(f"   Generating {segment['speaker']} audio {i+1}/{len(dialogue_script)}...")
+        try:
+            combined = AudioSegment.silent(duration=0)
 
-            # Generate TTS
-            audio_bytes = self.text_to_speech(segment['speaker'], segment['text'])
+            for i, segment in enumerate(dialogue_script):
+                print(f"   Generating {segment['speaker']} audio {i+1}/{len(dialogue_script)}...")
 
-            # Convert to AudioSegment
-            from io import BytesIO
-            audio_seg = AudioSegment.from_mp3(BytesIO(audio_bytes))
+                # Generate TTS
+                audio_bytes = self.text_to_speech(segment['speaker'], segment['text'])
 
-            # Add pause between speakers (800ms)
-            if i > 0:
-                pause = AudioSegment.silent(duration=800)
-                combined += pause
+                # Convert to AudioSegment
+                from io import BytesIO
+                audio_seg = AudioSegment.from_mp3(BytesIO(audio_bytes))
 
-            combined += audio_seg
+                # Add pause between speakers (800ms)
+                if i > 0:
+                    pause = AudioSegment.silent(duration=800)
+                    combined += pause
 
-        # Export final podcast
-        combined.export(output_path, format='mp3')
-        print(f"\n[+] Audio saved to: {output_path}")
-        print(f"   Duration: {len(combined) / 1000:.1f} seconds")
+                combined += audio_seg
 
-        return output_path
+            # Export final podcast
+            combined.export(output_path, format='mp3')
+            print(f"\n[+] Audio saved to: {output_path}")
+            print(f"   Duration: {len(combined) / 1000:.1f} seconds")
+
+            return output_path
+
+        except (FileNotFoundError, OSError) as e:
+            # ffmpeg not found or pydub error - fall back to individual files
+            print(f"\n[!] Audio mixing failed (ffmpeg not found): {e}")
+            print(f"[!] Falling back to individual MP3 files...")
+            return self._save_individual_audio_files(dialogue_script, output_path)
 
     def generate_podcast(self, blog_path: str, output_path: str) -> Dict:
         """
