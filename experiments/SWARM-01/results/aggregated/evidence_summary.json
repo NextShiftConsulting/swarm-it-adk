@@ -1,0 +1,197 @@
+[
+  {
+    "exp_id": "SWARM-01",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/swarm_evidence_SWARM-01.json",
+    "timestamp": "2026-03-13T14:37:58.966367",
+    "claims": [
+      "Gate integrity validated",
+      "Simplex constraint holds",
+      "API consistency verified"
+    ],
+    "status": "PASS",
+    "schema_type": "quality_gating",
+    "metadata": {
+      "hypotheses": [
+        {
+          "hypothesis_id": "H1",
+          "statement": "N >= 0.5 triggers REJECT",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H2",
+          "statement": "c < 0.4 triggers BLOCK",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H3",
+          "statement": "\u03ba_req(\u03c3) = 0.5 + 0.4\u03c3",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H4",
+          "statement": "Gray zone uses \u03c3 as tie-breaker",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H5",
+          "statement": "\u03ba_L < 0.3 triggers REPAIR",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H6",
+          "statement": "R + S + N = 1.0 (\u00b11e-6)",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H7",
+          "statement": "All API entry points produce identical RSN",
+          "supported": true,
+          "metric_value": 1.0
+        },
+        {
+          "hypothesis_id": "H8",
+          "statement": "Certificate chaining preserves \u03ba_interface >= 0.5",
+          "supported": true,
+          "metric_value": 1.0
+        }
+      ],
+      "supported_count": 8
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H1",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h1_gate1_integrity.json",
+    "timestamp": "2026-03-13T14:37:58.956750",
+    "claims": [
+      "N >= 0.5 triggers REJECT"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "gate1_accuracy": 1.0,
+      "rejection_threshold": 0.5,
+      "total_tests": 14,
+      "correct": 14
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H2",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h2_gate2_consensus.json",
+    "timestamp": "2026-03-13T14:37:58.958650",
+    "claims": [
+      "c < 0.4 triggers BLOCK"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "gate2_accuracy": 1.0,
+      "block_threshold": 0.4,
+      "total_tests": 50,
+      "correct": 50
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H3",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h3_oobleck_curve.json",
+    "timestamp": "2026-03-13T14:37:58.959678",
+    "claims": [
+      "\u03ba_req(\u03c3) = 0.5 + 0.4\u03c3"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "oobleck_accuracy": 1.0,
+      "threshold_values": [
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9
+      ],
+      "oobleck_coefficient": 0.4
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H4",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h4_landauer_tolerance.json",
+    "timestamp": "2026-03-13T14:37:58.960136",
+    "claims": [
+      "Gray zone uses \u03c3 as tie-breaker"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "gray_zone_accuracy": 1.0,
+      "tolerance": 0.05,
+      "tiebreaker_threshold": 0.5
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H5",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h5_gate4_grounding.json",
+    "timestamp": "2026-03-13T14:37:58.961734",
+    "claims": [
+      "\u03ba_L < 0.3 triggers REPAIR"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "gate4_accuracy": 1.0,
+      "repair_threshold": 0.3
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H6",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h6_simplex_invariant.json",
+    "timestamp": "2026-03-13T14:37:58.962857",
+    "claims": [
+      "R + S + N = 1.0 (\u00b11e-6)"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "simplex_violations": 0,
+      "max_deviation": 2.220446049250313e-16,
+      "total_tests": 14,
+      "tolerance": 1e-06
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H7",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h7_api_consistency.json",
+    "timestamp": "2026-03-13T14:37:58.963987",
+    "claims": [
+      "All API entry points produce identical RSN"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "entry_point_variance": 0.0,
+      "determinism": true,
+      "consistent_tests": 3,
+      "total_tests": 3
+    }
+  },
+  {
+    "exp_id": "SWARM-01-H8",
+    "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/h8_multiagent_handoff.json",
+    "timestamp": "2026-03-13T14:37:58.965416",
+    "claims": [
+      "Certificate chaining preserves \u03ba_interface >= 0.5"
+    ],
+    "status": "PASS",
+    "schema_type": "hypothesis_test",
+    "metadata": {
+      "handoff_success_rate": 1.0,
+      "kappa_interface_min": 0.608,
+      "total_handoffs": 4,
+      "successful_handoffs": 4
+    }
+  }
+]

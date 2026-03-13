@@ -1,0 +1,140 @@
+{
+  "hypothesis_id": "H1",
+  "statement": "N >= 0.5 triggers REJECT",
+  "test_cases": [
+    {
+      "prompt_hash": "8f434346",
+      "complexity": "minimal",
+      "N": 0.47829898130755355,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "9f86d081",
+      "complexity": "minimal",
+      "N": 0.34262858478805486,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "a665a459",
+      "complexity": "minimal",
+      "N": 0.24794083805982303,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "37ca1b23",
+      "complexity": "low",
+      "N": 0.02344632006100627,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "04cdee65",
+      "complexity": "low",
+      "N": 0.16528083323108186,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "90eaeeb4",
+      "complexity": "low",
+      "N": 0.2678009832400151,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "77ffa53f",
+      "complexity": "moderate",
+      "N": 0.43571407293498027,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "a00053b2",
+      "complexity": "moderate",
+      "N": 0.2523934962747691,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "da4edb27",
+      "complexity": "moderate",
+      "N": 0.034522494309314075,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "c74032c5",
+      "complexity": "high",
+      "N": 0.37777494408902573,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "a3c23d27",
+      "complexity": "high",
+      "N": 0.43527304827490865,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "29b7e076",
+      "complexity": "high",
+      "N": 0.12794878243672111,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "f98ac4b2",
+      "complexity": "extreme",
+      "N": 0.2488421133834921,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "prompt_hash": "c93a5290",
+      "complexity": "extreme",
+      "N": 0.20636469751113828,
+      "expected_reject": false,
+      "actual_reject": false,
+      "decision": "EXECUTE",
+      "correct": true
+    }
+  ],
+  "metrics": {
+    "gate1_accuracy": 1.0,
+    "rejection_threshold": 0.5,
+    "total_tests": 14,
+    "correct": 14
+  },
+  "result": "PASS",
+  "timestamp": "2026-03-13T14:37:58.956750"
+}

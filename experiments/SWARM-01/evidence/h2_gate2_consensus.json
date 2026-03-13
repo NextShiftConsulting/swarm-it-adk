@@ -1,0 +1,414 @@
+{
+  "hypothesis_id": "H2",
+  "statement": "c < 0.4 triggers BLOCK",
+  "test_cases": [
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.591960552627009,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.6063481060338649,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.5799410638129744,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.504699522658355,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.6167639579680804,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.6931443084014229,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.6640578261968395,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.5960860659030995,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.668175775985012,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.3,
+      "kappa_gate": 0.6129938809706418,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.591960552627009,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.6063481060338649,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.5799410638129744,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.504699522658355,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.6167639579680804,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.6931443084014229,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.6640578261968395,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.5960860659030995,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.668175775985012,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.4,
+      "kappa_gate": 0.6129938809706418,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.591960552627009,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.6063481060338649,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.5799410638129744,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.504699522658355,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.6167639579680804,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.6931443084014229,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.6640578261968395,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.5960860659030995,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.668175775985012,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.5,
+      "kappa_gate": 0.6129938809706418,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.591960552627009,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.6063481060338649,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.5799410638129744,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.504699522658355,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.6167639579680804,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.6931443084014229,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.6640578261968395,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.5960860659030995,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.668175775985012,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.6,
+      "kappa_gate": 0.6129938809706418,
+      "expected_block": false,
+      "actual_block": false,
+      "decision": "EXECUTE",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.591960552627009,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.6063481060338649,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.5799410638129744,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.504699522658355,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.6167639579680804,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.6931443084014229,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.6640578261968395,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.5960860659030995,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.668175775985012,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    },
+    {
+      "kappa_threshold": 0.7,
+      "kappa_gate": 0.6129938809706418,
+      "expected_block": true,
+      "actual_block": true,
+      "decision": "BLOCK",
+      "correct": true
+    }
+  ],
+  "metrics": {
+    "gate2_accuracy": 1.0,
+    "block_threshold": 0.4,
+    "total_tests": 50,
+    "correct": 50
+  },
+  "result": "PASS",
+  "timestamp": "2026-03-13T14:37:58.958650"
+}

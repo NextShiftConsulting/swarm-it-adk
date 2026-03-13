@@ -1,0 +1,97 @@
+{
+  "hypothesis_id": "H4",
+  "statement": "Gray zone uses \u03c3 as tie-breaker",
+  "test_cases": [
+    {
+      "sigma": 0.3,
+      "kappa_req": 0.62,
+      "kappa": 0.52,
+      "zone": "hard_fail",
+      "expected": "RE_ENCODE",
+      "is_gray_zone": false,
+      "correct": true
+    },
+    {
+      "sigma": 0.3,
+      "kappa_req": 0.62,
+      "kappa": 0.59,
+      "zone": "gray",
+      "expected": "PROCEED",
+      "is_gray_zone": true,
+      "tiebreaker_sigma": 0.3,
+      "correct": true
+    },
+    {
+      "sigma": 0.3,
+      "kappa_req": 0.62,
+      "kappa": 0.67,
+      "zone": "pass",
+      "expected": "PROCEED",
+      "is_gray_zone": false,
+      "correct": true
+    },
+    {
+      "sigma": 0.5,
+      "kappa_req": 0.7,
+      "kappa": 0.6,
+      "zone": "hard_fail",
+      "expected": "RE_ENCODE",
+      "is_gray_zone": false,
+      "correct": true
+    },
+    {
+      "sigma": 0.5,
+      "kappa_req": 0.7,
+      "kappa": 0.6699999999999999,
+      "zone": "gray",
+      "expected": "RE_ENCODE",
+      "is_gray_zone": true,
+      "tiebreaker_sigma": 0.5,
+      "correct": true
+    },
+    {
+      "sigma": 0.5,
+      "kappa_req": 0.7,
+      "kappa": 0.75,
+      "zone": "pass",
+      "expected": "PROCEED",
+      "is_gray_zone": false,
+      "correct": true
+    },
+    {
+      "sigma": 0.7,
+      "kappa_req": 0.78,
+      "kappa": 0.68,
+      "zone": "hard_fail",
+      "expected": "RE_ENCODE",
+      "is_gray_zone": false,
+      "correct": true
+    },
+    {
+      "sigma": 0.7,
+      "kappa_req": 0.78,
+      "kappa": 0.75,
+      "zone": "gray",
+      "expected": "RE_ENCODE",
+      "is_gray_zone": true,
+      "tiebreaker_sigma": 0.7,
+      "correct": true
+    },
+    {
+      "sigma": 0.7,
+      "kappa_req": 0.78,
+      "kappa": 0.8300000000000001,
+      "zone": "pass",
+      "expected": "PROCEED",
+      "is_gray_zone": false,
+      "correct": true
+    }
+  ],
+  "metrics": {
+    "gray_zone_accuracy": 1.0,
+    "tolerance": 0.05,
+    "tiebreaker_threshold": 0.5
+  },
+  "result": "PASS",
+  "timestamp": "2026-03-13T14:37:58.960136"
+}

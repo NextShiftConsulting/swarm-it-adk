@@ -1,0 +1,68 @@
+{
+  "hypothesis_id": "H5",
+  "statement": "\u03ba_L < 0.3 triggers REPAIR",
+  "test_cases": [
+    {
+      "kappa_L": 0.1,
+      "expected_repair": true,
+      "actual_decision": "REPAIR",
+      "gate_reached": 3,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.2,
+      "expected_repair": true,
+      "actual_decision": "REPAIR",
+      "gate_reached": 3,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.3,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.4,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.5,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.6,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.7,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    },
+    {
+      "kappa_L": 0.8,
+      "expected_repair": false,
+      "actual_decision": "EXECUTE",
+      "gate_reached": 5,
+      "correct": true
+    }
+  ],
+  "metrics": {
+    "gate4_accuracy": 1.0,
+    "repair_threshold": 0.3
+  },
+  "result": "PASS",
+  "timestamp": "2026-03-13T14:37:58.961734"
+}

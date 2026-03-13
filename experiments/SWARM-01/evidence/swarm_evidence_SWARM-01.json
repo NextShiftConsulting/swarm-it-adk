@@ -1,0 +1,65 @@
+{
+  "exp_id": "SWARM-01",
+  "file_path": "/Users/rudy/GitHub/swarm-it-adk/experiments/SWARM-01/evidence/swarm_evidence_SWARM-01.json",
+  "timestamp": "2026-03-13T14:37:58.966367",
+  "claims": [
+    "Gate integrity validated",
+    "Simplex constraint holds",
+    "API consistency verified"
+  ],
+  "status": "PASS",
+  "schema_type": "quality_gating",
+  "metadata": {
+    "hypotheses": [
+      {
+        "hypothesis_id": "H1",
+        "statement": "N >= 0.5 triggers REJECT",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H2",
+        "statement": "c < 0.4 triggers BLOCK",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H3",
+        "statement": "\u03ba_req(\u03c3) = 0.5 + 0.4\u03c3",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H4",
+        "statement": "Gray zone uses \u03c3 as tie-breaker",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H5",
+        "statement": "\u03ba_L < 0.3 triggers REPAIR",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H6",
+        "statement": "R + S + N = 1.0 (\u00b11e-6)",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H7",
+        "statement": "All API entry points produce identical RSN",
+        "supported": true,
+        "metric_value": 1.0
+      },
+      {
+        "hypothesis_id": "H8",
+        "statement": "Certificate chaining preserves \u03ba_interface >= 0.5",
+        "supported": true,
+        "metric_value": 1.0
+      }
+    ],
+    "supported_count": 8
+  }
+}

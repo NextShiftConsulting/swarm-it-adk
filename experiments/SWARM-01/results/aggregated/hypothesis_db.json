@@ -1,0 +1,74 @@
+{
+  "H1": {
+    "SWARM-01": {
+      "hypothesis_id": "H1",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H2": {
+    "SWARM-01": {
+      "hypothesis_id": "H2",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H3": {
+    "SWARM-01": {
+      "hypothesis_id": "H3",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H4": {
+    "SWARM-01": {
+      "hypothesis_id": "H4",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H5": {
+    "SWARM-01": {
+      "hypothesis_id": "H5",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H6": {
+    "SWARM-01": {
+      "hypothesis_id": "H6",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H7": {
+    "SWARM-01": {
+      "hypothesis_id": "H7",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  },
+  "H8": {
+    "SWARM-01": {
+      "hypothesis_id": "H8",
+      "exp_id": "SWARM-01",
+      "result": "PASS",
+      "metric_value": 1.0,
+      "p_value": null
+    }
+  }
+}

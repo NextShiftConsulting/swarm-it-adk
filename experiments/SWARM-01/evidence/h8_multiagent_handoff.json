@@ -1,0 +1,46 @@
+{
+  "hypothesis_id": "H8",
+  "statement": "Certificate chaining preserves \u03ba_interface >= 0.5",
+  "test_cases": [
+    {
+      "chain_length": 2,
+      "kappa_interface_min": 0.608,
+      "kappa_gate_min": 0.5760000000000001,
+      "consensus": 1.0,
+      "decision": "EXECUTE",
+      "successful": true
+    },
+    {
+      "chain_length": 3,
+      "kappa_interface_min": 0.6269999999999999,
+      "kappa_gate_min": 0.594,
+      "consensus": 1.0,
+      "decision": "EXECUTE",
+      "successful": true
+    },
+    {
+      "chain_length": 4,
+      "kappa_interface_min": 0.6459999999999999,
+      "kappa_gate_min": 0.612,
+      "consensus": 1.0,
+      "decision": "EXECUTE",
+      "successful": true
+    },
+    {
+      "chain_length": 5,
+      "kappa_interface_min": 0.6649999999999999,
+      "kappa_gate_min": 0.63,
+      "consensus": 1.0,
+      "decision": "EXECUTE",
+      "successful": true
+    }
+  ],
+  "metrics": {
+    "handoff_success_rate": 1.0,
+    "kappa_interface_min": 0.608,
+    "total_handoffs": 4,
+    "successful_handoffs": 4
+  },
+  "result": "PASS",
+  "timestamp": "2026-03-13T14:37:58.965416"
+}
