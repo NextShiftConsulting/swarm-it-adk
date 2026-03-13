@@ -40,7 +40,7 @@ class PodcastMIMOAgent:
             if provider == "mimo":
                 # Xiaomi MiMo cloud API (cost-effective alternative to US providers)
                 self.api_key = self.creds.retrieve('MIMO_API_KEY')
-                self.endpoint = self.creds.retrieve('MIMO_ENDPOINT') or 'https://api.mimo.xiaomi.com/v1'
+                self.endpoint = self.creds.retrieve('MIMO_ENDPOINT') or 'https://api.xiaomimimo.com/v1'
                 self.model = self.creds.retrieve('MIMO_MODEL') or 'mimo-v2-flash'
                 if not self.api_key:
                     raise ValueError("SWARM_MIMO_API_KEY not found. Set environment variable or use --provider xiami for local Ollama.")
@@ -55,7 +55,7 @@ class PodcastMIMOAgent:
             # Fallback to direct environment variables
             if provider == "mimo":
                 self.api_key = os.environ.get('MIMO_API_KEY') or os.environ.get('SWARM_MIMO_API_KEY')
-                self.endpoint = os.environ.get('MIMO_ENDPOINT') or os.environ.get('SWARM_MIMO_ENDPOINT', 'https://api.mimo.xiaomi.com/v1')
+                self.endpoint = os.environ.get('MIMO_ENDPOINT') or os.environ.get('SWARM_MIMO_ENDPOINT', 'https://api.xiaomimimo.com/v1')
                 self.model = os.environ.get('MIMO_MODEL') or os.environ.get('SWARM_MIMO_MODEL', 'mimo-v2-flash')
                 if not self.api_key:
                     raise ValueError("MIMO_API_KEY or SWARM_MIMO_API_KEY not found")
