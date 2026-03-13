@@ -262,6 +262,7 @@ def create_agent(
     model: str,
     role: str,
     system_prompt: str,
+    api_key: Optional[str] = None,
     **kwargs
 ) -> ProviderAgentWrapper:
     """
@@ -273,6 +274,7 @@ def create_agent(
         model: Model ID
         role: Agent role description
         system_prompt: System prompt for agent behavior
+        api_key: Optional API key (auto-loads if None)
         **kwargs: Additional arguments (temperature, max_tokens)
 
     Returns:
@@ -287,8 +289,8 @@ def create_agent(
             system_prompt="You are a researcher..."
         )
     """
-    # Create provider
-    llm_provider = get_provider(provider, model=model)
+    # Create provider (pass api_key if provided)
+    llm_provider = get_provider(provider, model=model, api_key=api_key)
 
     # Create wrapper
     return ProviderAgentWrapper(
