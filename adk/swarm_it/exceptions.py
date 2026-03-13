@@ -2,15 +2,12 @@
 Swarm It Exceptions
 """
 
+# Import structured CertificationError from errors module for backward compatibility
+from .errors import CertificationError
+
 
 class SwarmItError(Exception):
     """Base exception for Swarm It SDK."""
-
-    pass
-
-
-class CertificationError(SwarmItError):
-    """Raised when certification request fails."""
 
     pass
 

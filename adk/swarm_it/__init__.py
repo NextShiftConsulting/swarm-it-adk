@@ -106,15 +106,13 @@ from .decorators import gate, certified
 # === Exceptions ===
 from .exceptions import (
     SwarmItError,
+    CertificationError,  # Re-exported from errors.py for structured error handling
     GateBlockedError,
     AuthenticationError,
 )
 
 # === Structured Errors ===
-# NOTE: errors.py provides a more detailed CertificationError than exceptions.py
-# TODO: Consolidate duplicate CertificationError classes
 from .errors import (
-    CertificationError,  # Overrides exceptions.CertificationError
     ErrorCode,
 )
 
