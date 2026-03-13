@@ -4,13 +4,37 @@ Transform single-voice blog narration into natural multi-speaker dialogue podcas
 
 ## Quick Start
 
+### Prerequisites
+
+```bash
+# Install dependencies
+pip install boto3 pydub requests
+
+# Install swarm-it-auth for credential management
+cd /c/Users/marti/github/swarm-it-auth
+pip install -e .
+cd /c/Users/marti/github/swarm-it-adk/agents
+
+# Set up MiMo API credentials (recommended - 80% cost savings)
+export SWARM_MIMO_API_KEY=mimo_xxxxxxxxxxxxxxxx
+export SWARM_MIMO_ENDPOINT=https://api.mimo.xiaomi.com/v1
+export SWARM_MIMO_MODEL=mimo-v2-flash
+
+# OR use local Ollama (free but requires setup)
+# export SWARM_XIAMI_ENDPOINT=http://localhost:11434/api/generate
+# export SWARM_XIAMI_MODEL=llama2
+```
+
 ### Test with One Post
 
 ```bash
 cd /c/Users/marti/github/swarm-it-adk/agents
 
-# Quick test with RSN Collapse post
+# Quick test with RSN Collapse post (uses MiMo by default)
 bash test_one_podcast.sh
+
+# Or test with local Ollama
+# bash test_one_podcast.sh xiami
 ```
 
 This generates a dialogue version of "RSN Collapse" that you can compare against the narration version.
@@ -19,10 +43,19 @@ This generates a dialogue version of "RSN Collapse" that you can compare against
 
 ```bash
 # Install dependencies first
-pip install anthropic boto3 pydub
+pip install boto3 pydub requests
 
-# Set API key
-export ANTHROPIC_API_KEY=your-key-here
+# Install swarm-it-auth for credential management
+cd /c/Users/marti/github/swarm-it-auth
+pip install -e .
+cd -
+
+# Set XIAMI credentials
+export SWARM_XIAMI_ENDPOINT=http://localhost:11434/api/generate
+export SWARM_XIAMI_MODEL=llama2
+
+# Make sure Ollama is running
+ollama serve  # In separate terminal
 
 # Batch regenerate all 10 posts
 python batch_regenerate_podcasts.py \
@@ -31,6 +64,23 @@ python batch_regenerate_podcasts.py \
 ```
 
 This will generate dialogue versions for all 10 posts listed.
+
+## Provider Options
+
+The MIMO agent supports multiple LLM providers for cost optimization:
+
+| Provider | Type | Cost per Episode | Setup Complexity | Quality |
+|----------|------|------------------|------------------|---------|
+| **MiMo-V2-Flash** (Xiaomi) | Cloud API | $0.02 | Easy | Good (kappa ~0.78) |
+| Local Ollama | Self-hosted | $0.00 | Medium | Variable |
+| ~~Anthropic Claude~~ | Cloud API | ~~$0.15~~ | Easy | Excellent (kappa ~0.87) |
+| ~~OpenAI GPT-4~~ | Cloud API | ~~$0.20~~ | Easy | Excellent (kappa ~0.85) |
+
+**Recommendation**: Use **MiMo-V2-Flash** for production (87% cost savings vs US providers).
+
+See `swarm-it-auth/docs/analysis/xiaomi-mimo-v2-flash-integration.md` for detailed comparison.
+
+---
 
 ## What It Does
 
@@ -144,14 +194,16 @@ self.voices = {
 ## Cost per Episode
 
 **Dialogue Generation:**
-- Claude API (4 calls): ~$0.15
+- XIAMI/Ollama (4 calls): ~$0.00 (local inference)
 - AWS Polly (2 voices): ~$0.50
-- Total: ~$0.65 per episode
+- Total: ~$0.50 per episode
 
 **vs. Original Narration:**
 - AWS Polly (1 voice): ~$0.40
 
-**Cost increase**: +$0.25 per episode (+63%)
+**Cost increase**: +$0.10 per episode (+25%)
+
+Note: Using local XIAMI/Ollama instead of Claude API saves ~$0.15 per episode on LLM costs.
 
 ## Expected Metrics
 
@@ -175,14 +227,27 @@ pip install anthropic boto3 pydub
 # Mac: brew install ffmpeg
 ```
 
-### API Key Issues
+### XIAMI/Ollama Issues
 
 ```bash
-# Set environment variable
-export ANTHROPIC_API_KEY=sk-ant-...
+# Check if Ollama is running
+curl http://localhost:11434/api/tags
 
-# Or pass directly
-python podcast_mimo.py --api-key sk-ant-... --blog-post ...
+# Start Ollama if not running
+ollama serve
+
+# Verify model is available
+ollama list
+ollama pull llama2  # If model not found
+
+# Set environment variables
+export SWARM_XIAMI_ENDPOINT=http://localhost:11434/api/generate
+export SWARM_XIAMI_MODEL=llama2
+
+# Test the agent
+python podcast_mimo.py \
+  --blog-post /path/to/post.mdx \
+  --output test.mp3
 ```
 
 ### Quality Gates Failing

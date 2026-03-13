@@ -6,7 +6,6 @@ Usage:
     python podcast_mimo.py --blog-post /path/to/post.mdx --output /path/to/output.mp3
 """
 
-import anthropic
 import boto3
 import json
 import os
@@ -15,6 +14,15 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple
 import re
+import requests
+
+# Import swarm-it-auth credential adapter
+try:
+    from swarm_auth.adapters import EnvCredentialAdapter
+    HAS_SWARM_AUTH = True
+except ImportError:
+    HAS_SWARM_AUTH = False
+    print("[!] swarm-auth not found. Using basic environment variable fallback.")
 
 class PodcastMIMOAgent:
     """
@@ -22,10 +30,40 @@ class PodcastMIMOAgent:
     from technical blog posts.
     """
 
-    def __init__(self, api_key=None):
-        self.client = anthropic.Anthropic(
-            api_key=api_key or os.environ.get('ANTHROPIC_API_KEY')
-        )
+    def __init__(self, provider="mimo", credential_prefix="SWARM_"):
+        self.provider = provider
+
+        # Use swarm-it-auth credential adapter if available
+        if HAS_SWARM_AUTH:
+            self.creds = EnvCredentialAdapter(prefix=credential_prefix)
+
+            if provider == "mimo":
+                # Xiaomi MiMo cloud API (cost-effective alternative to US providers)
+                self.api_key = self.creds.retrieve('MIMO_API_KEY')
+                self.endpoint = self.creds.retrieve('MIMO_ENDPOINT') or 'https://api.mimo.xiaomi.com/v1'
+                self.model = self.creds.retrieve('MIMO_MODEL') or 'mimo-v2-flash'
+                if not self.api_key:
+                    raise ValueError("SWARM_MIMO_API_KEY not found. Set environment variable or use --provider xiami for local Ollama.")
+            elif provider == "xiami":
+                # Local Ollama endpoint (free but requires local setup)
+                self.endpoint = self.creds.retrieve('XIAMI_ENDPOINT') or 'http://localhost:11434/api/generate'
+                self.model = self.creds.retrieve('XIAMI_MODEL') or 'llama2'
+                self.api_key = self.creds.retrieve('XIAMI_API_KEY')  # Optional
+            else:
+                raise ValueError(f"Unsupported provider: {provider}. Use 'mimo' or 'xiami'.")
+        else:
+            # Fallback to direct environment variables
+            if provider == "mimo":
+                self.api_key = os.environ.get('MIMO_API_KEY') or os.environ.get('SWARM_MIMO_API_KEY')
+                self.endpoint = os.environ.get('MIMO_ENDPOINT') or os.environ.get('SWARM_MIMO_ENDPOINT', 'https://api.mimo.xiaomi.com/v1')
+                self.model = os.environ.get('MIMO_MODEL') or os.environ.get('SWARM_MIMO_MODEL', 'mimo-v2-flash')
+                if not self.api_key:
+                    raise ValueError("MIMO_API_KEY or SWARM_MIMO_API_KEY not found")
+            elif provider == "xiami":
+                self.endpoint = os.environ.get('XIAMI_ENDPOINT') or os.environ.get('SWARM_XIAMI_ENDPOINT', 'http://localhost:11434/api/generate')
+                self.model = os.environ.get('XIAMI_MODEL') or os.environ.get('SWARM_XIAMI_MODEL', 'llama2')
+                self.api_key = os.environ.get('XIAMI_API_KEY') or os.environ.get('SWARM_XIAMI_API_KEY')
+
         self.polly = boto3.client('polly', region_name='us-east-1')
 
         # Voice configuration
@@ -34,13 +72,82 @@ class PodcastMIMOAgent:
             "expert": "Joanna"      # Female, warm, authoritative
         }
 
-        # Model selection
+        # Model selection for all agents
         self.models = {
-            "producer": "claude-sonnet-4-20250514",
-            "host": "claude-sonnet-4-20250514",
-            "expert": "claude-sonnet-4-20250514",
-            "quality": "claude-sonnet-4-20250514"
+            "producer": self.model,
+            "host": self.model,
+            "expert": self.model,
+            "quality": self.model
         }
+
+        print(f"[*] Initialized MIMO Agent")
+        print(f"    Provider: {self.provider}")
+        print(f"    Endpoint: {self.endpoint}")
+        print(f"    Model: {self.model}")
+
+    def call_llm(self, prompt: str, max_tokens: int = 2000) -> str:
+        """
+        Generic LLM call supporting multiple providers
+        """
+        if self.provider == "mimo":
+            return self._call_mimo(prompt, max_tokens)
+        elif self.provider == "xiami":
+            return self._call_xiami(prompt, max_tokens)
+        else:
+            raise ValueError(f"Unsupported provider: {self.provider}")
+
+    def _call_mimo(self, prompt: str, max_tokens: int) -> str:
+        """
+        Call Xiaomi MiMo cloud API (OpenAI-compatible endpoint)
+        """
+        try:
+            response = requests.post(
+                f"{self.endpoint}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ],
+                    "max_tokens": max_tokens,
+                    "temperature": 0.7
+                },
+                timeout=120
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        except Exception as e:
+            print(f"[!] MiMo API call failed: {e}")
+            return ""
+
+    def _call_xiami(self, prompt: str, max_tokens: int) -> str:
+        """
+        Call XIAMI/Ollama local endpoint
+        """
+        try:
+            response = requests.post(
+                self.endpoint,
+                json={
+                    "model": self.model,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "num_predict": max_tokens,
+                        "temperature": 0.7
+                    }
+                },
+                timeout=120
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result.get('response', '')
+        except Exception as e:
+            print(f"[!] XIAMI call failed: {e}")
+            return ""
 
     def load_blog_post(self, blog_path: str) -> Dict:
         """Extract content from MDX blog post"""
@@ -115,17 +222,9 @@ Keep it conversational and accessible. The host is curious but not an expert.
 The expert (Rudy Martin) created RSCT theory and knows AI quality deeply.
 """
 
-        response = self.client.messages.create(
-            model=self.models["producer"],
-            max_tokens=4000,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        response_text = self.call_llm(prompt, max_tokens=4000)
 
         # Extract JSON from response
-        response_text = response.content[0].text
         json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
         if json_match:
             outline = json.loads(json_match.group(0))
@@ -142,7 +241,7 @@ The expert (Rudy Martin) created RSCT theory and knows AI quality deeply.
                 ]
             }
 
-        print(f"✅ Producer created outline with {len(outline['segments'])} segments")
+        print(f"[+] Producer created outline with {len(outline['segments'])} segments")
         return outline
 
     def host_agent(self, segment: Dict, context: str = "") -> str:
@@ -182,21 +281,12 @@ Generate ONE natural follow-up question (15-25 words) that:
 Generate ONLY the host's question. No quotes, no labels, just the spoken words.
 """
 
-        response = self.client.messages.create(
-            model=self.models["host"],
-            max_tokens=200,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
-
-        dialogue = response.content[0].text.strip()
+        dialogue = self.call_llm(prompt, max_tokens=200).strip()
         # Clean up any quotes or labels
         dialogue = re.sub(r'^(HOST:|")', '', dialogue)
         dialogue = re.sub(r'"$', '', dialogue)
 
-        print(f"  🎙️  Host: {dialogue[:60]}...")
+        print(f"  [2]  Host: {dialogue[:60]}...")
         return dialogue
 
     def expert_agent(self, segment: Dict, host_question: str, blog_context: str) -> str:
@@ -247,20 +337,11 @@ Your style: "Great question! [Answer]... Think of it like [analogy]... Here's a 
 Generate ONLY your spoken response. Natural, conversational. No quotes or labels.
 """
 
-        response = self.client.messages.create(
-            model=self.models["expert"],
-            max_tokens=400,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
-
-        dialogue = response.content[0].text.strip()
+        dialogue = self.call_llm(prompt, max_tokens=400).strip()
         dialogue = re.sub(r'^(EXPERT:|RUDY:|")', '', dialogue)
         dialogue = re.sub(r'"$', '', dialogue)
 
-        print(f"  👨‍🏫 Expert: {dialogue[:60]}...")
+        print(f"  [E] Expert: {dialogue[:60]}...")
         return dialogue
 
     def quality_agent(self, dialogue_script: List[Dict], blog_post: Dict) -> Dict:
@@ -304,17 +385,9 @@ Return JSON:
 Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
 """
 
-        response = self.client.messages.create(
-            model=self.models["quality"],
-            max_tokens=500,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        response_text = self.call_llm(prompt, max_tokens=500)
 
         # Extract JSON
-        response_text = response.content[0].text
         json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
         if json_match:
             cert = json.loads(json_match.group(0))
@@ -322,9 +395,9 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
             # Default passing cert
             cert = {"R": 0.8, "S": 0.2, "N": 0.05, "kappa": 0.85, "approved": True, "feedback": "OK"}
 
-        print(f"\n📊 Quality Certificate:")
+        print(f"\n[*] Quality Certificate:")
         print(f"   R={cert['R']:.2f} S={cert['S']:.2f} N={cert['N']:.2f} kappa={cert['kappa']:.2f}")
-        print(f"   Status: {'✅ APPROVED' if cert['approved'] else '❌ REJECTED'}")
+        print(f"   Status: {'[+] APPROVED' if cert['approved'] else '[-] REJECTED'}")
 
         return cert
 
@@ -332,15 +405,15 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
         """
         Main orchestration: Generate complete dialogue script
         """
-        print(f"\n🎬 Generating dialogue for: {blog_post['title']}")
-        print(f"   Blog length: {blog_post['word_count']} words\n")
+        print(f"\n[*] Generating dialogue for: {blog_post['title']}")
+        print(f"    Blog length: {blog_post['word_count']} words\n")
 
         # Step 1: Producer creates outline
-        print("📋 Step 1: Producer creating outline...")
+        print("[1] Step 1: Producer creating outline...")
         outline = self.producer_agent(blog_post)
 
         # Step 2: Generate dialogue segments
-        print("\n🎙️  Step 2: Generating dialogue...")
+        print("\n[2] Step 2: Generating dialogue...")
         dialogue_script = []
         conversation_context = ""
 
@@ -364,7 +437,7 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
             conversation_context += f"\nEXPERT: {expert_dialogue}"
 
         # Step 3: Quality validation
-        print("\n\n🔍 Step 3: Quality validation...")
+        print("\n\n[3] Step 3: Quality validation...")
         cert = self.quality_agent(dialogue_script, blog_post)
 
         return dialogue_script, cert
@@ -389,11 +462,11 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
         try:
             from pydub import AudioSegment
         except ImportError:
-            print("⚠️  pydub not installed. Skipping audio mixing.")
+            print("[!]  pydub not installed. Skipping audio mixing.")
             print("   Install with: pip install pydub")
             return None
 
-        print("\n🎧 Step 4: Generating audio...")
+        print("\n[4] Step 4: Generating audio...")
 
         combined = AudioSegment.silent(duration=0)
 
@@ -416,7 +489,7 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
 
         # Export final podcast
         combined.export(output_path, format='mp3')
-        print(f"\n✅ Audio saved to: {output_path}")
+        print(f"\n[+] Audio saved to: {output_path}")
         print(f"   Duration: {len(combined) / 1000:.1f} seconds")
 
         return output_path
@@ -439,7 +512,7 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
                 "dialogue": dialogue_script,
                 "certificate": cert
             }, f, indent=2)
-        print(f"\n💾 Dialogue script saved to: {script_path}")
+        print(f"\n[*] Dialogue script saved to: {script_path}")
 
         # Generate audio
         if cert.get('approved', True):
@@ -451,7 +524,7 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
                 "certificate": cert
             }
         else:
-            print("\n⚠️  Dialogue not approved by quality gates. Skipping audio generation.")
+            print("\n[!]  Dialogue not approved by quality gates. Skipping audio generation.")
             return {
                 "success": False,
                 "script_path": script_path,
@@ -463,21 +536,25 @@ def main():
     parser = argparse.ArgumentParser(description='Generate MIMO podcast dialogue from blog post')
     parser.add_argument('--blog-post', required=True, help='Path to MDX blog post')
     parser.add_argument('--output', required=True, help='Output MP3 path')
-    parser.add_argument('--api-key', help='Anthropic API key (or use ANTHROPIC_API_KEY env var)')
+    parser.add_argument('--provider', default='xiami', help='LLM provider (default: xiami)')
+    parser.add_argument('--credential-prefix', default='SWARM_', help='Environment variable prefix (default: SWARM_)')
 
     args = parser.parse_args()
 
     # Initialize agent
-    agent = PodcastMIMOAgent(api_key=args.api_key)
+    agent = PodcastMIMOAgent(
+        provider=args.provider,
+        credential_prefix=args.credential_prefix
+    )
 
     # Generate podcast
     result = agent.generate_podcast(args.blog_post, args.output)
 
     if result['success']:
-        print("\n🎉 SUCCESS! Dialogue podcast generated.")
+        print("\n[OK] SUCCESS! Dialogue podcast generated.")
         sys.exit(0)
     else:
-        print("\n❌ Quality gates failed. Check script for issues.")
+        print("\n[-] Quality gates failed. Check script for issues.")
         sys.exit(1)
 
 
