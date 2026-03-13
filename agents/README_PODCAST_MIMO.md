@@ -17,7 +17,7 @@ cd /c/Users/marti/github/swarm-it-adk/agents
 
 # Set up MiMo API credentials (recommended - 80% cost savings)
 export SWARM_MIMO_API_KEY=mimo_xxxxxxxxxxxxxxxx
-export SWARM_MIMO_ENDPOINT=https://api.mimo.xiaomi.com/v1
+export SWARM_MIMO_ENDPOINT=https://api.xiaomimimo.com/v1
 export SWARM_MIMO_MODEL=mimo-v2-flash
 
 # OR use local Ollama (free but requires setup)
