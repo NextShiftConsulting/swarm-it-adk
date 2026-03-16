@@ -7,14 +7,15 @@ metric: accuracy
 thresholds:
   base:
     N_max: 0.5
+    kappa_base: 0.4
   domains:
     code:
-      multiplier: 1.0
+      multiplier: 1.05
     general:
-      multiplier: 1.1
+      multiplier: 0.8
     legal:
       multiplier: 1.05
     medical:
       multiplier: 0.9
     research:
-      multiplier: 1.1
+      multiplier: 1.05

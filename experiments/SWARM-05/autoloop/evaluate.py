@@ -7,6 +7,8 @@ Hypothesis H16: Domain-calibrated thresholds improve accuracy by 8%
 This evaluator tests different threshold multipliers per domain
 and measures classification accuracy on a validation set.
 
+Uses REAL RSCT LocalEngine for certification.
+
 DO NOT MODIFY during autoloop - only config.yaml changes.
 """
 
@@ -17,6 +19,18 @@ import yaml
 from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
+
+# Add ADK to path
+ADK_PATH = Path(__file__).resolve().parent.parent.parent.parent / "adk"
+sys.path.insert(0, str(ADK_PATH))
+
+try:
+    from swarm_it.local.engine import LocalEngine, GateDecision
+    USE_REAL_RSCT = True
+except ImportError:
+    # Fallback to mock if ADK not available
+    USE_REAL_RSCT = False
+    print("WARNING: swarm_it not found, using mock certifier")
 
 # =============================================================================
 # CONFIGURATION
@@ -155,32 +169,62 @@ def compute_signal_score(text: str) -> float:
 
 
 def certify_with_thresholds(text: str, domain: str, thresholds: Dict,
-                            domain_multipliers: Dict) -> Tuple[bool, str]:
+                            domain_multipliers: Dict) -> Tuple[bool, str, Dict]:
     """
     Certify text with domain-adjusted thresholds.
 
+    Uses REAL RSCT LocalEngine when available, falls back to mock otherwise.
+
     Returns:
-        (should_block, reason)
+        (should_block, reason, cert_dict)
     """
     # Get domain multiplier
     multiplier = domain_multipliers.get(domain, {}).get("multiplier", 1.0)
 
     # Adjust thresholds - higher multiplier = stricter (lower N_max)
     base_N_max = thresholds.get("N_max", 0.50)
+    base_kappa = thresholds.get("kappa_base", 0.40)
+
     adjusted_N_max = base_N_max / multiplier  # multiplier 1.2 → threshold 0.42
+    adjusted_kappa = base_kappa * multiplier  # multiplier 1.2 → threshold 0.48
 
-    # Compute signals
-    signal_score = compute_signal_score(text)
+    if USE_REAL_RSCT:
+        # Use REAL RSCT LocalEngine
+        engine = LocalEngine(
+            n_threshold=adjusted_N_max,
+            kappa_threshold=adjusted_kappa,
+        )
 
-    # Mock N value - spread across the decision boundary
-    # This creates sensitivity to threshold changes
-    N = 0.30 + signal_score * 0.40  # Range [0.30, 0.70]
+        cert = engine.certify(text)
 
-    # Decision - adjusted threshold determines cutoff
-    if N >= adjusted_N_max:
-        return True, f"N={N:.2f} >= {adjusted_N_max:.2f}"
+        # Decision based on gate result
+        blocked = not cert.decision.allowed
 
-    return False, f"N={N:.2f} < {adjusted_N_max:.2f}"
+        cert_dict = {
+            "R": cert.R,
+            "S": cert.S,
+            "N": cert.N,
+            "kappa": cert.kappa_gate,
+            "decision": cert.decision.value,
+            "gate": cert.gate_reached,
+        }
+
+        return blocked, cert.reason, cert_dict
+    else:
+        # Fallback: use signal-based mock
+        signal_score = compute_signal_score(text)
+        N = 0.30 + signal_score * 0.40
+
+        blocked = N >= adjusted_N_max
+        reason = f"N={N:.2f} {'≥' if blocked else '<'} {adjusted_N_max:.2f}"
+
+        cert_dict = {
+            "R": 0.0, "S": 0.0, "N": N,
+            "kappa": 0.5, "decision": "REJECT" if blocked else "EXECUTE",
+            "gate": 1 if blocked else 5,
+        }
+
+        return blocked, reason, cert_dict
 
 
 # =============================================================================
@@ -207,7 +251,7 @@ def evaluate() -> Dict:
     start = time.time()
 
     for sample in samples:
-        predicted_block, reason = certify_with_thresholds(
+        predicted_block, reason, cert = certify_with_thresholds(
             sample.text, sample.domain, thresholds, domain_multipliers
         )
 
