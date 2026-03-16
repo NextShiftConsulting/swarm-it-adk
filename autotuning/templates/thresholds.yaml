@@ -1,0 +1,80 @@
+# AutoTuning Configuration
+# This file is modified by the agent during experimentation
+# DO NOT MODIFY evaluate.py or validation data
+
+version: 1
+experiment_tag: "baseline"
+
+# =============================================================================
+# CORE THRESHOLDS (Agent modifies these)
+# =============================================================================
+
+thresholds:
+  # Gate 1: Integrity Guard - Noise ceiling
+  N_max: 0.50
+
+  # Gate 2: Consensus Gate - Coherence floor
+  coherence_min: 0.40
+
+  # Gate 3: Admissibility - Kappa parameters
+  kappa_base: 0.50
+  kappa_lambda: 0.40  # Oobleck coefficient: κ_req = base + lambda * σ
+
+  # Gate 4: Grounding Repair - Grounding floor
+  kappa_grounding: 0.30
+
+# =============================================================================
+# DERIVED VALUES (Computed from above, don't modify directly)
+# =============================================================================
+
+formulas:
+  # Oobleck dynamic threshold
+  # κ_req(σ) = kappa_base + kappa_lambda × σ
+  # At σ=0: κ_req = 0.50 (liquid)
+  # At σ=1: κ_req = 0.90 (solid)
+  oobleck: "kappa_base + kappa_lambda * sigma"
+
+  # Landauer gray zone
+  # Within ±0.05 of threshold, use σ as tie-breaker
+  landauer_tolerance: 0.05
+
+# =============================================================================
+# EXPERIMENTAL PARAMETERS (Agent can try these)
+# =============================================================================
+
+experimental:
+  # Per-tier threshold multipliers
+  tier_multipliers:
+    EMERGENT: 1.0     # Discovered constraints (most lenient)
+    LEARNED: 1.0      # ML-learned constraints
+    ACTUAL: 1.0       # Regulatory constraints (strictest)
+
+  # Domain-specific overrides (optional)
+  domain_overrides:
+    # medical:
+    #   kappa_base: 0.60
+    #   N_max: 0.40
+    # legal:
+    #   kappa_base: 0.55
+    #   coherence_min: 0.50
+
+  # Coupling experiments (advanced)
+  coupling:
+    enabled: false
+    # coherence_adjusted: "coherence_min * (1 + N * 0.1)"
+    # kappa_adaptive: "kappa_base * (1 - N * 0.2)"
+
+# =============================================================================
+# CONSTRAINTS (Agent CANNOT violate these)
+# =============================================================================
+
+constraints:
+  # All thresholds must be in [0.1, 0.9]
+  min_threshold: 0.10
+  max_threshold: 0.90
+
+  # Cannot disable gates
+  gates_enabled: [1, 2, 3, 4]
+
+  # Gate order is fixed
+  gate_order: [1, 2, 3, 4]
