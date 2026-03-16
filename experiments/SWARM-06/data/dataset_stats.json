@@ -1,0 +1,17 @@
+{
+  "total_samples": 7739,
+  "train_size": 5417,
+  "val_size": 1161,
+  "test_size": 1161,
+  "jailbreak_count": 3172,
+  "benign_count": 4567,
+  "jailbreak_ratio": 0.40987207649567126,
+  "sources": {
+    "jackhhao": 1044,
+    "semantic_router": 2480,
+    "trustai_discord": 598,
+    "trustai_reddit": 548,
+    "trustai_open_source": 44,
+    "trustai_website": 3025
+  }
+}

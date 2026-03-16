@@ -1,0 +1,69 @@
+{
+  "hypothesis": "H3",
+  "method": "Hybrid RSCT gates + specialized classifier",
+  "architecture": {
+    "gate_1": "N-gate (threshold=0.6)",
+    "gate_2": "Coherence gate (threshold=0.3)",
+    "classifier": "MLP on 384d embeddings"
+  },
+  "config": {
+    "embed_dim": 384,
+    "n_threshold": 0.6,
+    "coherence_threshold": 0.3,
+    "epochs": 100
+  },
+  "val_results": {
+    "accuracy": 0.8492678725236865,
+    "precision": 0.8031809145129225,
+    "recall": 0.8416666666666667,
+    "f1_score": 0.8219735503560529,
+    "auc": 0.9150360988742045,
+    "tp": 404,
+    "tn": 582,
+    "fp": 99,
+    "fn": 76,
+    "state_distribution": {
+      "BENIGN": 24,
+      "JAILBREAK": 13,
+      "UNCERTAIN": 1100,
+      "UNSAFE": 24
+    },
+    "gate_stats": {
+      "n_gate_reject_rate": 0.02067183462532296,
+      "coherence_gate_reject_rate": 0.9664082687338501,
+      "total_gate_pass_rate": 0.03186907838070629
+    },
+    "rsn_stats": {
+      "N_mean": 0.2656404376029968,
+      "coherence_mean": 0.08713161200284958
+    }
+  },
+  "test_results": {
+    "accuracy": 0.8544358311800172,
+    "precision": 0.7945736434108527,
+    "recall": 0.8668076109936576,
+    "f1_score": 0.8291203235591507,
+    "auc": 0.9173647303210581,
+    "tp": 410,
+    "tn": 582,
+    "fp": 106,
+    "fn": 63,
+    "state_distribution": {
+      "BENIGN": 16,
+      "JAILBREAK": 12,
+      "UNCERTAIN": 1119,
+      "UNSAFE": 14
+    },
+    "gate_stats": {
+      "n_gate_reject_rate": 0.012058570198105079,
+      "coherence_gate_reject_rate": 0.9715762273901809,
+      "total_gate_pass_rate": 0.024117140396210164
+    },
+    "rsn_stats": {
+      "N_mean": 0.2651216983795166,
+      "coherence_mean": 0.08375441282987595
+    }
+  },
+  "passed": false,
+  "timestamp": "2026-03-16T11:42:27.662942"
+}

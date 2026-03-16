@@ -96,3 +96,18 @@ certificates/
 
 # Project files
 CLAUDE.md
+
+# Large model files (store in cloud/LFS)
+*.pt
+*.pth
+*.onnx
+*.npz
+*.npy
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Experiment data (local only)
+experiments/*/embeddings/
+experiments/*/checkpoints/

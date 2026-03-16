@@ -1,0 +1,21 @@
+{
+  "hypothesis": "H3",
+  "method": "Ensemble (Titan v2 1024d + SentenceTransformer 384d)",
+  "total_dim": 1408,
+  "val_results": {
+    "accuracy": 0.8811369509043928,
+    "precision": 0.8577405857740585,
+    "recall": 0.8541666666666666,
+    "f1_score": 0.8559498956158664,
+    "auc": 0.9282932574645131
+  },
+  "test_results": {
+    "accuracy": 0.8708010335917312,
+    "precision": 0.8343685300207039,
+    "recall": 0.8520084566596194,
+    "f1_score": 0.8430962343096234,
+    "auc": 0.9306934952554206
+  },
+  "passed": false,
+  "timestamp": "2026-03-16T14:17:23.542624"
+}

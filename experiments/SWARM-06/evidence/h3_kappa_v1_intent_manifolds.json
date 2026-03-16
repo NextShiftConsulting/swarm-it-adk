@@ -1,0 +1,78 @@
+{
+  "hypothesis": "H3",
+  "method": "\u03ba-proxy v1 with intent-conditioned manifolds",
+  "version": "v1 (revised per reviewer feedback)",
+  "config": {
+    "n_clusters": 8,
+    "theta_high": 0.6,
+    "theta_low": 0.3,
+    "sigma_thresh": 0.15
+  },
+  "kappa_distribution": {
+    "val_jailbreak_mean": 0.585709079124946,
+    "val_benign_mean": 0.6017537452799184,
+    "cohens_d": 0.14435915318386014
+  },
+  "sigma_distribution": {
+    "val_jailbreak_mean": 0.036435532064735314,
+    "val_benign_mean": 0.037237218702325714
+  },
+  "val_results": {
+    "accuracy": 0.5805340223944875,
+    "precision": 0.26666666666666666,
+    "recall": 0.008333333333333333,
+    "f1_score": 0.01616161616161616,
+    "tp": 4,
+    "tn": 670,
+    "fp": 11,
+    "fn": 476,
+    "state_distribution": {
+      "ADMISSIBLE": 586,
+      "INCOMPATIBLE": 15,
+      "UNCERTAIN": 560,
+      "UNSAFE": 0
+    },
+    "jailbreak_states": {
+      "ADMISSIBLE": 228,
+      "INCOMPATIBLE": 4,
+      "UNCERTAIN": 248,
+      "UNSAFE": 0
+    },
+    "benign_states": {
+      "ADMISSIBLE": 358,
+      "INCOMPATIBLE": 11,
+      "UNCERTAIN": 312,
+      "UNSAFE": 0
+    }
+  },
+  "test_results": {
+    "accuracy": 0.5848406546080964,
+    "precision": 0.09090909090909091,
+    "recall": 0.0021141649048625794,
+    "f1_score": 0.004132231404958678,
+    "tp": 1,
+    "tn": 678,
+    "fp": 10,
+    "fn": 472,
+    "state_distribution": {
+      "ADMISSIBLE": 630,
+      "INCOMPATIBLE": 11,
+      "UNCERTAIN": 520,
+      "UNSAFE": 0
+    },
+    "jailbreak_states": {
+      "ADMISSIBLE": 244,
+      "INCOMPATIBLE": 1,
+      "UNCERTAIN": 228,
+      "UNSAFE": 0
+    },
+    "benign_states": {
+      "ADMISSIBLE": 386,
+      "INCOMPATIBLE": 10,
+      "UNCERTAIN": 292,
+      "UNSAFE": 0
+    }
+  },
+  "passed": false,
+  "timestamp": "2026-03-16T09:43:49.244286"
+}

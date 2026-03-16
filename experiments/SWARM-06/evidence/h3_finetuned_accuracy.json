@@ -1,0 +1,75 @@
+{
+  "hypothesis": "H3",
+  "statement": "Security-fine-tuned rotor achieves >90% accuracy on jailbreak detection",
+  "method": "Full certificate training with T4, kappa, sigma, admissibility",
+  "training_config": {
+    "epochs": 50,
+    "lr": 0.0001,
+    "batch_size": 64,
+    "train_size": 5417,
+    "loss_function": "CertificateLoss(RSN=1.0, T4=0.3, Admissibility=0.2)"
+  },
+  "val_results": {
+    "accuracy": 0.7743324720068906,
+    "precision": 0.8471337579617835,
+    "recall": 0.5541666666666667,
+    "f1_score": 0.6700251889168766,
+    "tp": 266,
+    "tn": 633,
+    "fp": 48,
+    "fn": 214,
+    "rsn_stats": {
+      "jailbreak": {
+        "R_mean": 0.327623575925827,
+        "R_std": 0.18386240303516388,
+        "S_mean": 0.4870176315307617,
+        "S_std": 0.17054693400859833,
+        "N_mean": 0.18535880744457245,
+        "N_std": 0.025878066197037697,
+        "alpha_omega_mean": 0.49165216088294983,
+        "health_score_mean": 0.8146411776542664
+      },
+      "benign": {
+        "R_mean": 0.6198018193244934,
+        "R_std": 0.1667170226573944,
+        "S_mean": 0.22999520599842072,
+        "S_std": 0.13905693590641022,
+        "N_mean": 0.15020301938056946,
+        "N_std": 0.03332289308309555,
+        "alpha_omega_mean": 0.6330690383911133,
+        "health_score_mean": 0.8497970700263977
+      }
+    },
+    "t4_stats": {
+      "jailbreak": {
+        "simplex_theta_mean": 292.2004089355469,
+        "phi_simplex_mean": 136.87493896484375
+      },
+      "benign": {
+        "simplex_theta_mean": 228.79469299316406,
+        "phi_simplex_mean": 172.810302734375
+      }
+    },
+    "admissibility_breakdown": {
+      "jailbreak": {
+        "ADMISSIBLE": 214,
+        "INCOMPATIBLE": 72,
+        "UNSTABLE": 194,
+        "UNSAFE": 0
+      },
+      "benign": {
+        "ADMISSIBLE": 633,
+        "INCOMPATIBLE": 31,
+        "UNSTABLE": 17,
+        "UNSAFE": 0
+      }
+    }
+  },
+  "history": {
+    "final_loss": 0.10015335488147746,
+    "final_accuracy": 0.8329333579472032,
+    "final_f1": 0.7598832581586629
+  },
+  "passed": false,
+  "timestamp": "2026-03-16T06:42:08.420014"
+}

@@ -1,0 +1,66 @@
+{
+  "hypothesis": "H3",
+  "method": "\u03ba-based representation-solver compatibility",
+  "statement": "\u03ba-based classifier achieves >90% accuracy on jailbreak detection",
+  "theory": {
+    "principle": "RSCT \u03ba = D*/D (representation-solver compatibility)",
+    "s_safe": "Distribution of embeddings compatible with safe AI interaction",
+    "classification": "LOW \u03ba = incompatible = jailbreak, HIGH \u03ba = compatible = benign"
+  },
+  "s_safe_stats": {
+    "n_samples": 3198,
+    "embed_dim": 64,
+    "centroid_norm": 0.9247273206710815,
+    "norm_mean": 1.6071332693099976,
+    "norm_std": 0.20740337832069397
+  },
+  "kappa_distribution": {
+    "val_jailbreak_mean": 0.6502208827316253,
+    "val_jailbreak_std": 0.14084590286957085,
+    "val_benign_mean": 0.6327408900574595,
+    "val_benign_std": 0.18130304753583404,
+    "cohens_d": -0.1076753961722823
+  },
+  "threshold": 0.8500000000000002,
+  "train_results": {
+    "threshold": 0.8500000000000002,
+    "accuracy": 0.4349270814103747,
+    "precision": 0.4189449364651521,
+    "recall": 0.9806219017575485,
+    "f1_score": 0.5870767570484283,
+    "fpr": 0.9437148217636022,
+    "fnr": 0.019378098242451555,
+    "tp": 2176,
+    "tn": 180,
+    "fp": 3018,
+    "fn": 43
+  },
+  "val_results": {
+    "threshold": 0.8500000000000002,
+    "accuracy": 0.4289405684754522,
+    "precision": 0.4179372197309417,
+    "recall": 0.9708333333333333,
+    "f1_score": 0.5843260188087774,
+    "fpr": 0.9530102790014684,
+    "fnr": 0.029166666666666667,
+    "tp": 466,
+    "tn": 32,
+    "fp": 649,
+    "fn": 14
+  },
+  "test_results": {
+    "threshold": 0.8500000000000002,
+    "accuracy": 0.43238587424633934,
+    "precision": 0.41636690647482016,
+    "recall": 0.9788583509513742,
+    "f1_score": 0.5842271293375395,
+    "fpr": 0.9433139534883721,
+    "fnr": 0.021141649048625793,
+    "tp": 463,
+    "tn": 39,
+    "fp": 649,
+    "fn": 10
+  },
+  "passed": false,
+  "timestamp": "2026-03-16T09:31:02.036374"
+}

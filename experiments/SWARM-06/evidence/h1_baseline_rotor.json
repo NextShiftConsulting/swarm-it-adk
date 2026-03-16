@@ -1,0 +1,19 @@
+{
+  "hypothesis": "H1",
+  "statement": "Pre-trained YRSN rotor achieves <60% accuracy without fine-tuning",
+  "result": {
+    "model_name": "YRSN_Rotor",
+    "accuracy": 0.5159345391903531,
+    "precision": 0.4021978021978022,
+    "recall": 0.386892177589852,
+    "f1_score": 0.3943965517241379,
+    "fpr": 0.3953488372093023,
+    "fnr": 0.6131078224101479,
+    "samples": 1161,
+    "latency_ms": 127.41968818618551,
+    "throughput": 7.848080734107598,
+    "timestamp": "2026-03-16T11:17:25.687721"
+  },
+  "passed": true,
+  "timestamp": "2026-03-16T11:17:25.687966"
+}
