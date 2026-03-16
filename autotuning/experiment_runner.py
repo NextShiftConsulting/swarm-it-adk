@@ -42,7 +42,7 @@ from typing import List, Dict, Any, Optional
 # CONFIGURATION
 # =============================================================================
 
-EXPERIMENTS_DIR = Path(__file__).parent.parent / "experiments"
+EXPERIMENTS_DIR = (Path(__file__).parent.parent / "experiments").resolve()
 DEFAULT_TIME_BUDGET = 120  # 2 minutes per evaluation
 
 
@@ -203,6 +203,36 @@ def hash_config(config: Dict[str, Any]) -> str:
     return hashlib.sha256(serialized.encode()).hexdigest()[:12]
 
 
+def mutate_config(exp_id: str, config: AutoLoopConfig):
+    """Randomly mutate one threshold in config.yaml."""
+    import random
+
+    config_path = EXPERIMENTS_DIR / exp_id / "autoloop" / "config.yaml"
+
+    with open(config_path) as f:
+        yaml_config = yaml.safe_load(f)
+
+    # Find mutable thresholds
+    thresholds = yaml_config.get("thresholds", {})
+    domains = thresholds.get("domains", {})
+
+    # Pick random domain and adjust multiplier
+    if domains:
+        domain = random.choice(list(domains.keys()))
+        current = domains[domain].get("multiplier", 1.0)
+
+        # Adjust by ±0.05
+        delta = random.choice([-0.05, 0.05])
+        new_value = max(0.8, min(1.3, current + delta))
+
+        domains[domain]["multiplier"] = round(new_value, 2)
+        print(f"  Mutated {domain} multiplier: {current:.2f} → {new_value:.2f}")
+
+        # Save
+        with open(config_path, "w") as f:
+            yaml.dump(yaml_config, f, default_flow_style=False)
+
+
 # =============================================================================
 # EXPERIMENT RUNNER
 # =============================================================================
@@ -300,6 +330,10 @@ def run_autoloop(exp_id: str, max_iterations: Optional[int] = None):
     while max_iterations is None or iteration < max_iterations:
         iteration += 1
         print(f"\n--- Iteration {iteration} ---")
+
+        # Mutate config (random threshold adjustment)
+        if iteration > 1:
+            mutate_config(exp_id, config)
 
         # Get current commit
         try:

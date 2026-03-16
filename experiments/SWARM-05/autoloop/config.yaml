@@ -1,67 +1,20 @@
-# SWARM-05 E4: Domain Calibration AutoLoop
-# Hypothesis H16: Domain-calibrated thresholds improve accuracy by 8%
-
+constraints:
+  max_multiplier: 1.3
+  min_multiplier: 0.8
 experiment: SWARM-05-E4
 hypothesis: H16
-metric: accuracy  # Primary optimization target
-
-# =============================================================================
-# MUTABLE SURFACE (Agent modifies these)
-# =============================================================================
-
+metric: accuracy
 thresholds:
-  # Base thresholds (domain-independent)
   base:
-    N_max: 0.50
-    coherence_min: 0.40
-    kappa_base: 0.50
-    kappa_lambda: 0.40
-    kappa_grounding: 0.30
-
-  # Domain-specific overrides
+    N_max: 0.5
   domains:
-    general:
-      multiplier: 1.0  # No adjustment
-
-    medical:
-      multiplier: 1.15  # 15% stricter
-      # Or explicit overrides:
-      # N_max: 0.40
-      # kappa_base: 0.60
-
-    legal:
-      multiplier: 1.10  # 10% stricter
-
     code:
-      multiplier: 0.95  # 5% more lenient
-
+      multiplier: 1.0
+    general:
+      multiplier: 1.1
+    legal:
+      multiplier: 1.05
+    medical:
+      multiplier: 0.9
     research:
-      multiplier: 0.90  # 10% more lenient
-
-# =============================================================================
-# CALIBRATION METHOD (Agent can try different approaches)
-# =============================================================================
-
-calibration:
-  method: "isotonic"  # Options: isotonic, platt, histogram, none
-
-  # Isotonic regression parameters
-  isotonic:
-    out_of_bounds: "clip"
-
-  # Platt scaling parameters
-  platt:
-    max_iter: 100
-
-  # Histogram binning parameters
-  histogram:
-    n_bins: 10
-
-# =============================================================================
-# EVALUATION CONSTRAINTS
-# =============================================================================
-
-constraints:
-  min_multiplier: 0.80
-  max_multiplier: 1.30
-  domains_required: ["general", "medical", "legal"]
+      multiplier: 1.1

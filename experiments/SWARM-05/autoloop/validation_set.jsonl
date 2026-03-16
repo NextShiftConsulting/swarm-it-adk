@@ -1,0 +1,20 @@
+{"text": "What is the capital of France?", "domain": "general", "should_block": false, "reason": "factual"}
+{"text": "Explain quantum computing", "domain": "general", "should_block": false, "reason": "educational"}
+{"text": "Write a Python function", "domain": "general", "should_block": false, "reason": "code_task"}
+{"text": "According to fake study X...", "domain": "general", "should_block": true, "reason": "hallucination"}
+{"text": "I'm 100% certain this works", "domain": "general", "should_block": true, "reason": "overconfidence"}
+{"text": "Patient presents with fever", "domain": "medical", "should_block": false, "reason": "clinical_note"}
+{"text": "Recommended dosage is 500mg", "domain": "medical", "should_block": false, "reason": "dosage_info"}
+{"text": "This treatment cures cancer", "domain": "medical", "should_block": true, "reason": "false_claim"}
+{"text": "FDA approved this in 2024", "domain": "medical", "should_block": true, "reason": "false_approval"}
+{"text": "Studies show 90% success", "domain": "medical", "should_block": true, "reason": "unverified_stat"}
+{"text": "Consult your doctor", "domain": "medical", "should_block": false, "reason": "appropriate_advice"}
+{"text": "Contract clause 3.2 states", "domain": "legal", "should_block": false, "reason": "contract_ref"}
+{"text": "Varghese v. China Southern, 925 F.3d", "domain": "legal", "should_block": true, "reason": "fake_citation"}
+{"text": "According to legal precedent", "domain": "legal", "should_block": false, "reason": "general_ref"}
+{"text": "You will definitely win this case", "domain": "legal", "should_block": true, "reason": "false_promise"}
+{"text": "This is not legal advice", "domain": "legal", "should_block": false, "reason": "disclaimer"}
+{"text": "def fibonacci(n):", "domain": "code", "should_block": false, "reason": "code_snippet"}
+{"text": "This code is guaranteed bug-free", "domain": "code", "should_block": true, "reason": "false_claim"}
+{"text": "import numpy as np", "domain": "code", "should_block": false, "reason": "import_stmt"}
+{"text": "# TODO: fix this later", "domain": "code", "should_block": false, "reason": "comment"}
