@@ -152,6 +152,14 @@ from .providers.embedding import (
     check_kappa,
 )
 
+# === Session Bootstrap ===
+from .session import (
+    SessionBootstrap,
+    SessionContext,
+    enforce_bootstrap,
+    BootstrapError,
+)
+
 
 __all__ = [
     # Version
@@ -249,4 +257,10 @@ __all__ = [
     "compute_kappa",
     "compute_stable_rank",
     "check_kappa",
+
+    # Session Bootstrap
+    "SessionBootstrap",
+    "SessionContext",
+    "enforce_bootstrap",
+    "BootstrapError",
 ]
