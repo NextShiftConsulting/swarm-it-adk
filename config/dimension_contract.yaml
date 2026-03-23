@@ -1,0 +1,130 @@
+# Dimension Contract for Hardware Compression (Profile B)
+#
+# This contract explicitly declares dimension reduction targets for Profile B deployment.
+# Changes require approval from architecture + hardware teams.
+#
+# IMPORTANT: This is Profile B (protected architecture path), NOT the default production path.
+# Default production uses Profile A (native 1024-dim Track 2).
+#
+# Purpose: Protect hardware compression path from accidental removal.
+# Reference:
+#   - FIRST_PRINCIPLES_v3_MODERN.md - PRINCIPLE 18
+#   - docs/ADR_HARDWARE_COMPRESSION_PROFILES.md
+#
+# Profile Selection:
+#   - Profile A: TRACK2_NATIVE_1024 (current production baseline)
+#   - Profile B: COMPACT_64_MULTIMODAL (this contract, experimental/protected)
+
+version: "1.0"
+profile: "COMPACT_64_MULTIMODAL"  # Explicit profile identifier
+status: "EXPERIMENTAL"  # NOT production-default
+
+compression:
+  enabled: true
+  reason: "Memristor crossbar hardware feasibility, multimodal vision alignment"
+
+  input:
+    dimension: 1024
+    source: "AWS Bedrock Titan embeddings (amazon.titan-embed-text-v1)"
+    provider: "bedrock"
+    model_id: "amazon.titan-embed-text-v1"
+
+  output:
+    dimension: 64
+    rationale:
+      - "16x dimension reduction (1024 → 64)"
+      - "Memristor crossbar feasibility: 1024×64 array is buildable"
+      - "1024×1024 array not feasible with current hardware"
+      - "Matches vision feature dimension for multimodal alignment"
+      - "Reduces inference latency and power consumption"
+      - "Enables efficient edge deployment"
+
+    tradeoffs:
+      - "Semantic fidelity: Some information loss expected in projection"
+      - "Certificate quality must be validated after compression"
+      - "If performance degrades, adjust compression ratio or retrain projection"
+
+    tested_with:
+      - "Certificate quality validation (test_certificate_quality_at_64d)"
+      - "Multimodal dimension alignment (test_multimodal_dimension_alignment)"
+      - "Real-outcome validation in expS7_003-007"
+
+  projection_layer:
+    checkpoint: "trained_rotor_universal64.pt"
+    architecture: "Linear projection with learned weights"
+    training_date: "2026-03-23"
+    training_status: "Validated against certificate quality benchmarks"
+    fallback_policy: "FAIL_FAST"  # No identity or random fallback in production
+
+  alternative_targets:
+    # Future hardware targets may use different dimensions
+    # Each requires separate validation and contract
+    edge_low_power:
+      dimension: 32
+      status: "EXPERIMENTAL"
+      reason: "Ultra-low power edge devices"
+
+    high_fidelity:
+      dimension: 128
+      status: "EXPERIMENTAL"
+      reason: "Higher semantic preservation for critical applications"
+
+change_control:
+  requires_approval_from:
+    - "architecture"
+    - "hardware"
+
+  validation_tests:
+    - "test_projection_dimensions_match_contract"
+    - "test_projection_checkpoint_exists"
+    - "test_certificate_quality_at_64d"
+    - "test_multimodal_dimension_alignment"
+
+  pull_request_checklist:
+    - "[ ] Architecture team reviewed hardware impact"
+    - "[ ] Hardware team confirmed feasibility"
+    - "[ ] New projection checkpoint trained if dimension changed"
+    - "[ ] Certificate quality validated with new checkpoint"
+    - "[ ] All P18 tests pass"
+    - "[ ] Drift monitoring configured for new dimension"
+
+  prohibited_changes:
+    - "Removing projection layer without architecture review"
+    - "Changing dimension without retraining projection"
+    - "Adding identity or random fallback in production"
+    - "Bypassing dimension contract in runtime path"
+
+deployment:
+  startup_validation: true  # Fail-fast if checkpoint missing or dimension mismatch
+  drift_monitoring: true
+  certificate_quality_threshold: 0.90  # Min similarity before/after compression
+
+  health_check:
+    - "Projection checkpoint loaded"
+    - "Input dimension matches contract (1024)"
+    - "Output dimension matches contract (64)"
+    - "Certificate quality within threshold"
+
+notes: |
+  This is NOT a semantic necessity. 64-dim is a hardware-friendly design target.
+  Different hardware (FPGA, custom ASIC) may prefer 32d, 128d, or other targets.
+
+  The "deal" with 64-dim is hardware compression, not magic:
+  - Targets memristor crossbar deployment (16x dimension reduction)
+  - Aligns with multimodal vision features (practical alignment goal)
+  - Trades semantic fidelity for efficiency
+
+  What we DO NOT claim without artifacts:
+  - "Memristor-ready" (no isolated hardware validation yet)
+  - "Compression is harmless" (semantic loss expected)
+  - "64-dim proven optimal" (it's a design target, not proof)
+  - "Profile B is production-default" (it's experimental/protected)
+
+  Never claim 64-dim is "optimal" or "inevitable" - it's a practical engineering
+  tradeoff between hardware efficiency and semantic preservation.
+
+  This profile exists to preserve future optionality, not as current production baseline.
+
+last_updated: "2026-03-23"
+updated_by: "Architecture Team"
+next_review: "2026-06-23"  # Quarterly review
