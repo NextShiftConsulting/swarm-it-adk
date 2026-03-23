@@ -12,14 +12,11 @@ Usage:
 """
 
 import os
-import logging
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.rest import router as api_router
 from api.metrics import init_metrics, get_metrics, get_metrics_content_type
-
-logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Swarm-It Sidecar",
@@ -65,34 +62,6 @@ async def metrics():
 async def startup():
     """Initialize on startup."""
     init_metrics(version="0.1.0")
-
-    # P18: Validate projection layer if Profile B (hardware compression) selected
-    profile = os.environ.get("SWARM_PROFILE", "TRACK2_NATIVE_1024")
-
-    if profile == "COMPACT_64_MULTIMODAL":
-        logger.info("Profile B (hardware compression) selected - validating projection layer...")
-        try:
-            # Import here to avoid dependency if not using Profile B
-            import sys
-            from pathlib import Path
-
-            # Add adk/swarm_it to path
-            sys.path.insert(0, str(Path(__file__).parent.parent / "adk"))
-
-            from swarm_it.projection import validate_projection_at_startup
-
-            validation_result = validate_projection_at_startup()
-            logger.info(f"P18 validation passed: {validation_result}")
-
-        except Exception as e:
-            logger.error(f"P18 VIOLATION: Projection validation failed at startup: {e}")
-            raise RuntimeError(
-                f"Cannot start server with Profile B without valid projection layer. "
-                f"Error: {e}. "
-                f"Either fix projection checkpoint or switch to Profile A (TRACK2_NATIVE_1024)."
-            )
-    else:
-        logger.info(f"Profile A (native 1024-dim) selected - no projection layer needed")
 
 
 if __name__ == "__main__":
