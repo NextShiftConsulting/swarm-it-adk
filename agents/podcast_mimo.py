@@ -219,7 +219,11 @@ Output as JSON:
 }}
 
 Keep it conversational and accessible. The host is curious but not an expert.
-The expert (Rudy Martin) created RSCT theory and knows AI quality deeply.
+The expert (Rudy Martin) explains concepts from the blog post using clear analogies and examples.
+
+CRITICAL: Stay faithful to the blog content. Do NOT introduce external frameworks, theories,
+or concepts unless they are explicitly discussed in the blog. The expert should explain what's
+IN THE BLOG, not inject new theories.
 """
 
         response_text = self.call_llm(prompt, max_tokens=4000)
@@ -294,7 +298,7 @@ Generate ONLY the host's question. No quotes, no labels, just the spoken words.
         Expert Agent: Generate expert response
         """
         if segment["type"] == "intro":
-            prompt = f"""You are Rudy Martin, creator of RSCT (Representation-Solver Compatibility Theory).
+            prompt = f"""You are Rudy Martin, a technical expert explaining AI concepts on the "Swarm-It" podcast.
 
 The host just introduced the topic. Respond with a brief, engaging setup (30-40 words).
 
@@ -305,6 +309,9 @@ Your personality:
 - Enthusiastic about the topic
 - Set the stage without diving too deep yet
 
+CRITICAL: Explain only what's in the blog post. Do NOT introduce external theories or frameworks
+unless they are explicitly mentioned in the blog content.
+
 Generate ONLY your spoken response. Natural, conversational. No quotes or labels.
 """
         else:
@@ -312,7 +319,7 @@ Generate ONLY your spoken response. Natural, conversational. No quotes or labels
             key_points = segment.get('expert_key_points', [])
             example = segment.get('example_to_use', '')
 
-            prompt = f"""You are Rudy Martin, explaining AI quality concepts on your podcast.
+            prompt = f"""You are Rudy Martin, a technical expert explaining concepts from a blog post on the "Swarm-It" podcast.
 
 The host just asked: "{host_question}"
 
@@ -332,6 +339,10 @@ Generate a 60-80 word explanation that:
 3. Includes concrete example
 4. Connects to practical implications
 
+CRITICAL: Stay faithful to the blog content. Explain what's IN THE BLOG. Do NOT introduce
+external frameworks, theories (like RSCT, RSN, etc.), or concepts unless the blog explicitly
+discusses them. If the blog doesn't mention a solution, don't invent one.
+
 Your style: "Great question! [Answer]... Think of it like [analogy]... Here's a real example: [case study]"
 
 Generate ONLY your spoken response. Natural, conversational. No quotes or labels.
@@ -346,7 +357,14 @@ Generate ONLY your spoken response. Natural, conversational. No quotes or labels
 
     def quality_agent(self, dialogue_script: List[Dict], blog_post: Dict) -> Dict:
         """
-        Quality Agent: Validate dialogue with RSCT gates
+        Quality Agent: Validate dialogue with structured compatibility certificate
+
+        Implements state-based decision logic per patent architecture:
+        - Certificate is ENFORCEMENT DATA, not command
+        - Quality Agent is independent CONSUMER that interprets certificate
+        - Maps metrics to execution states (FIG. 19)
+        - Applies 4-gate sequential validation (FIG. 24)
+        - Returns typed decision: EXECUTE, RE_ENCODE, REJECT, REPAIR, BLOCK
         """
         # Combine all dialogue for analysis
         full_dialogue = "\n".join([
@@ -354,35 +372,44 @@ Generate ONLY your spoken response. Natural, conversational. No quotes or labels
             for seg in dialogue_script
         ])
 
-        prompt = f"""You are a quality validator for podcast dialogue.
+        # === MEASUREMENT LAYER: Generate certificate via 2 paths ===
+
+        # Path 1: Semantic Decomposition (R, S, N → α)
+        prompt = f"""You are a quality validator analyzing podcast dialogue against source blog content.
 
 Original blog post title: {blog_post['title']}
 Blog word count: {blog_post['word_count']}
 
-Blog key concepts (first 1000 chars):
-{blog_post['body'][:1000]}
+Blog key concepts (first 2000 chars):
+{blog_post['body'][:2000]}
 
 Generated dialogue:
 {full_dialogue}
 
-Evaluate using RSCT metrics:
+Perform semantic decomposition into three mutually exclusive components:
 
-R (Relevance): Does dialogue cover blog's core concepts? (0-1)
-S (Superfluousness): How much filler/fluff? (0-1, lower is better)
-N (Noise): Any factual errors or hallucinations? (0-1, lower is better)
-kappa (Overall Quality): Natural flow, engagement, clarity (0-1)
+R (Relevance): Fraction of dialogue content that is solver-aligned (covers blog's core concepts)
+S (Superfluousness): Fraction that is structured but misaligned (filler, repetition, off-topic)
+N (Noise): Fraction that is factually incorrect or hallucinated (contradicts blog, introduces false claims)
+
+CONSTRAINT: R + S + N = 1.0 (normalized)
+
+Evaluate carefully:
+- R: Does dialogue cover the blog's key concepts accurately?
+- S: How much unnecessary filler, repetition, or conversational fluff?
+- N: Any factual errors? Does dialogue introduce frameworks/theories NOT in the blog?
 
 Return JSON:
 {{
   "R": 0.X,
   "S": 0.X,
   "N": 0.X,
-  "kappa": 0.X,
-  "feedback": "Brief assessment",
-  "approved": true/false
+  "feedback": "Brief assessment explaining R/S/N breakdown"
 }}
 
-Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
+Example:
+- If dialogue accurately covers blog (R=0.7), has some repetition (S=0.2), no errors (N=0.1) → R+S+N=1.0
+- If dialogue introduces RSCT theory when blog doesn't mention it → high N (hallucination)
 """
 
         response_text = self.call_llm(prompt, max_tokens=500)
@@ -390,56 +417,231 @@ Approval thresholds: R >= 0.7, S <= 0.3, N <= 0.1, kappa >= 0.8
         # Extract JSON
         json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
         if json_match:
-            cert = json.loads(json_match.group(0))
+            decomp = json.loads(json_match.group(0))
         else:
-            # Default passing cert
-            cert = {"R": 0.8, "S": 0.2, "N": 0.05, "kappa": 0.85, "approved": True, "feedback": "OK"}
+            # Default decomposition
+            decomp = {"R": 0.7, "S": 0.2, "N": 0.1, "feedback": "Default decomposition"}
 
-        print(f"\n[*] Quality Certificate:")
-        print(f"   R={cert['R']:.2f} S={cert['S']:.2f} N={cert['N']:.2f} kappa={cert['kappa']:.2f}")
-        print(f"   Status: {'[+] APPROVED' if cert['approved'] else '[-] REJECTED'}")
+        # Normalize to ensure R + S + N = 1.0
+        total = decomp['R'] + decomp['S'] + decomp['N']
+        if total > 0:
+            decomp['R'] /= total
+            decomp['S'] /= total
+            decomp['N'] /= total
 
-        return cert
+        # Derive quality metric α = R / (R + N)
+        alpha = decomp['R'] / (decomp['R'] + decomp['N']) if (decomp['R'] + decomp['N']) > 0 else 0.5
+
+        # Path 2: Compatibility Assessment (κ_gate, σ, c)
+        # For podcast dialogue, κ_gate = "dialogue-blog alignment"
+        # σ = "conversational turbulence" (repetition, contradiction)
+        # c = "host-expert consensus" (coherence)
+
+        # Simple proxy: κ_gate ≈ R (content alignment)
+        # σ ≈ S (more filler → more turbulence)
+        # c ≈ 1 - N (fewer errors → better consensus)
+        kappa_gate = decomp['R']  # Blog-dialogue alignment
+        sigma = decomp['S']  # Conversational turbulence (filler)
+        coherence = 1.0 - decomp['N']  # Inverse of noise
+
+        # === CONTROL LAYER: Sequential 4-Gate Validation ===
+
+        # Thresholds (from FIG. 24)
+        N_thr = 0.5      # Gate 1: Noise floor (Fano's inequality)
+        c_min = 0.4      # Gate 2: Coherence minimum
+        sigma_thr = 0.5  # Gate 3: Hard turbulence barrier
+        kappa_base = 0.5 # Gate 3: Compatibility base
+        lambda_t = 0.4   # Gate 3: Turbulence sensitivity
+        kappa_L_min = 0.3  # Gate 4: Modal compatibility minimum
+
+        decision = "EXECUTE"
+        gate_failed = None
+        gate_feedback = ""
+
+        # Gate 1: Integrity Guard (Noise Floor)
+        if decomp['N'] >= N_thr:
+            decision = "REJECT"
+            gate_failed = 1
+            gate_feedback = f"Gate 1 (Integrity): N={decomp['N']:.2f} >= {N_thr} (noise saturation). Fano's inequality: no solver can recover correct inference."
+
+        # Gate 2: Consensus Gate (Coherence)
+        elif coherence < c_min:
+            decision = "BLOCK"
+            gate_failed = 2
+            gate_feedback = f"Gate 2 (Consensus): c={coherence:.2f} < {c_min} (structural incoherence). Host-expert dialogue lacks consistency."
+
+        # Gate 3: Admissibility Gate (Dynamic Compatibility)
+        elif sigma > sigma_thr:
+            decision = "RE_ENCODE"
+            gate_failed = 3
+            gate_feedback = f"Gate 3 (Admissibility): σ={sigma:.2f} > {sigma_thr} (hard turbulence barrier). Too much filler/repetition."
+        elif kappa_gate < (kappa_base + lambda_t * sigma):
+            decision = "RE_ENCODE"
+            gate_failed = 3
+            kappa_req = kappa_base + lambda_t * sigma
+            gate_feedback = f"Gate 3 (Admissibility): κ={kappa_gate:.2f} < κ_req={kappa_req:.2f} (dynamic threshold). Blog-dialogue alignment insufficient."
+
+        # Gate 4: Grounding Gate (Modal Compatibility)
+        # For podcast: κ_L = "low-level quality" (pacing, natural flow)
+        # Proxy: κ_L ≈ overall engagement quality (kappa)
+        kappa_L = alpha * kappa_gate  # Combined quality * alignment
+        if kappa_L < kappa_L_min:
+            decision = "REPAIR"
+            gate_failed = 4
+            gate_feedback = f"Gate 4 (Grounding): κ_L={kappa_L:.2f} < {kappa_L_min} (physically ungrounded quality). Dialogue lacks natural flow."
+
+        # === Map to Execution States (FIG. 19) ===
+
+        # State classification based on (α, κ_gate) conjunction
+        if alpha >= 0.7 and kappa_gate >= 0.7:
+            execution_state = "HEALTHY"  # High quality, high alignment
+        elif alpha >= 0.7 and kappa_gate < 0.7:
+            execution_state = "HALLUCINATION-RISK"  # High quality but misaligned
+        elif alpha < 0.7 and kappa_gate >= 0.7:
+            execution_state = "TARGETED-POISONING"  # Low quality despite alignment (adversarial)
+        else:
+            execution_state = "SYSTEMIC-DEGRADATION"  # Both low
+
+        # === STRUCTURED COMPATIBILITY CERTIFICATE ===
+
+        certificate = {
+            # DECOMPOSITION section (1402)
+            "R": decomp['R'],
+            "S": decomp['S'],
+            "N": decomp['N'],
+
+            # QUALITY section (1404)
+            "alpha": alpha,  # Quality metric from semantic decomposition
+            "omega": 1.0,    # Reliability coefficient (not computed for simple case)
+            "alpha_omega": alpha,  # Reliability-adjusted quality
+            "tau": 1.0 / alpha if alpha > 0 else 2.0,  # Temperature (not a gate operand)
+
+            # DERIVED section (1406)
+            "kappa_gate": kappa_gate,  # Execution compatibility score
+            "sigma": sigma,  # Turbulence metric
+            "coherence": coherence,  # Consensus coherence
+
+            # DIAGNOSTIC section (1407) - simplified
+            "kappa_L": kappa_L,  # Low-level modal health
+
+            # COLLAPSE_TYPE section (1408)
+            "execution_state": execution_state,
+            "decision": decision,
+            "gate_failed": gate_failed,
+            "gate_feedback": gate_feedback if gate_failed else "All gates passed",
+
+            # Legacy fields for compatibility
+            "kappa": alpha * kappa_gate,  # Overall quality score
+            "approved": (decision == "EXECUTE"),
+            "feedback": decomp.get('feedback', '') + ("\n" + gate_feedback if gate_feedback else "")
+        }
+
+        print(f"\n[*] Structured Compatibility Certificate:")
+        print(f"   DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
+        print(f"   QUALITY: alpha={certificate['alpha']:.2f}")
+        print(f"   DERIVED: kappa={certificate['kappa_gate']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
+        print(f"   EXECUTION STATE: {certificate['execution_state']}")
+        print(f"   DECISION: {certificate['decision']} (Gate {certificate['gate_failed'] or 'ALL PASSED'})")
+        print(f"   Status: {'[+] EXECUTE' if certificate['approved'] else '[-] ' + certificate['decision']}")
+
+        return certificate
 
     def generate_dialogue(self, blog_post: Dict) -> List[Dict]:
         """
-        Main orchestration: Generate complete dialogue script
+        Main orchestration: Generate complete dialogue script with feedback loops
+
+        Implements Loop 1 (Morph Repair) from patent architecture:
+        - Non-EXECUTE decision → apply graph transformation operator
+        - Re-derive certificate
+        - Re-evaluate gates
+        - Continue until EXECUTE or max attempts reached
         """
         print(f"\n[*] Generating dialogue for: {blog_post['title']}")
         print(f"    Blog length: {blog_post['word_count']} words\n")
 
-        # Step 1: Producer creates outline
-        print("[1] Step 1: Producer creating outline...")
-        outline = self.producer_agent(blog_post)
+        max_attempts = 2  # Prevent infinite loops
+        attempt = 1
 
-        # Step 2: Generate dialogue segments
-        print("\n[2] Step 2: Generating dialogue...")
-        dialogue_script = []
-        conversation_context = ""
+        while attempt <= max_attempts:
+            if attempt > 1:
+                print(f"\n[*] RETRY ATTEMPT {attempt}/{max_attempts} (Morph Repair Cycle)")
 
-        for i, segment in enumerate(outline["segments"]):
-            print(f"\n  Segment {i+1}/{len(outline['segments'])} ({segment['type']})")
+            # Step 1: Producer creates outline
+            print(f"[1] Step 1: Producer creating outline...")
+            outline = self.producer_agent(blog_post)
 
-            # Host speaks
-            host_dialogue = self.host_agent(segment, conversation_context)
-            dialogue_script.append({
-                "speaker": "host",
-                "text": host_dialogue
-            })
-            conversation_context += f"\nHOST: {host_dialogue}"
+            # Step 2: Generate dialogue segments
+            print(f"\n[2] Step 2: Generating dialogue...")
+            dialogue_script = []
+            conversation_context = ""
 
-            # Expert responds
-            expert_dialogue = self.expert_agent(segment, host_dialogue, blog_post['body'])
-            dialogue_script.append({
-                "speaker": "expert",
-                "text": expert_dialogue
-            })
-            conversation_context += f"\nEXPERT: {expert_dialogue}"
+            for i, segment in enumerate(outline["segments"]):
+                print(f"\n  Segment {i+1}/{len(outline['segments'])} ({segment['type']})")
 
-        # Step 3: Quality validation
-        print("\n\n[3] Step 3: Quality validation...")
-        cert = self.quality_agent(dialogue_script, blog_post)
+                # Host speaks
+                host_dialogue = self.host_agent(segment, conversation_context)
+                dialogue_script.append({
+                    "speaker": "host",
+                    "text": host_dialogue
+                })
+                conversation_context += f"\nHOST: {host_dialogue}"
 
+                # Expert responds
+                expert_dialogue = self.expert_agent(segment, host_dialogue, blog_post['body'])
+                dialogue_script.append({
+                    "speaker": "expert",
+                    "text": expert_dialogue
+                })
+                conversation_context += f"\nEXPERT: {expert_dialogue}"
+
+            # Step 3: Quality validation with state-based decision
+            print(f"\n\n[3] Step 3: Quality validation...")
+            cert = self.quality_agent(dialogue_script, blog_post)
+
+            # === CONTROL LAYER: Act on typed decision ===
+
+            if cert['decision'] == 'EXECUTE':
+                # Gate passed - accept dialogue
+                print(f"\n[+] Gate evaluation: EXECUTE (All gates passed)")
+                return dialogue_script, cert
+
+            elif cert['decision'] == 'RE_ENCODE':
+                # Morph Repair: Regenerate dialogue
+                print(f"\n[!] Gate evaluation: RE_ENCODE")
+                print(f"    Reason: {cert['gate_feedback']}")
+                if attempt < max_attempts:
+                    print(f"    Applying graph transformation: regenerate dialogue")
+                    attempt += 1
+                    continue  # Retry loop
+                else:
+                    print(f"    Max attempts reached - returning failed dialogue")
+                    return dialogue_script, cert
+
+            elif cert['decision'] == 'REPAIR':
+                # Morph Repair: Attempt targeted fix
+                print(f"\n[!] Gate evaluation: REPAIR")
+                print(f"    Reason: {cert['gate_feedback']}")
+                if attempt < max_attempts:
+                    print(f"    Applying graph transformation: regenerate dialogue")
+                    attempt += 1
+                    continue  # Retry loop
+                else:
+                    print(f"    Max attempts reached - returning failed dialogue")
+                    return dialogue_script, cert
+
+            elif cert['decision'] in ['REJECT', 'BLOCK']:
+                # Terminal failure - no retry
+                print(f"\n[-] Gate evaluation: {cert['decision']}")
+                print(f"    Reason: {cert['gate_feedback']}")
+                print(f"    Terminal failure - no retry")
+                return dialogue_script, cert
+
+            else:
+                # Unknown decision - default to execute
+                print(f"\n[?] Unknown decision: {cert['decision']} - defaulting to EXECUTE")
+                return dialogue_script, cert
+
+        # Should never reach here, but return if loop exits
         return dialogue_script, cert
 
     def _save_individual_audio_files(self, dialogue_script: List[Dict], output_path: str):
