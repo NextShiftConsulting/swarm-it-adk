@@ -1,14 +1,36 @@
 """
 BYOK (Bring Your Own Key) Engine - Copilot SDK Pattern
 Local RSCT certification using customer's LLM credentials.
+
+P18 Compliance: Credentials via swarm-it-auth when available.
 """
 
 import os
+import sys
 import torch
 import hashlib
 import uuid
 from typing import Dict, Any, Optional
 from datetime import datetime
+from pathlib import Path
+
+# Add swarm-it-auth to path for credential management (P18)
+sys.path.insert(0, str(Path.home() / "GitHub" / "swarm-it-auth"))
+
+# Optional: swarm-it-auth for credentials (P18 compliant)
+try:
+    from swarm_auth.adapters import EnvCredentialAdapter
+    HAS_SWARM_AUTH = True
+except ImportError:
+    HAS_SWARM_AUTH = False
+
+
+def _get_credential(key: str) -> Optional[str]:
+    """Get credential via swarm-it-auth (P18 compliant)."""
+    if HAS_SWARM_AUTH:
+        adapter = EnvCredentialAdapter()
+        return adapter.retrieve(key)
+    return None
 
 
 class BYOKEngine:
@@ -84,11 +106,14 @@ class BYOKEngine:
         elif self.provider == "bedrock":
             # Bedrock uses boto3
             import boto3
+            # P18 compliant: credentials via swarm-it-auth
+            aws_secret = _get_credential("AWS_SECRET_ACCESS_KEY") or ""
+            aws_region = _get_credential("AWS_REGION") or "us-east-1"
             self.bedrock_client = boto3.client(
                 "bedrock-runtime",
                 aws_access_key_id=self.api_key,
-                aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
-                region_name=os.environ.get("AWS_REGION", "us-east-1")
+                aws_secret_access_key=aws_secret,
+                region_name=aws_region
             )
             return None  # Bedrock doesn't use OpenAI client
 

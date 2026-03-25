@@ -1,6 +1,8 @@
 """
 RSCT Vision Tools for Swarm-It ADK.
 
+P18 Compliance: Credentials via swarm-it-auth when available.
+
 Provides Python wrappers for rsct-vision MCP server tools:
 - Research: Knowledge graph + vector search
 - Spec: Generate hardware assertion DSL
@@ -27,14 +29,34 @@ Usage:
 import asyncio
 import json
 import os
+import sys
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
+from pathlib import Path
 from pydantic import BaseModel, Field
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from .mcp_tools import Tool, ToolMetadata, ToolCategory, ToolRegistry
+
+# Add swarm-it-auth to path for credential management (P18)
+sys.path.insert(0, str(Path.home() / "GitHub" / "swarm-it-auth"))
+
+# Optional: swarm-it-auth for credentials (P18 compliant)
+try:
+    from swarm_auth.adapters import EnvCredentialAdapter
+    HAS_SWARM_AUTH = True
+except ImportError:
+    HAS_SWARM_AUTH = False
+
+
+def _get_credential(key: str) -> Optional[str]:
+    """Get credential via swarm-it-auth (P18 compliant)."""
+    if HAS_SWARM_AUTH:
+        adapter = EnvCredentialAdapter()
+        return adapter.retrieve(key)
+    return None
 
 
 # =============================================================================
@@ -125,7 +147,8 @@ class RSCTClientConfig:
 
     def __post_init__(self):
         if self.anthropic_api_key is None:
-            self.anthropic_api_key = os.getenv("ANTHROPIC_API_KEY", "")
+            # P18 compliant: credentials via swarm-it-auth
+            self.anthropic_api_key = _get_credential("ANTHROPIC_API_KEY") or ""
 
 
 class RSCTClient:

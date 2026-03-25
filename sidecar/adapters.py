@@ -1,6 +1,8 @@
 """
 Adapters - Implementations of ports via yrsn.
 
+P18 Compliance: Credentials via config_manager.
+
 TRAINED RSN PIPELINE:
     OpenAI text-embedding-3-small (dimensions=384)
         ↓
@@ -16,9 +18,9 @@ IMPORTANT: OpenAI dimensions=384 to match trained projection input.
            1536 or 768 dim would require different trained checkpoints.
 """
 
-import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from .ports import EmbeddingPort, RSNPort
+from .config.config_manager import get_config
 
 # Checkpoints
 YRSN_CHECKPOINTS = "/Users/rudy/GitHub/yrsn/checkpoints"
@@ -35,7 +37,8 @@ class OpenAIEmbeddingAdapter(EmbeddingPort):
         model: str = "text-embedding-3-small",
         dimensions: int = 384,  # Match text_mlp projection input
     ):
-        self._api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        # P18 compliant: credentials via config_manager
+        self._api_key = api_key or get_config().openai_api_key
         self._model = model
         self._dimensions = dimensions
         self._client = None

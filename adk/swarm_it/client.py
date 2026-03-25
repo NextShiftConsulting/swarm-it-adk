@@ -1,16 +1,38 @@
 """
 Swarm It Core Client
 
+P18 Compliance: Credentials via swarm-it-auth when available.
+
 Handles certification requests and gate decisions.
 """
 
 import os
+import sys
 import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional, Dict, Any, Callable, List
+from pathlib import Path
 import httpx
+
+# Add swarm-it-auth to path for credential management (P18)
+sys.path.insert(0, str(Path.home() / "GitHub" / "swarm-it-auth"))
+
+# Optional: swarm-it-auth for credentials (P18 compliant)
+try:
+    from swarm_auth.adapters import EnvCredentialAdapter
+    HAS_SWARM_AUTH = True
+except ImportError:
+    HAS_SWARM_AUTH = False
+
+
+def _get_credential(key: str) -> Optional[str]:
+    """Get credential via swarm-it-auth (P18 compliant)."""
+    if HAS_SWARM_AUTH:
+        adapter = EnvCredentialAdapter()
+        return adapter.retrieve(key)
+    return None
 
 
 class GateDecision(Enum):
@@ -121,12 +143,13 @@ class SwarmIt:
         Initialize Swarm It client.
 
         Args:
-            api_key: API key (or set SWARM_IT_API_KEY env var)
-            base_url: API endpoint (or set SWARM_IT_BASE_URL env var)
+            api_key: API key (or via swarm-it-auth SWARM_IT_API_KEY)
+            base_url: API endpoint (or via SWARM_IT_BASE_URL)
             timeout: Request timeout in seconds
             policy: Default certification policy
         """
-        self.api_key = api_key or os.environ.get("SWARM_IT_API_KEY")
+        # P18 compliant: credentials via swarm-it-auth
+        self.api_key = api_key or _get_credential("SWARM_IT_API_KEY")
         self.base_url = (
             base_url
             or os.environ.get("SWARM_IT_BASE_URL")
