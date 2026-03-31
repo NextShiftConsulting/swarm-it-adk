@@ -16,23 +16,13 @@ from typing import Optional, Dict, Any, Callable, List
 from pathlib import Path
 import httpx
 
-# Add swarm-it-auth to path for credential management (P18)
-sys.path.insert(0, str(Path.home() / "GitHub" / "swarm-it-auth"))
-
-# Optional: swarm-it-auth for credentials (P18 compliant)
+# P18 v3.0 - Unified credential access
 try:
-    from swarm_auth.adapters import EnvCredentialAdapter
-    HAS_SWARM_AUTH = True
+    from swarm_auth import get_credential as _get_credential
 except ImportError:
-    HAS_SWARM_AUTH = False
-
-
-def _get_credential(key: str) -> Optional[str]:
-    """Get credential via swarm-it-auth (P18 compliant)."""
-    if HAS_SWARM_AUTH:
-        adapter = EnvCredentialAdapter()
-        return adapter.retrieve(key)
-    return None
+    # Fallback to environment variables
+    def _get_credential(key: str, default: Optional[str] = None) -> Optional[str]:
+        return os.environ.get(key, default)
 
 
 class GateDecision(Enum):
@@ -58,6 +48,15 @@ class GateDecision(Enum):
 
 
 @dataclass
+class RSCTModeDetail:
+    """RSCT mode taxonomy detail."""
+    group: int  # 0=proceed, 1=encoding, 2=dynamics, 3=semantic, 4=execution
+    type: int   # Subtype within group
+    name: str   # Human-readable name
+    description: str  # Trigger condition
+
+
+@dataclass
 class Certificate:
     """RSCT Certificate returned from certification."""
 
@@ -79,6 +78,10 @@ class Certificate:
     gate_reached: int
     reason: str
 
+    # RSCT mode (from API - authoritative)
+    rsct_mode: Optional[str] = None
+    rsct_mode_detail: Optional[RSCTModeDetail] = None
+
     # Metadata
     policy: str = "default"
     raw: Dict[str, Any] = field(default_factory=dict)
@@ -96,7 +99,7 @@ class Certificate:
 
     def to_dict(self) -> Dict[str, Any]:
         """Export certificate as dict."""
-        return {
+        result = {
             "certificate_id": self.id,
             "timestamp": self.timestamp,
             "R": self.R,
@@ -109,7 +112,16 @@ class Certificate:
             "gate_reached": self.gate_reached,
             "reason": self.reason,
             "policy": self.policy,
+            "rsct_mode": self.rsct_mode,
         }
+        if self.rsct_mode_detail:
+            result["rsct_mode_detail"] = {
+                "group": self.rsct_mode_detail.group,
+                "type": self.rsct_mode_detail.type,
+                "name": self.rsct_mode_detail.name,
+                "description": self.rsct_mode_detail.description,
+            }
+        return result
 
 
 class SwarmIt:
@@ -231,13 +243,277 @@ class SwarmIt:
         # Local fallback (hash-based, not production-grade)
         return self._local_certify(context, policy or self.default_policy)
 
+    def certify_batch(
+        self,
+        items: List[Dict[str, Any]],
+        continue_on_error: bool = True,
+        max_parallel: int = 10,
+    ) -> Dict[str, Any]:
+        """
+        Certify multiple items in a single API call.
+
+        Args:
+            items: List of items to certify, each with:
+                - id: Client-provided ID for correlation
+                - prompt: Text to certify
+                - context: Optional context
+                - policy: Optional policy override
+            continue_on_error: Continue if individual items fail
+            max_parallel: Max parallel certifications (1-50)
+
+        Returns:
+            Dict with:
+                - certificates: List of {id, certificate, error}
+                - stats: {total, succeeded, failed, duration_ms}
+
+        Example:
+            >>> items = [
+            ...     {"id": "msg_1", "prompt": "First message"},
+            ...     {"id": "msg_2", "prompt": "Second message"},
+            ... ]
+            >>> result = swarm.certify_batch(items)
+            >>> for cert_result in result["certificates"]:
+            ...     if cert_result.get("error"):
+            ...         print(f"Failed: {cert_result['error']}")
+            ...     else:
+            ...         print(f"Certified: {cert_result['certificate'].decision}")
+        """
+        from .exceptions import CertificationError, AuthenticationError
+
+        if not items:
+            return {
+                "certificates": [],
+                "stats": {"total": 0, "succeeded": 0, "failed": 0, "duration_ms": 0},
+            }
+
+        # API call
+        if not self._local_mode and self.api_key:
+            try:
+                response = self._client.post(
+                    "/certify/batch",
+                    json={
+                        "items": items,
+                        "options": {
+                            "continue_on_error": continue_on_error,
+                            "max_parallel": max_parallel,
+                        },
+                    },
+                )
+
+                if response.status_code == 401:
+                    raise AuthenticationError("Invalid API key")
+
+                if response.status_code != 200:
+                    raise CertificationError(
+                        f"Batch certification failed: {response.text}"
+                    )
+
+                data = response.json()
+
+                # Parse certificates
+                parsed_certs = []
+                for cert_result in data.get("certificates", []):
+                    if cert_result.get("certificate"):
+                        parsed_certs.append({
+                            "id": cert_result["id"],
+                            "certificate": self._parse_certificate(cert_result["certificate"]),
+                        })
+                    else:
+                        parsed_certs.append({
+                            "id": cert_result["id"],
+                            "error": cert_result.get("error", "Unknown error"),
+                        })
+
+                return {
+                    "certificates": parsed_certs,
+                    "stats": data.get("stats", {}),
+                }
+
+            except httpx.RequestError as e:
+                self._local_mode = True
+
+        # Local fallback: loop through items
+        import time
+        start = time.perf_counter()
+        results = []
+        succeeded = 0
+        failed = 0
+
+        for item in items:
+            try:
+                cert = self._local_certify(
+                    item.get("prompt", ""),
+                    item.get("policy", self.default_policy),
+                )
+                results.append({"id": item["id"], "certificate": cert})
+                succeeded += 1
+            except Exception as e:
+                if continue_on_error:
+                    results.append({"id": item["id"], "error": str(e)})
+                    failed += 1
+                else:
+                    raise
+
+        duration_ms = (time.perf_counter() - start) * 1000
+
+        return {
+            "certificates": results,
+            "stats": {
+                "total": len(items),
+                "succeeded": succeeded,
+                "failed": failed,
+                "duration_ms": round(duration_ms, 2),
+            },
+        }
+
+    def certify_swarm(
+        self,
+        swarm_id: str,
+        agents: List[Dict[str, Any]],
+        topology: Optional[Dict[str, Any]] = None,
+        task_encoding: Optional[str] = None,
+        policy: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Certify an entire swarm's output.
+
+        Args:
+            swarm_id: Unique swarm identifier
+            agents: List of agent outputs, each with:
+                - agent_id: Unique agent identifier
+                - context: What the agent was asked to do
+                - output: What the agent produced
+                - role: Optional agent role
+            topology: Optional swarm topology:
+                - type: "dag", "star", "mesh", "pipeline"
+                - edges: [{from, to}, ...]
+            task_encoding: Swarm-level task description
+            policy: Certification policy
+
+        Returns:
+            Dict with:
+                - swarm_id: The swarm ID
+                - swarm_certificate: Aggregate swarm certificate
+                - agent_certificates: Per-agent certificates
+                - interface_scores: Compatibility between agents
+                - timestamp: ISO timestamp
+
+        Example:
+            >>> result = swarm.certify_swarm(
+            ...     swarm_id="my-swarm",
+            ...     agents=[
+            ...         {"agent_id": "a1", "context": "...", "output": "..."},
+            ...         {"agent_id": "a2", "context": "...", "output": "..."},
+            ...     ],
+            ...     topology={"type": "pipeline", "edges": [{"from": "a1", "to": "a2"}]},
+            ... )
+            >>> print(f"Swarm decision: {result['swarm_certificate']['decision']}")
+            >>> print(f"Consensus: {result['swarm_certificate']['consensus']}")
+        """
+        from .exceptions import CertificationError, AuthenticationError
+
+        if not agents:
+            raise CertificationError("At least one agent required")
+
+        # API call
+        if not self._local_mode and self.api_key:
+            try:
+                request_body = {"agents": agents}
+                if topology:
+                    request_body["topology"] = topology
+                if task_encoding:
+                    request_body["task_encoding"] = task_encoding
+                if policy:
+                    request_body["policy"] = policy
+
+                response = self._client.post(
+                    f"/swarms/{swarm_id}/certify",
+                    json=request_body,
+                )
+
+                if response.status_code == 401:
+                    raise AuthenticationError("Invalid API key")
+
+                if response.status_code != 200:
+                    raise CertificationError(
+                        f"Swarm certification failed: {response.text}"
+                    )
+
+                return response.json()
+
+            except httpx.RequestError as e:
+                self._local_mode = True
+
+        # Local fallback: certify each agent and aggregate
+        from datetime import datetime
+        import uuid
+
+        agent_certs = []
+        min_kappa = 1.0
+        weakest_link = None
+        total_r, total_s, total_n = 0.0, 0.0, 0.0
+
+        for agent in agents:
+            cert = self._local_certify(
+                agent.get("output", ""),
+                policy or self.default_policy,
+            )
+            agent_cert = {
+                "agent_id": agent["agent_id"],
+                "R": cert.R,
+                "S": cert.S,
+                "N": cert.N,
+                "kappa": cert.kappa,
+                "decision": cert.decision.value,
+                "rsct_mode": cert.rsct_mode,
+            }
+            agent_certs.append(agent_cert)
+
+            total_r += cert.R
+            total_s += cert.S
+            total_n += cert.N
+
+            if cert.kappa < min_kappa:
+                min_kappa = cert.kappa
+                weakest_link = agent["agent_id"]
+
+        n_agents = len(agents)
+        avg_r = total_r / n_agents
+        avg_s = total_s / n_agents
+        avg_n = total_n / n_agents
+
+        # Determine swarm decision from weakest link
+        if min_kappa >= 0.7:
+            swarm_decision = "EXECUTE"
+        elif min_kappa >= 0.4:
+            swarm_decision = "REPAIR"
+        else:
+            swarm_decision = "BLOCK"
+
+        return {
+            "swarm_id": swarm_id,
+            "swarm_certificate": {
+                "R": round(avg_r, 4),
+                "S": round(avg_s, 4),
+                "N": round(avg_n, 4),
+                "kappa": round(min_kappa, 4),
+                "decision": swarm_decision,
+                "rsct_mode": "0.0" if swarm_decision == "EXECUTE" else "4.1",
+                "consensus": 1.0,  # Local mode doesn't compute real consensus
+                "weakest_link": weakest_link,
+            },
+            "agent_certificates": agent_certs,
+            "interface_scores": [],  # Local mode doesn't compute interfaces
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+        }
+
     def _parse_certificate(self, data: Dict[str, Any]) -> Certificate:
         """Parse API response into Certificate."""
         # Handle both RSCT naming (S_sup) and simplified (S)
         s_value = data.get("S_sup", data.get("S", 0.0))
 
         # Parse gate decision
-        decision_str = data.get("gate_decision", "EXECUTE")
+        decision_str = data.get("gate_decision", data.get("decision", "EXECUTE"))
         try:
             decision = GateDecision(decision_str)
         except ValueError:
@@ -249,8 +525,20 @@ class SwarmIt:
             else:
                 decision = GateDecision.BLOCK
 
+        # Parse rsct_mode (authoritative from API)
+        rsct_mode = data.get("rsct_mode")
+        rsct_mode_detail = None
+        if data.get("rsct_mode_detail"):
+            detail = data["rsct_mode_detail"]
+            rsct_mode_detail = RSCTModeDetail(
+                group=detail.get("group", 0),
+                type=detail.get("type", 0),
+                name=detail.get("name", ""),
+                description=detail.get("description", ""),
+            )
+
         return Certificate(
-            id=data.get("certificate_id", ""),
+            id=data.get("certificate_id", data.get("id", "")),
             timestamp=data.get("timestamp", ""),
             R=data.get("R", 0.0),
             S=s_value,
@@ -261,6 +549,8 @@ class SwarmIt:
             decision=decision,
             gate_reached=data.get("gate_reached", 0),
             reason=data.get("gate_reason", data.get("reason", "")),
+            rsct_mode=rsct_mode,
+            rsct_mode_detail=rsct_mode_detail,
             policy=data.get("policy", "default"),
             raw=data,
         )

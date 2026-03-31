@@ -39,8 +39,8 @@ from .fluent import (
     certify_batch,
 )
 
-# === Legacy Client (backward compatibility) ===
-from .client import SwarmIt, Certificate
+# === API Client ===
+from .client import SwarmIt, Certificate, RSCTModeDetail
 
 # === Taxonomy Classification ===
 from .taxonomy.classification import (
@@ -176,9 +176,10 @@ __all__ = [
     "certify",
     "certify_batch",
 
-    # Legacy Client
+    # API Client
     "SwarmIt",
     "Certificate",
+    "RSCTModeDetail",
 
     # Taxonomy
     "RSCTMode",

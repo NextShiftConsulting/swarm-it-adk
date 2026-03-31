@@ -149,18 +149,35 @@ class RSCTCertificate:
         return self.admissibility is not None
 
     def get_rsct_mode(self) -> str:
-        """Get RSCT mode, computing locally if not provided."""
+        """
+        Get RSCT mode.
+
+        Prefers API-provided rsct_mode (authoritative from yrsn).
+        Falls back to deprecated local classification if not available.
+        """
         if self.rsct_mode:
             return self.rsct_mode
+        # Deprecated fallback - will be removed in v2.0
         return self._classify_local()
 
     def _classify_local(self) -> str:
         """
         Lightweight local RSCT mode classification.
 
+        DEPRECATED: Use API-provided rsct_mode instead.
+        The API returns authoritative rsct_mode from yrsn.
+        This local approximation will be removed in v2.0.
+
         This is an APPROXIMATION. Full classification requires
         the rotor and additional signals not available locally.
         """
+        import warnings
+        warnings.warn(
+            "_classify_local() is deprecated. Use API-provided rsct_mode instead. "
+            "The API returns authoritative rsct_mode from yrsn.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         # Group 1: Encoding
         if self.N >= 0.5:
             return "1.1"  # Noise Saturation
