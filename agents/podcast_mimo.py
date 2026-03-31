@@ -16,13 +16,18 @@ from typing import Dict, List, Tuple
 import re
 import requests
 
-# Import swarm-it-auth credential adapter
+# P18 v3.0 - Unified credential access
 try:
-    from swarm_auth.adapters import EnvCredentialAdapter
+    from swarm_auth import get_credential, has_credential
     HAS_SWARM_AUTH = True
 except ImportError:
     HAS_SWARM_AUTH = False
     print("[!] swarm-auth not found. Using basic environment variable fallback.")
+    # Fallback implementations
+    def get_credential(key, default=None):
+        return os.environ.get(key, default)
+    def has_credential(key):
+        return os.environ.get(key) is not None
 
 class PodcastMIMOAgent:
     """
@@ -30,41 +35,43 @@ class PodcastMIMOAgent:
     from technical blog posts.
     """
 
-    def __init__(self, provider="mimo", credential_prefix="SWARM_"):
+    def __init__(self, provider="mimo"):
         self.provider = provider
 
-        # Use swarm-it-auth credential adapter if available
-        if HAS_SWARM_AUTH:
-            self.creds = EnvCredentialAdapter(prefix=credential_prefix)
-
-            if provider == "mimo":
-                # Xiaomi MiMo cloud API (cost-effective alternative to US providers)
-                self.api_key = self.creds.retrieve('MIMO_API_KEY')
-                self.endpoint = self.creds.retrieve('MIMO_ENDPOINT') or 'https://api.xiaomimimo.com/v1'
-                self.model = self.creds.retrieve('MIMO_MODEL') or 'mimo-v2-flash'
-                if not self.api_key:
-                    raise ValueError("SWARM_MIMO_API_KEY not found. Set environment variable or use --provider xiami for local Ollama.")
-            elif provider == "xiami":
-                # Local Ollama endpoint (free but requires local setup)
-                self.endpoint = self.creds.retrieve('XIAMI_ENDPOINT') or 'http://localhost:11434/api/generate'
-                self.model = self.creds.retrieve('XIAMI_MODEL') or 'llama2'
-                self.api_key = self.creds.retrieve('XIAMI_API_KEY')  # Optional
-            else:
-                raise ValueError(f"Unsupported provider: {provider}. Use 'mimo' or 'xiami'.")
+        # P18 v3.0 - Unified credential access (no prefix needed)
+        if provider == "mimo":
+            # Xiaomi MiMo cloud API (cost-effective alternative to US providers)
+            # Try both standard and SWARM_ prefixed names for backwards compatibility
+            self.api_key = get_credential('MIMO_API_KEY') or get_credential('SWARM_MIMO_API_KEY')
+            self.endpoint = get_credential('MIMO_ENDPOINT') or get_credential('SWARM_MIMO_ENDPOINT', 'https://api.xiaomimimo.com/v1')
+            self.model = get_credential('MIMO_MODEL') or get_credential('SWARM_MIMO_MODEL', 'mimo-v2-flash')
+            if not self.api_key:
+                raise ValueError("MIMO_API_KEY not found. Set environment variable or use --provider xiami for local Ollama.")
+        elif provider == "xiami":
+            # Local Ollama endpoint (free but requires local setup)
+            self.endpoint = get_credential('XIAMI_ENDPOINT') or get_credential('SWARM_XIAMI_ENDPOINT', 'http://localhost:11434/api/generate')
+            self.model = get_credential('XIAMI_MODEL') or get_credential('SWARM_XIAMI_MODEL', 'llama2')
+            self.api_key = get_credential('XIAMI_API_KEY') or get_credential('SWARM_XIAMI_API_KEY')  # Optional
         else:
-            # Fallback to direct environment variables
-            if provider == "mimo":
-                self.api_key = os.environ.get('MIMO_API_KEY') or os.environ.get('SWARM_MIMO_API_KEY')
-                self.endpoint = os.environ.get('MIMO_ENDPOINT') or os.environ.get('SWARM_MIMO_ENDPOINT', 'https://api.xiaomimimo.com/v1')
-                self.model = os.environ.get('MIMO_MODEL') or os.environ.get('SWARM_MIMO_MODEL', 'mimo-v2-flash')
-                if not self.api_key:
-                    raise ValueError("MIMO_API_KEY or SWARM_MIMO_API_KEY not found")
-            elif provider == "xiami":
-                self.endpoint = os.environ.get('XIAMI_ENDPOINT') or os.environ.get('SWARM_XIAMI_ENDPOINT', 'http://localhost:11434/api/generate')
-                self.model = os.environ.get('XIAMI_MODEL') or os.environ.get('SWARM_XIAMI_MODEL', 'llama2')
-                self.api_key = os.environ.get('XIAMI_API_KEY') or os.environ.get('SWARM_XIAMI_API_KEY')
+            raise ValueError(f"Unsupported provider: {provider}. Use 'mimo' or 'xiami'.")
 
-        self.polly = boto3.client('polly', region_name='us-east-1')
+        # P18 v3.0 - AWS credentials for Polly
+        try:
+            from swarm_auth import get_aws_credentials
+            aws_creds = get_aws_credentials()
+            if aws_creds.get('aws_access_key_id') and aws_creds.get('aws_secret_access_key'):
+                self.polly = boto3.client(
+                    'polly',
+                    aws_access_key_id=aws_creds['aws_access_key_id'],
+                    aws_secret_access_key=aws_creds['aws_secret_access_key'],
+                    region_name=aws_creds.get('region_name', 'us-east-1')
+                )
+            else:
+                # Fall back to default boto3 credential chain
+                self.polly = boto3.client('polly', region_name='us-east-1')
+        except ImportError:
+            # swarm_auth not available, use default chain
+            self.polly = boto3.client('polly', region_name='us-east-1')
 
         # Voice configuration
         self.voices = {
@@ -221,9 +228,13 @@ Output as JSON:
 Keep it conversational and accessible. The host is curious but not an expert.
 The expert (Rudy Martin) explains concepts from the blog post using clear analogies and examples.
 
-CRITICAL: Stay faithful to the blog content. Do NOT introduce external frameworks, theories,
-or concepts unless they are explicitly discussed in the blog. The expert should explain what's
-IN THE BLOG, not inject new theories.
+CRITICAL GROUNDING RULES:
+1. Stay faithful to the blog content. Do NOT introduce external frameworks, theories,
+   or concepts unless they are explicitly discussed in the blog text above.
+2. FORBIDDEN unless explicitly in blog: "RSCT", "Representation-Solver Compatibility Theory",
+   "alpha-omega", "compatibility certificate", "context quality certificate", "kappa score".
+3. ONLY use terminology that appears verbatim in the blog text.
+4. The expert should explain what's IN THE BLOG, not inject proprietary theories.
 """
 
         response_text = self.call_llm(prompt, max_tokens=4000)
@@ -310,7 +321,8 @@ Your personality:
 - Set the stage without diving too deep yet
 
 CRITICAL: Explain only what's in the blog post. Do NOT introduce external theories or frameworks
-unless they are explicitly mentioned in the blog content.
+unless they are explicitly mentioned in the blog content. FORBIDDEN terms (unless in blog):
+"RSCT", "Representation-Solver Compatibility Theory", "compatibility certificate".
 
 Generate ONLY your spoken response. Natural, conversational. No quotes or labels.
 """
@@ -339,11 +351,15 @@ Generate a 60-80 word explanation that:
 3. Includes concrete example
 4. Connects to practical implications
 
-CRITICAL: Stay faithful to the blog content. Explain what's IN THE BLOG. Do NOT introduce
-external frameworks, theories (like RSCT, RSN, etc.), or concepts unless the blog explicitly
-discusses them. If the blog doesn't mention a solution, don't invent one.
+CRITICAL GROUNDING RULES:
+1. Stay faithful to the blog content. Explain ONLY what's IN THE BLOG.
+2. FORBIDDEN unless blog mentions them: "RSCT", "Representation-Solver Compatibility Theory",
+   "alpha-omega", "compatibility certificate", "context quality certificate", "kappa score".
+3. Do NOT introduce external frameworks, theories, or concepts not explicitly in the blog.
+4. If the blog doesn't mention a solution, don't invent one.
+5. Use the blog's OWN terminology, not proprietary terms from other sources.
 
-Your style: "Great question! [Answer]... Think of it like [analogy]... Here's a real example: [case study]"
+Your style: Vary your openings (don't always say "Great question!"). Use analogies from the blog context.
 
 Generate ONLY your spoken response. Natural, conversational. No quotes or labels.
 """
@@ -355,63 +371,181 @@ Generate ONLY your spoken response. Natural, conversational. No quotes or labels
         print(f"  [E] Expert: {dialogue[:60]}...")
         return dialogue
 
-    def quality_agent(self, dialogue_script: List[Dict], blog_post: Dict) -> Dict:
+    def podcast_peer_agent(self, dialogue_script: List[Dict], blog_post: Dict) -> Dict:
         """
-        Quality Agent: Validate dialogue with structured compatibility certificate
+        Podcast Peer Agent: Editorial quality review (Stage 1 of 2)
 
-        Implements state-based decision logic per patent architecture:
-        - Certificate is ENFORCEMENT DATA, not command
-        - Quality Agent is independent CONSUMER that interprets certificate
-        - Maps metrics to execution states (FIG. 19)
-        - Applies 4-gate sequential validation (FIG. 24)
-        - Returns typed decision: EXECUTE, RE_ENCODE, REJECT, REPAIR, BLOCK
+        Evaluates dialogue from a peer reviewer perspective:
+        - Dialogue flow and naturalness
+        - Accuracy to source material
+        - Engagement and clarity
+        - Host-expert dynamics
+        - Forbidden terminology detection
         """
-        # Combine all dialogue for analysis
         full_dialogue = "\n".join([
             f"{seg['speaker'].upper()}: {seg['text']}"
             for seg in dialogue_script
         ])
 
-        # === MEASUREMENT LAYER: Generate certificate via 2 paths ===
+        prompt = f"""You are a podcast editor reviewing dialogue quality for "Swarm-It" podcast.
 
-        # Path 1: Semantic Decomposition (R, S, N → α)
-        prompt = f"""You are a quality validator analyzing podcast dialogue against source blog content.
-
-Original blog post title: {blog_post['title']}
-Blog word count: {blog_post['word_count']}
-
-Blog key concepts (first 2000 chars):
+**Source Blog:**
+Title: {blog_post['title']}
+Word Count: {blog_post['word_count']}
+Content (first 2000 chars):
 {blog_post['body'][:2000]}
 
-Generated dialogue:
+**Generated Dialogue:**
 {full_dialogue}
 
-Perform semantic decomposition into three mutually exclusive components:
+**Review Criteria:**
 
-R (Relevance): Fraction of dialogue content that is solver-aligned (covers blog's core concepts)
-S (Superfluousness): Fraction that is structured but misaligned (filler, repetition, off-topic)
-N (Noise): Fraction that is factually incorrect or hallucinated (contradicts blog, introduces false claims)
+1. **Source Fidelity** (0-10): Does dialogue accurately represent the blog's content?
+   - Are key concepts from the blog covered?
+   - Any misrepresentations or distortions?
 
-CONSTRAINT: R + S + N = 1.0 (normalized)
+2. **Hallucination Check** (0-10, higher = cleaner): Does dialogue introduce content NOT in the blog?
+   - FORBIDDEN terms (unless in blog): "RSCT", "Representation-Solver Compatibility Theory",
+     "alpha-omega", "compatibility certificate", "context quality certificate", "kappa score"
+   - Any invented facts, statistics, or claims?
 
-Evaluate carefully:
-- R: Does dialogue cover the blog's key concepts accurately?
-- S: How much unnecessary filler, repetition, or conversational fluff?
-- N: Any factual errors? Does dialogue introduce frameworks/theories NOT in the blog?
+3. **Dialogue Flow** (0-10): Is the conversation natural and engaging?
+   - Does host ask genuine questions?
+   - Does expert explain clearly without lecturing?
+   - Natural turn-taking?
 
-Return JSON:
+4. **Filler Detection** (0-10, higher = less filler): How much unnecessary padding?
+   - Repetitive phrases ("Great question!")
+   - Redundant explanations
+   - Conversational fluff that doesn't add value
+
+5. **Engagement** (0-10): Would listeners stay tuned?
+   - Hook in the opening?
+   - Clear examples and analogies?
+   - Satisfying conclusion?
+
+**Return JSON:**
+{{
+  "source_fidelity": X,
+  "hallucination_check": X,
+  "dialogue_flow": X,
+  "filler_detection": X,
+  "engagement": X,
+  "overall_score": X.X,
+  "issues": ["list of specific issues found"],
+  "forbidden_terms_found": ["list any forbidden terms used"],
+  "recommendation": "PASS | REVISE | REJECT"
+}}
+"""
+        response_text = self.call_llm(prompt, max_tokens=800)
+
+        # Extract JSON
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            try:
+                peer_review = json.loads(json_match.group(0))
+            except json.JSONDecodeError:
+                peer_review = self._default_peer_review()
+        else:
+            peer_review = self._default_peer_review()
+
+        # Ensure all fields exist
+        peer_review.setdefault('source_fidelity', 7)
+        peer_review.setdefault('hallucination_check', 7)
+        peer_review.setdefault('dialogue_flow', 7)
+        peer_review.setdefault('filler_detection', 7)
+        peer_review.setdefault('engagement', 7)
+        peer_review.setdefault('issues', [])
+        peer_review.setdefault('forbidden_terms_found', [])
+        peer_review.setdefault('recommendation', 'PASS')
+
+        # Calculate overall if not provided
+        if 'overall_score' not in peer_review:
+            scores = [peer_review['source_fidelity'], peer_review['hallucination_check'],
+                      peer_review['dialogue_flow'], peer_review['filler_detection'],
+                      peer_review['engagement']]
+            peer_review['overall_score'] = sum(scores) / len(scores)
+
+        print(f"\n[*] Podcast Peer Review (Stage 1/2):")
+        print(f"    Source Fidelity: {peer_review['source_fidelity']}/10")
+        print(f"    Hallucination Check: {peer_review['hallucination_check']}/10")
+        print(f"    Dialogue Flow: {peer_review['dialogue_flow']}/10")
+        print(f"    Filler Detection: {peer_review['filler_detection']}/10")
+        print(f"    Engagement: {peer_review['engagement']}/10")
+        print(f"    Overall: {peer_review['overall_score']:.1f}/10")
+        print(f"    Recommendation: {peer_review['recommendation']}")
+        if peer_review['forbidden_terms_found']:
+            print(f"    [!] Forbidden terms: {peer_review['forbidden_terms_found']}")
+
+        return peer_review
+
+    def _default_peer_review(self) -> Dict:
+        """Default peer review for fallback"""
+        return {
+            "source_fidelity": 7,
+            "hallucination_check": 7,
+            "dialogue_flow": 7,
+            "filler_detection": 7,
+            "engagement": 7,
+            "overall_score": 7.0,
+            "issues": [],
+            "forbidden_terms_found": [],
+            "recommendation": "PASS"
+        }
+
+    def podcast_rsct_agent(self, dialogue_script: List[Dict], blog_post: Dict, peer_review: Dict) -> Dict:
+        """
+        Podcast RSCT Agent: Quality certification (Stage 2 of 2)
+
+        Applies RSCT framework:
+        - R/S/N semantic decomposition
+        - 4-gate sequential validation
+        - Certificate generation
+        - Typed decision: EXECUTE, RE_ENCODE, REJECT, REPAIR, BLOCK
+        """
+        full_dialogue = "\n".join([
+            f"{seg['speaker'].upper()}: {seg['text']}"
+            for seg in dialogue_script
+        ])
+
+        # Incorporate peer review findings into RSCT prompt
+        peer_context = ""
+        if peer_review.get('forbidden_terms_found'):
+            peer_context += f"\nPeer Review WARNING: Forbidden terms detected: {peer_review['forbidden_terms_found']}"
+        if peer_review.get('issues'):
+            peer_context += f"\nPeer Review Issues: {peer_review['issues'][:3]}"  # Top 3 issues
+
+        prompt = f"""You are an RSCT certification specialist applying quality gates to podcast dialogue.
+
+**Source Blog:**
+Title: {blog_post['title']}
+Word Count: {blog_post['word_count']}
+Content (first 2000 chars):
+{blog_post['body'][:2000]}
+
+**Generated Dialogue:**
+{full_dialogue}
+{peer_context}
+
+**RSCT Semantic Decomposition:**
+
+Score each dimension 0.0-1.0, ensuring R + S + N = 1.0:
+
+R (Relevance): Fraction covering blog's core concepts accurately
+S (Superfluous): Fraction that is filler, repetition, or off-topic padding
+N (Noise): Fraction that is hallucinated or factually incorrect
+  - Any forbidden terms not in blog = high N
+  - Invented facts/statistics = high N
+
+**Return JSON:**
 {{
   "R": 0.X,
   "S": 0.X,
   "N": 0.X,
-  "feedback": "Brief assessment explaining R/S/N breakdown"
+  "feedback": "Brief R/S/N breakdown explanation",
+  "hallucination_details": "Specific hallucinations found, if any"
 }}
-
-Example:
-- If dialogue accurately covers blog (R=0.7), has some repetition (S=0.2), no errors (N=0.1) → R+S+N=1.0
-- If dialogue introduces RSCT theory when blog doesn't mention it → high N (hallucination)
 """
-
         response_text = self.call_llm(prompt, max_tokens=500)
 
         # Extract JSON
@@ -536,13 +670,51 @@ Example:
             "feedback": decomp.get('feedback', '') + ("\n" + gate_feedback if gate_feedback else "")
         }
 
-        print(f"\n[*] Structured Compatibility Certificate:")
-        print(f"   DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
-        print(f"   QUALITY: alpha={certificate['alpha']:.2f}")
-        print(f"   DERIVED: kappa={certificate['kappa_gate']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
-        print(f"   EXECUTION STATE: {certificate['execution_state']}")
-        print(f"   DECISION: {certificate['decision']} (Gate {certificate['gate_failed'] or 'ALL PASSED'})")
-        print(f"   Status: {'[+] EXECUTE' if certificate['approved'] else '[-] ' + certificate['decision']}")
+        # Include peer review in certificate
+        certificate['peer_review'] = {
+            'overall_score': peer_review.get('overall_score', 0),
+            'recommendation': peer_review.get('recommendation', 'UNKNOWN'),
+            'forbidden_terms': peer_review.get('forbidden_terms_found', []),
+            'issues': peer_review.get('issues', [])
+        }
+
+        print(f"\n[*] RSCT Quality Certificate (Stage 2/2):")
+        print(f"    DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
+        print(f"    QUALITY: α={certificate['alpha']:.2f}")
+        print(f"    DERIVED: κ={certificate['kappa_gate']:.2f} σ={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
+        print(f"    EXECUTION STATE: {certificate['execution_state']}")
+        print(f"    DECISION: {certificate['decision']} (Gate {certificate['gate_failed'] or 'ALL PASSED'})")
+        print(f"    Status: {'[+] EXECUTE' if certificate['approved'] else '[-] ' + certificate['decision']}")
+
+        return certificate
+
+    def quality_agent(self, dialogue_script: List[Dict], blog_post: Dict) -> Dict:
+        """
+        Two-Stage Quality Review: Peer + RSCT
+
+        Stage 1: podcast_peer_agent - Editorial quality review
+        Stage 2: podcast_rsct_agent - RSCT certification with 4-gate validation
+
+        Returns combined certificate with both reviews.
+        """
+        print(f"\n{'='*60}")
+        print(f"[*] TWO-STAGE QUALITY REVIEW")
+        print(f"{'='*60}")
+
+        # Stage 1: Peer Review
+        peer_review = self.podcast_peer_agent(dialogue_script, blog_post)
+
+        # Stage 2: RSCT Certification (informed by peer review)
+        certificate = self.podcast_rsct_agent(dialogue_script, blog_post, peer_review)
+
+        # Combined summary
+        print(f"\n{'='*60}")
+        print(f"[*] COMBINED REVIEW SUMMARY")
+        print(f"{'='*60}")
+        print(f"    Peer Review: {peer_review['overall_score']:.1f}/10 ({peer_review['recommendation']})")
+        print(f"    RSCT: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
+        print(f"    Final Decision: {certificate['decision']}")
+        print(f"{'='*60}")
 
         return certificate
 
@@ -796,16 +968,12 @@ def main():
     parser = argparse.ArgumentParser(description='Generate MIMO podcast dialogue from blog post')
     parser.add_argument('--blog-post', required=True, help='Path to MDX blog post')
     parser.add_argument('--output', required=True, help='Output MP3 path')
-    parser.add_argument('--provider', default='xiami', help='LLM provider (default: xiami)')
-    parser.add_argument('--credential-prefix', default='SWARM_', help='Environment variable prefix (default: SWARM_)')
+    parser.add_argument('--provider', default='xiami', help='LLM provider: mimo or xiami (default: xiami)')
 
     args = parser.parse_args()
 
-    # Initialize agent
-    agent = PodcastMIMOAgent(
-        provider=args.provider,
-        credential_prefix=args.credential_prefix
-    )
+    # Initialize agent (P18 v3.0 - credentials from environment)
+    agent = PodcastMIMOAgent(provider=args.provider)
 
     # Generate podcast
     result = agent.generate_podcast(args.blog_post, args.output)
