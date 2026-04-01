@@ -333,11 +333,206 @@ class KappaViabilityChecker:
         return min(math.ceil(65 / kappa), self.max_k)
 
 
+class TidyLLMSentenceProvider(EmbeddingProvider):
+    """
+    Embedding provider using tidyllm-sentence (pure Python, zero ML dependencies).
+
+    This is a lightweight alternative to SentenceTransformerProvider for:
+    - Environments without torch/transformers
+    - Educational/demo purposes
+    - Offline deployments with no pip access
+    - Cost-sensitive batch processing
+
+    Supported methods:
+        - 'lsa': LSA/SVD embeddings (default, best quality)
+        - 'sif': Smooth Inverse Frequency (requires GloVe vectors)
+        - 'power_mean': Power mean concatenation
+        - 'tfidf': TF-IDF (fastest, lowest quality)
+
+    Integration with yrsn:
+        Embeddings from this provider can be projected to R/S/N using yrsn:
+
+        >>> from yrsn.core.decomposition import TrainedRSNProjection
+        >>> provider = TidyLLMSentenceProvider(embedding_dim=384)
+        >>> embeddings = provider.embed(texts)
+        >>> projection = TrainedRSNProjection.from_checkpoint("path/to/checkpoint")
+        >>> rsn = projection.compute_rsn_batch(embeddings)
+
+    Quality Note:
+        tidyllm-sentence achieves ~65% MAP vs sentence-transformers ~85%.
+        For production use cases requiring high accuracy, use SentenceTransformerProvider.
+        For kappa-viable geometric operations, verify with check_kappa().
+
+    Usage:
+        provider = TidyLLMSentenceProvider(embedding_dim=384, method='lsa')
+        embeddings = provider.embed(["Hello world", "Goodbye world"])
+        result = check_kappa(embeddings)
+    """
+
+    # Model name mapping for compatibility
+    MODEL_DIMENSIONS = {
+        'tidyllm-lsa-384': 384,
+        'tidyllm-lsa-64': 64,
+        'tidyllm-sif-384': 384,
+        'tidyllm-power-mean-384': 384,
+    }
+
+    def __init__(
+        self,
+        embedding_dim: int = 384,
+        method: str = 'lsa',
+        glove_path: Optional[str] = None,
+    ):
+        """
+        Initialize provider.
+
+        Args:
+            embedding_dim: Output embedding dimension (default 384 for compatibility)
+            method: Embedding method ('lsa', 'sif', 'power_mean', 'tfidf')
+            glove_path: Path to GloVe vectors (required for 'sif' method)
+        """
+        try:
+            from tidyllm_sentence import SentenceTransformer as TidyLLMTransformer
+            self._model = TidyLLMTransformer(
+                embedding_dim=embedding_dim,
+                method=method,
+            )
+            self._embedding_dim = embedding_dim
+            self._method = method
+            self._model_name = f"tidyllm-{method}-{embedding_dim}"
+
+            # Load GloVe vectors for SIF if provided
+            if method == 'sif' and glove_path:
+                from tidyllm_sentence import load_glove
+                self._word_vectors = load_glove(glove_path)
+            else:
+                self._word_vectors = None
+
+        except ImportError:
+            raise ImportError(
+                "tidyllm-sentence required. "
+                "Install with: pip install tidyllm-sentence"
+            )
+
+    @property
+    def dim(self) -> int:
+        return self._embedding_dim
+
+    @property
+    def model_name(self) -> str:
+        return self._model_name
+
+    def embed(self, texts: List[str]) -> np.ndarray:
+        """
+        Generate embeddings for texts.
+
+        Args:
+            texts: List of text strings
+
+        Returns:
+            np.ndarray of shape [len(texts), dim]
+        """
+        # Fit on texts if not already fitted
+        if not self._model._fitted:
+            self._model.fit(texts)
+
+        # Encode
+        embeddings = self._model.encode(texts)
+
+        # Convert to numpy array
+        if hasattr(embeddings, 'tolist'):
+            embeddings = np.array(embeddings.tolist(), dtype=np.float32)
+        else:
+            embeddings = np.array(embeddings, dtype=np.float32)
+
+        return embeddings
+
+    def embed_with_vectors(
+        self,
+        texts: List[str],
+        word_vectors: Optional[dict] = None,
+    ) -> np.ndarray:
+        """
+        Generate embeddings using pre-trained word vectors.
+
+        This method provides higher quality embeddings when GloVe/FastText
+        vectors are available.
+
+        Args:
+            texts: List of text strings
+            word_vectors: Pre-trained word vectors (word -> embedding dict)
+
+        Returns:
+            np.ndarray of shape [len(texts), dim]
+        """
+        vectors = word_vectors or self._word_vectors
+
+        if vectors is None:
+            # Fall back to standard embedding
+            return self.embed(texts)
+
+        if self._method == 'sif':
+            from tidyllm_sentence import sif_fit_transform
+            embeddings, _ = sif_fit_transform(texts, vectors)
+        elif self._method == 'power_mean':
+            from tidyllm_sentence import power_mean_fit_transform
+            embeddings, _ = power_mean_fit_transform(texts, vectors)
+        else:
+            # Fall back to standard
+            return self.embed(texts)
+
+        # Ensure correct dimension
+        embeddings = self._ensure_dimension(embeddings)
+        return np.array(embeddings, dtype=np.float32)
+
+    def _ensure_dimension(self, embeddings: list) -> list:
+        """Ensure embeddings have target dimension."""
+        result = []
+        for emb in embeddings:
+            if len(emb) >= self._embedding_dim:
+                result.append(emb[:self._embedding_dim])
+            else:
+                padded = list(emb) + [0.0] * (self._embedding_dim - len(emb))
+                result.append(padded)
+        return result
+
+
+def get_provider(
+    provider_type: str = "sentence-transformers",
+    **kwargs,
+) -> EmbeddingProvider:
+    """
+    Factory function to get embedding provider.
+
+    Args:
+        provider_type: Provider type ('sentence-transformers' or 'tidyllm')
+        **kwargs: Provider-specific arguments
+
+    Returns:
+        EmbeddingProvider instance
+
+    Example:
+        # sentence-transformers (production)
+        provider = get_provider("sentence-transformers", model_name="all-MiniLM-L6-v2")
+
+        # tidyllm-sentence (lightweight)
+        provider = get_provider("tidyllm", embedding_dim=384, method="lsa")
+    """
+    if provider_type in ("sentence-transformers", "sbert"):
+        return SentenceTransformerProvider(**kwargs)
+    elif provider_type in ("tidyllm", "tidyllm-sentence"):
+        return TidyLLMSentenceProvider(**kwargs)
+    else:
+        raise ValueError(f"Unknown provider type: {provider_type}")
+
+
 # Convenience exports
 __all__ = [
     # Providers
     "EmbeddingProvider",
     "SentenceTransformerProvider",
+    "TidyLLMSentenceProvider",
+    "get_provider",
 
     # Kappa checking
     "KappaViabilityChecker",
