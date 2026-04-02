@@ -213,16 +213,16 @@ def main():
     if result["request_cert"]:
         rc = result["request_cert"]
         status = "✓" if rc["allowed"] else "✗"
-        print(f"\nRequest Certification:")
+        print("\nRequest Certification:")
         print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f} → {status}")
 
     if result["response"]:
-        print(f"\nBedrock Response:")
+        print("\nBedrock Response:")
         print(f"  \"{result['response'][:100]}...\"")
 
     if result["response_cert"]:
         rc = result["response_cert"]
-        print(f"\nResponse Certification:")
+        print("\nResponse Certification:")
         print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f} → Quality verified ✓")
 
     # === Test 2: Blocked request ===
@@ -239,10 +239,10 @@ def main():
 
     if result["blocked"]:
         rc = result["request_cert"]
-        print(f"\nRequest Certification:")
+        print("\nRequest Certification:")
         print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f}")
         print(f"  → BLOCKED ✗ ({rc['decision']})")
-        print(f"\n  Bedrock was NOT called - attack prevented!")
+        print("\n  Bedrock was NOT called - attack prevented!")
 
     # === Swarm summary ===
     print()

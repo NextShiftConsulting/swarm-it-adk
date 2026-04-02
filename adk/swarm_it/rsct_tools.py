@@ -29,11 +29,9 @@ Usage:
 import asyncio
 import json
 import os
-import sys
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
-from pathlib import Path
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client

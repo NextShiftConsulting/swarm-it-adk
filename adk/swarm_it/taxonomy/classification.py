@@ -10,7 +10,7 @@ Provides thin classification on top of certificate signals:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List, Dict, Any, TYPE_CHECKING
+from typing import List, Dict, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..local.engine import RSCTCertificate

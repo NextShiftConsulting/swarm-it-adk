@@ -5,7 +5,7 @@ Supports: Qwen, LLaMA, Mistral, Gemma, and many more.
 Free tier available with no credit card.
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from .base import LLMProvider, LLMResponse, ProviderType, LLMProviderConfig
 
 

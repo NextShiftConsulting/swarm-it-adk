@@ -51,7 +51,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 # P18 v3.0 - Unified credential access
 from swarm_auth import get_credential
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from sidecar.engine.rsct import RSCTEngine
 
 
@@ -69,7 +69,6 @@ def pre_certify_example():
     print()
 
     from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-    from langchain_core.messages import HumanMessage
 
     # Initialize
     engine = RSCTEngine()
@@ -98,7 +97,7 @@ def pre_certify_example():
         if cert['allowed']:
             # In production, actually call LLM here
             # response = llm.invoke([HumanMessage(content=prompt)])
-            print(f"  → Would call LLM ✓")
+            print("  → Would call LLM ✓")
         else:
             print(f"  → BLOCKED: {cert['reason']}")
 
@@ -118,7 +117,7 @@ def runnable_example():
     print("=" * 60)
     print()
 
-    from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+    from langchain_core.runnables import RunnableLambda
     from langchain_openai import OpenAIEmbeddings, ChatOpenAI
     from langchain_core.output_parsers import StrOutputParser
     from langchain_core.prompts import ChatPromptTemplate
@@ -186,7 +185,7 @@ def runnable_example():
             # For demo, just show certification passes
             certified = certify_prompt({"question": q})
             print(f"  Certified: R={certified['certificate']['R']:.2f} ✓")
-            print(f"  → Would invoke chain")
+            print("  → Would invoke chain")
         except CertificationError as e:
             print(f"  BLOCKED: {e}")
         print()

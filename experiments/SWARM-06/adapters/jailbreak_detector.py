@@ -289,7 +289,7 @@ class JailbreakDetector:
             proj_path = yrsn_checkpoints / "text_mlp_384to64_trained.pt"
             rotor_path = yrsn_checkpoints / "trained_rotor_text64.pt"
             rotor_dim = 64
-            logger.info(f"128d checkpoints not found, falling back to 64d")
+            logger.info("128d checkpoints not found, falling back to 64d")
 
         if proj_path.exists() and rotor_path.exists():
             # Load projection (dimension-aware)

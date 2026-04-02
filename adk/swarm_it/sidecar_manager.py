@@ -6,8 +6,7 @@ Automatic sidecar process start/stop with health checking.
 import subprocess
 import time
 import requests
-from typing import Optional, List
-import platform
+from typing import Optional
 
 
 class SidecarManager:

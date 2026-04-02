@@ -307,12 +307,12 @@ def main():
     val_metrics = evaluate(rotor, val_128, val_labels.numpy())
     test_metrics = evaluate(rotor, test_128, test_labels.numpy())
 
-    print(f"\n  Validation:")
+    print("\n  Validation:")
     print(f"    Simplex error: {val_metrics['simplex_error']:.6f}")
     print(f"    Benign R: {val_metrics.get('benign_R', 0):.3f}, N: {val_metrics.get('benign_N', 0):.3f}")
     print(f"    Jailbreak R: {val_metrics.get('jailbreak_R', 0):.3f}, N: {val_metrics.get('jailbreak_N', 0):.3f}")
 
-    print(f"\n  Test:")
+    print("\n  Test:")
     print(f"    Simplex error: {test_metrics['simplex_error']:.6f}")
     print(f"    Benign R: {test_metrics.get('benign_R', 0):.3f}, N: {test_metrics.get('benign_N', 0):.3f}")
     print(f"    Jailbreak R: {test_metrics.get('jailbreak_R', 0):.3f}, N: {test_metrics.get('jailbreak_N', 0):.3f}")
@@ -345,11 +345,11 @@ def main():
     print("\n" + "=" * 70)
     print("128d ROTOR TRAINING COMPLETE")
     print("=" * 70)
-    print(f"\nRotor: 128d → RSN (R, S, N)")
+    print("\nRotor: 128d → RSN (R, S, N)")
     print(f"Simplex compliance: {test_metrics['simplex_error']:.6f} error")
-    print(f"\nDyTopo RSN semantics:")
-    print(f"  Benign prompts: Higher R (relevance), Lower N")
-    print(f"  Jailbreaks: Higher N (noise), Lower R")
+    print("\nDyTopo RSN semantics:")
+    print("  Benign prompts: Higher R (relevance), Lower N")
+    print("  Jailbreaks: Higher N (noise), Lower R")
 
 
 if __name__ == "__main__":

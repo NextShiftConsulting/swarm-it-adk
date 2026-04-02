@@ -7,13 +7,11 @@ Handles certification requests and gate decisions.
 """
 
 import os
-import sys
 import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional, Dict, Any, Callable, List
-from pathlib import Path
 import httpx
 
 # P18 v3.0 - Unified credential access
@@ -236,7 +234,7 @@ class SwarmIt:
                 data = response.json()
                 return self._parse_certificate(data)
 
-            except httpx.RequestError as e:
+            except httpx.RequestError:
                 # Fall back to local mode
                 self._local_mode = True
 
@@ -329,11 +327,10 @@ class SwarmIt:
                     "stats": data.get("stats", {}),
                 }
 
-            except httpx.RequestError as e:
+            except httpx.RequestError:
                 self._local_mode = True
 
         # Local fallback: loop through items
-        import time
         start = time.perf_counter()
         results = []
         succeeded = 0
@@ -441,12 +438,11 @@ class SwarmIt:
 
                 return response.json()
 
-            except httpx.RequestError as e:
+            except httpx.RequestError:
                 self._local_mode = True
 
         # Local fallback: certify each agent and aggregate
         from datetime import datetime
-        import uuid
 
         agent_certs = []
         min_kappa = 1.0

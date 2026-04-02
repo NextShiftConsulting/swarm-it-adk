@@ -7,8 +7,6 @@ Usage:
 """
 
 import argparse
-import os
-import sys
 from pathlib import Path
 from podcast_mimo import PodcastMIMOAgent
 import json

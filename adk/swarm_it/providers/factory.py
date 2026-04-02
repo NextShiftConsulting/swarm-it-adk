@@ -5,7 +5,7 @@ Integrates with swarm-it-auth for credential management.
 """
 
 from typing import Optional, Dict, Any, List
-from .base import LLMProvider, ProviderType
+from .base import LLMProvider
 from .openrouter import OpenRouterProvider
 from .mimo import MIMOProvider
 from .bedrock import BedrockProvider

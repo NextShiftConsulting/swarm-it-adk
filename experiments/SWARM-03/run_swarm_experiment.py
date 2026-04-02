@@ -178,7 +178,7 @@ After SST-2 fine-tuning: stable_rank increases to 40, κ drops to 19.2
 
 Show the degradation and how expansion (k=4) recovers κ=76.8""",
 
-        "Formula_Validator": f"""Validate our formula k = min(ceil(65/κ), 5) against these cases:
+        "Formula_Validator": """Validate our formula k = min(ceil(65/κ), 5) against these cases:
 
 Case 1: κ=15 (MiniLM) - needs k=5
 Case 2: κ=25 (BERT) - needs k=3
@@ -330,7 +330,7 @@ def run_direct_experiment():
     with open(evidence_dir / "swarm_evidence_SWARM-03.json", 'w') as f:
         json.dump(evidence, f, indent=2)
 
-    print(f"\nEvidence saved to evidence/swarm_evidence_SWARM-03.json")
+    print("\nEvidence saved to evidence/swarm_evidence_SWARM-03.json")
 
     return results
 

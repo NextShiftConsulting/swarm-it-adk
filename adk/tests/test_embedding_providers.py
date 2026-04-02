@@ -10,10 +10,8 @@ import numpy as np
 
 from swarm_it.providers.embedding import (
     TidyLLMSentenceProvider,
-    SentenceTransformerProvider,
     KappaViabilityChecker,
     check_kappa,
-    compute_kappa,
     compute_stable_rank,
     get_provider,
 )

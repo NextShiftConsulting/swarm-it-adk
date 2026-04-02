@@ -13,15 +13,14 @@ Expected improvements:
 - Better resource utilization
 """
 
-from typing import Dict, Any, Optional, List, Callable
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 import uuid
-import json
 
 try:
-    from celery import Celery, Task
+    from celery import Celery, Task  # noqa: F401 - availability check
     from celery.result import AsyncResult
     CELERY_AVAILABLE = True
 except ImportError:

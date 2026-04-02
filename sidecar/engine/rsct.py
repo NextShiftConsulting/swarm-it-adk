@@ -25,7 +25,7 @@ from .interface import (
     PreScreenOutput,
     YRSNAdapter,
 )
-from .patterns import get_detector, PatternMatch
+from .patterns import get_detector
 from .yrsn_adapter import get_adapter
 from .semantic import get_semantic_analyzer
 

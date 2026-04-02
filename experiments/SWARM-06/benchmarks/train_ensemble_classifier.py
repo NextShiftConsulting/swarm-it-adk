@@ -290,14 +290,14 @@ def main():
     print("RESULTS")
     print("=" * 70)
 
-    print(f"\nValidation:")
+    print("\nValidation:")
     print(f"  Accuracy:  {val_results['accuracy']:.4f}")
     print(f"  Precision: {val_results['precision']:.4f}")
     print(f"  Recall:    {val_results['recall']:.4f}")
     print(f"  F1:        {val_results['f1_score']:.4f}")
     print(f"  AUC:       {val_results['auc']:.4f}")
 
-    print(f"\nTest:")
+    print("\nTest:")
     print(f"  Accuracy:  {test_results['accuracy']:.4f}")
     print(f"  Precision: {test_results['precision']:.4f}")
     print(f"  Recall:    {test_results['recall']:.4f}")
@@ -339,7 +339,7 @@ def main():
     print("\n" + "=" * 70)
     print("SUMMARY (ENSEMBLE)")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved: {test_results['accuracy']:.1%}")
     print(f"Status: {'✓ PASS' if test_results['accuracy'] > 0.90 else '✗ NEEDS WORK'}")
 

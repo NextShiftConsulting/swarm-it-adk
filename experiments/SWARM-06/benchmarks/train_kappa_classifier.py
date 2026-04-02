@@ -29,7 +29,7 @@ import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 import numpy as np
 
 import torch
@@ -512,10 +512,10 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved (Test): Accuracy = {test_results['accuracy']:.1%}")
     print(f"Status: {'PASS' if test_results['accuracy'] > 0.90 else 'FAIL'}")
-    print(f"\nMethod: κ-based representation-solver compatibility")
+    print("\nMethod: κ-based representation-solver compatibility")
     print(f"Threshold: κ < {best_threshold:.4f} → jailbreak")
     print(f"Cohen's d: {cohens_d:.4f} ({'Large separation' if abs(cohens_d) > 0.8 else 'Needs improvement'})")
 

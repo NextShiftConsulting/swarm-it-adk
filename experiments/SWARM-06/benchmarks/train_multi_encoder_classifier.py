@@ -21,7 +21,6 @@ Reference: DOE_SWARM-06_Jailbreak_Detection_Benchmark.md (H3)
 
 import json
 import argparse
-import sys
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Tuple
@@ -29,9 +28,8 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sentence_transformers import SentenceTransformer
 
 # Paths
@@ -363,7 +361,7 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY (MULTI-ENCODER)")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved (Test): Accuracy = {test_results['accuracy']:.1%}")
     print(f"F1 Score: {test_results['f1_score']:.4f}")
     print(f"AUC: {test_results['auc']:.4f}")

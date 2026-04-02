@@ -40,12 +40,12 @@ def main():
     decision = policy_adapter.evaluate(user, action, resource)
 
     if decision.decision == Decision.ALLOW:
-        print(f"[OK] Authorization: ALLOWED")
+        print("[OK] Authorization: ALLOWED")
         print(f"  - Max tokens: {decision.max_tokens}")
         print(f"  - Max cost: ${decision.max_cost}/hour")
         print(f"  - Reason: {decision.reason}")
     else:
-        print(f"[DENY] Authorization: DENIED")
+        print("[DENY] Authorization: DENIED")
         print(f"  - Reason: {decision.reason}")
 
     print()
@@ -66,11 +66,11 @@ def main():
     decision = policy_adapter.evaluate(guest, action, resource)
 
     if decision.decision == Decision.ALLOW:
-        print(f"[OK] Authorization: ALLOWED")
+        print("[OK] Authorization: ALLOWED")
         print(f"  - Max tokens: {decision.max_tokens} (limited)")
         print(f"  - Max cost: ${decision.max_cost}/hour (limited)")
     else:
-        print(f"[DENY] Authorization: DENIED")
+        print("[DENY] Authorization: DENIED")
 
     print()
 
@@ -84,9 +84,9 @@ def main():
     decision = policy_adapter.evaluate(guest, s3_action, s3_resource)
 
     if decision.decision == Decision.ALLOW:
-        print(f"[OK] Authorization: ALLOWED")
+        print("[OK] Authorization: ALLOWED")
     else:
-        print(f"[DENY] Authorization: DENIED (expected)")
+        print("[DENY] Authorization: DENIED (expected)")
         print(f"  - Reason: {decision.reason}")
 
     print()
@@ -110,10 +110,10 @@ def main():
     decision = policy_adapter.evaluate(admin, audit_action, audit_resource)
 
     if decision.decision == Decision.ALLOW:
-        print(f"[OK] Authorization: ALLOWED")
+        print("[OK] Authorization: ALLOWED")
         print(f"  - Reason: {decision.reason}")
     else:
-        print(f"[DENY] Authorization: DENIED")
+        print("[DENY] Authorization: DENIED")
 
     print()
 
@@ -132,10 +132,10 @@ def main():
     decision = policy_adapter.evaluate(service, action, resource)
 
     if decision.decision == Decision.ALLOW:
-        print(f"[OK] Authorization: ALLOWED")
+        print("[OK] Authorization: ALLOWED")
         print(f"  - Max cost: ${decision.max_cost}/hour")
     else:
-        print(f"[DENY] Authorization: DENIED")
+        print("[DENY] Authorization: DENIED")
 
     print("\n=== Demo Complete ===")
 

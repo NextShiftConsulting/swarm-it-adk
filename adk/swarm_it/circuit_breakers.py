@@ -22,9 +22,8 @@ Implements:
 
 from typing import Optional, Callable, Any, Dict
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-import time
 from functools import wraps
 
 
@@ -183,7 +182,7 @@ class CircuitBreaker:
         with self:
             try:
                 return func(*args, **kwargs)
-            except Exception as e:
+            except Exception:
                 if self.config.enable_fallback and self.fallback:
                     return self.fallback(*args, **kwargs)
                 raise

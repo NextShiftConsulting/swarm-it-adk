@@ -13,7 +13,6 @@ Validates: k = min(ceil(65/κ), 5) formula on REAL embeddings.
 import sys
 import json
 import math
-import numpy as np
 import torch
 from pathlib import Path
 from datetime import datetime
@@ -215,8 +214,8 @@ def run_phase1():
         print("  [!] No valid results - check errors above")
 
     if n_choked > 0:
-        print(f"\n  ✓ CONCEPT PROVEN: Real models ARE rank-choked")
-        print(f"  ✓ Our formula works: k = min(ceil(65/κ), 5)")
+        print("\n  ✓ CONCEPT PROVEN: Real models ARE rank-choked")
+        print("  ✓ Our formula works: k = min(ceil(65/κ), 5)")
         if n_k2_fails > 0:
             print(f"  ✓ Adila's k=2 fails {n_k2_fails}/{n_choked} choked cases")
 

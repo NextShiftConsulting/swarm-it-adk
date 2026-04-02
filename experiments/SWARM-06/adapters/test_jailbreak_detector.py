@@ -13,7 +13,7 @@ YRSN_SRC = Path("/Users/rudy/GitHub/yrsn/src")
 sys.path.insert(0, str(YRSN_SRC / "yrsn/adapters/models"))
 sys.path.insert(0, str(Path(__file__).parent))
 
-from jailbreak_detector import JailbreakDetector, create_jailbreak_detector
+from jailbreak_detector import JailbreakDetector
 
 EXPERIMENT_DIR = Path(__file__).parent.parent
 CHECKPOINT_PATH = EXPERIMENT_DIR / "checkpoints" / "hybrid_classifier_384d.pt"

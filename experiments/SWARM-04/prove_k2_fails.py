@@ -17,7 +17,6 @@ import sys
 import json
 import math
 import numpy as np
-import torch
 from pathlib import Path
 from datetime import datetime
 
@@ -182,7 +181,7 @@ def run_swarm04():
     print("SWARM-04: PROVE k=2 FAILS")
     print("=" * 70)
     print(f"\nTimestamp: {datetime.now().isoformat()}")
-    print(f"Goal: Find κ < 25 cases where k=2 fails, our k=3+ succeeds")
+    print("Goal: Find κ < 25 cases where k=2 fails, our k=3+ succeeds")
 
     all_results = []
 
@@ -265,16 +264,16 @@ def run_swarm04():
     failures = [r for r in all_results if r.get("k2_fails", False)]
 
     if failures:
-        print(f"\n  K=2 FAILURE CASES (κ < 25):")
+        print("\n  K=2 FAILURE CASES (κ < 25):")
         for f in failures:
             print(f"    - {f.get('strategy')}: κ={f['kappa']:.2f}, our k={f['k_optimal']}")
 
         print(f"\n  ✓ HYPOTHESIS PROVEN: k=2 fails {n_k2_fails} cases")
-        print(f"  ✓ Our formula k=min(ceil(65/κ),5) provides correct k")
-        print(f"  ✓ IP DIFFERENTIATION: We know WHEN to use k>2")
+        print("  ✓ Our formula k=min(ceil(65/κ),5) provides correct k")
+        print("  ✓ IP DIFFERENTIATION: We know WHEN to use k>2")
     else:
-        print(f"\n  [!] No k=2 failures found in this test set")
-        print(f"  [!] Need lower-dimensional or higher-variance scenarios")
+        print("\n  [!] No k=2 failures found in this test set")
+        print("  [!] Need lower-dimensional or higher-variance scenarios")
 
     # Patent evidence
     print(f"\n{'='*70}")

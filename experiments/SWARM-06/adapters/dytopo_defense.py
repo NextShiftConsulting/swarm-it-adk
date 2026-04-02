@@ -24,8 +24,8 @@ Usage:
 
 import sys
 from pathlib import Path
-from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, List, Tuple, Set
+from dataclasses import dataclass
+from typing import Dict, Any, Optional, List, Set
 import numpy as np
 import logging
 
@@ -479,7 +479,7 @@ if __name__ == "__main__":
     builder = TopologyBuilder(matcher, similarity_threshold=0.2)
     topology = builder.build_topology(layer_names, round_id=1)
 
-    print(f"\nTopology edges (threshold=0.2):")
+    print("\nTopology edges (threshold=0.2):")
     for edge in topology.edges:
         print(f"  {edge.source} -> {edge.target} (w={edge.weight:.3f})")
     print(f"\nDensity: {topology.density:.3f}")

@@ -7,7 +7,6 @@ Three core methods (Tendermint ABCI-inspired):
 3. Audit - compliance export
 """
 
-from datetime import datetime
 from enum import Enum
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, HTTPException
@@ -20,7 +19,6 @@ from api.metrics import (
     record_validation,
     record_audit,
     update_store_gauge,
-    update_thresholds,
     update_failure_rates,
     CERTIFICATION_LATENCY,
     VALIDATION_LATENCY,

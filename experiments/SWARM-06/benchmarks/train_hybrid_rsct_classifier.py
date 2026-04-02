@@ -33,9 +33,8 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
 # Paths
 EXPERIMENT_DIR = Path(__file__).parent.parent
@@ -396,7 +395,7 @@ def main():
     print("  Gate 1: N-gate (high noise → UNSAFE)")
     print("  Gate 2: Coherence gate (low coherence → UNCERTAIN)")
     print("  Gate 3: Specialized classifier on raw embeddings")
-    print(f"\nConfig:")
+    print("\nConfig:")
     print(f"  N threshold: {args.n_threshold}")
     print(f"  Coherence threshold: {args.coherence_threshold}")
     print(f"  Classifier input: {args.embed_dim}d embeddings")
@@ -583,12 +582,12 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY (HYBRID APPROACH)")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved (Test): Accuracy = {test_results['accuracy']:.1%}")
     print(f"F1 Score: {test_results['f1_score']:.4f}")
     print(f"AUC: {test_results['auc']:.4f}")
     print(f"Status: {'PASS' if test_results['accuracy'] > 0.90 else 'NEEDS WORK'}")
-    print(f"\nHybrid architecture:")
+    print("\nHybrid architecture:")
     print(f"  RSCT gates: N < {args.n_threshold}, coherence > {args.coherence_threshold}")
     print(f"  Classifier: MLP on {args.embed_dim}d embeddings")
 

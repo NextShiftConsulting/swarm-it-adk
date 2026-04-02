@@ -25,12 +25,9 @@ import json
 from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any, Tuple
-from datetime import datetime
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.patches import FancyBboxPatch, Circle, Wedge
-from matplotlib.collections import PatchCollection
+from matplotlib.patches import FancyBboxPatch, Circle
 import numpy as np
 
 
@@ -699,7 +696,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
         output_path=output_dir / "fig_hypothesis_with_badges.png",
         title="SWARM-01: Hypothesis Validation with Quality Badges"
     )
-    print(f"  Created: fig_hypothesis_with_badges.png")
+    print("  Created: fig_hypothesis_with_badges.png")
 
     # 2. κ vs σ phase diagram
     # Create sample certificates from test data
@@ -719,14 +716,14 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
         output_path=output_dir / "fig_kappa_sigma_phase.png",
         title="SWARM-01: κ vs σ Phase Diagram (Oobleck)"
     )
-    print(f"  Created: fig_kappa_sigma_phase.png")
+    print("  Created: fig_kappa_sigma_phase.png")
 
     # 3. Quality badges for overall result
     gen.create_quality_badge(
         kappa=0.85,  # High quality based on 100% pass
         output_path=output_dir / "fig_quality_badge.png"
     )
-    print(f"  Created: fig_quality_badge.png")
+    print("  Created: fig_quality_badge.png")
 
     # 4. Gate depth gauge (showing full pass)
     gen.create_gate_depth_gauge(
@@ -734,7 +731,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
         decision="EXECUTE",
         output_path=output_dir / "fig_gate_depth.png"
     )
-    print(f"  Created: fig_gate_depth.png")
+    print("  Created: fig_gate_depth.png")
 
     # 5. α vs κ quadrant
     gen.create_alpha_kappa_quadrant(
@@ -745,7 +742,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
         output_path=output_dir / "fig_alpha_kappa_quadrant.png",
         title="SWARM-01: Quality vs Compatibility Quadrant"
     )
-    print(f"  Created: fig_alpha_kappa_quadrant.png")
+    print("  Created: fig_alpha_kappa_quadrant.png")
 
     # 6. Sample RSN bar
     avg_r = np.mean([tc["R"] for tc in test_cases])
@@ -756,7 +753,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
         R=avg_r, S=avg_s, N=avg_n,
         output_path=output_dir / "fig_rsn_bar.png"
     )
-    print(f"  Created: fig_rsn_bar.png")
+    print("  Created: fig_rsn_bar.png")
 
     print(f"\n  All enhanced figures saved to: {output_dir}")
 

@@ -4,7 +4,7 @@ OpenAI Provider - GPT models.
 Standard OpenAI API (GPT-4, GPT-3.5, etc.).
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from .base import LLMProvider, LLMResponse, ProviderType, LLMProviderConfig
 
 

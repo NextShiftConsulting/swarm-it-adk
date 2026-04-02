@@ -19,8 +19,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, asdict
-from typing import List, Dict, Tuple, Optional
-from collections import Counter
+from typing import List, Dict, Tuple
 import numpy as np
 
 # Paths
@@ -351,7 +350,7 @@ def run_baseline_evaluation():
     rotor = YRSNRotorEvaluator()
     result, rsn_data = rotor.evaluate(test_data)
 
-    print(f"\n--- H1 Results: Baseline YRSN Rotor ---")
+    print("\n--- H1 Results: Baseline YRSN Rotor ---")
     print(f"Accuracy:  {result.accuracy:.4f}")
     print(f"Precision: {result.precision:.4f}")
     print(f"Recall:    {result.recall:.4f}")
@@ -370,7 +369,7 @@ def run_baseline_evaluation():
     }
     with open(EVIDENCE_DIR / "h1_baseline_rotor.json", "w") as f:
         json.dump(h1_evidence, f, indent=2)
-    print(f"\nSaved evidence to h1_baseline_rotor.json")
+    print("\nSaved evidence to h1_baseline_rotor.json")
 
     # H2: RSN signature analysis
     print("\n[H2] Analyzing RSN signatures...")
@@ -385,7 +384,7 @@ def run_baseline_evaluation():
     bn_S = [r["S"] for r in benign_rsn]
     bn_N = [r["N"] for r in benign_rsn]
 
-    print(f"\n--- H2 Results: RSN Signature Analysis ---")
+    print("\n--- H2 Results: RSN Signature Analysis ---")
     print(f"Jailbreak (n={len(jailbreak_rsn)}):")
     print(f"  R: {np.mean(jb_R):.3f} ± {np.std(jb_R):.3f}")
     print(f"  S: {np.mean(jb_S):.3f} ± {np.std(jb_S):.3f}")
@@ -401,7 +400,7 @@ def run_baseline_evaluation():
     d_S = cohens_d(jb_S, bn_S)
     d_N = cohens_d(jb_N, bn_N)
 
-    print(f"\nEffect sizes (Cohen's d):")
+    print("\nEffect sizes (Cohen's d):")
     print(f"  R: {d_R:.3f}")
     print(f"  S: {d_S:.3f}")
     print(f"  N: {d_N:.3f}")
@@ -428,7 +427,7 @@ def run_baseline_evaluation():
     }
     with open(EVIDENCE_DIR / "h2_rsn_signature.json", "w") as f:
         json.dump(h2_evidence, f, indent=2)
-    print(f"\nSaved evidence to h2_rsn_signature.json")
+    print("\nSaved evidence to h2_rsn_signature.json")
 
     # Save raw RSN data for visualization
     with open(RESULTS_DIR / "rsn_data.json", "w") as f:
@@ -504,7 +503,7 @@ def run_sota_comparison():
     }
     with open(EVIDENCE_DIR / "h4_sota_comparison.json", "w") as f:
         json.dump(h4_evidence, f, indent=2)
-    print(f"\nSaved evidence to h4_sota_comparison.json")
+    print("\nSaved evidence to h4_sota_comparison.json")
 
     # Save CSV
     import csv

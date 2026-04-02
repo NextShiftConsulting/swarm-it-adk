@@ -20,13 +20,7 @@ from swarm_it import (
 
     # Types
     RSCTCertificate,
-    GateDecision,
-
-    # Errors
     CertificationError,
-    ErrorCode,
-
-    # Reliability
     CircuitBreaker,
     CircuitBreakerConfig,
 )
@@ -116,7 +110,7 @@ try:
     certifier = FluentCertifier()
     cert = certifier.certify()  # No prompt set
 except CertificationError as e:
-    print(f"Caught CertificationError:")
+    print("Caught CertificationError:")
     print(f"  Code: {e.code.value} ({e.code.name})")
     print(f"  Message: {e.message}")
     print(f"  Guidance: {e.guidance}")
@@ -131,7 +125,7 @@ print("-" * 40)
 from swarm_it import to_yrsn_dict
 
 cert5 = certify("Test prompt for yrsn compatibility")
-print(f"RSCTCertificate preserves full structure:")
+print("RSCTCertificate preserves full structure:")
 print(f"  Core: R={cert5.R:.3f}, S={cert5.S:.3f}, N={cert5.N:.3f}")
 print(f"  Kappa: {cert5.kappa_gate:.3f}")
 print(f"  Extended: alpha={cert5.alpha}, omega={cert5.omega}")
@@ -156,7 +150,7 @@ breaker = CircuitBreaker("certification", config)
 try:
     with breaker:
         cert6 = certify("Test with circuit breaker protection")
-        print(f"Certification succeeded through circuit breaker:")
+        print("Certification succeeded through circuit breaker:")
         print(f"  Decision: {cert6.decision.value}")
         print(f"  Breaker state: {breaker.state.value}")
 except Exception as e:

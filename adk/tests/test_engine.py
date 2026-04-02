@@ -1,6 +1,5 @@
 """Tests for local certification engine."""
 
-import pytest
 from swarm_it.local.engine import (
     RSCTCertificate,
     GateDecision,

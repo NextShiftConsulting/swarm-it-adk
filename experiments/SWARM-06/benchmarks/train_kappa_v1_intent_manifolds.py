@@ -23,7 +23,7 @@ import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
@@ -540,12 +540,12 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY (κ-Proxy v1)")
     print("=" * 70)
-    print(f"Target: Accuracy > 85% (revised)")
+    print("Target: Accuracy > 85% (revised)")
     print(f"Achieved (Test): Accuracy = {test_results['accuracy']:.1%}")
     print(f"Status: {'PASS' if test_results['accuracy'] > 0.85 else 'NEEDS FURTHER WORK'}")
     print(f"\nMethod: Intent-conditioned safe manifolds ({args.n_clusters} intents)")
     print(f"Cohen's d: {cohens_d:.4f}")
-    print(f"4-state classification with σ-based UNSAFE detection")
+    print("4-state classification with σ-based UNSAFE detection")
 
 
 if __name__ == "__main__":

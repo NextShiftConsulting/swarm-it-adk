@@ -140,7 +140,7 @@ class PDFReaderAgent:
         if PdfReader is None:
             return PDFDocument(
                 filename=pdf_path.name,
-                content=f"[PDF extraction unavailable - install pypdf]",
+                content="[PDF extraction unavailable - install pypdf]",
                 page_count=0,
                 extraction_error="pypdf not installed"
             )
@@ -513,7 +513,7 @@ def run_pipeline(pdf_folder: str, certifier: SwarmCertifier, swarm, reader, anal
     print_cert(analysis_result["cert"])
 
     if analysis_result["blocked"]:
-        print(f"  ✗ Pipeline stopped: analysis blocked")
+        print("  ✗ Pipeline stopped: analysis blocked")
         return None
 
     analysis = analysis_result["analysis"]
@@ -535,7 +535,7 @@ def run_pipeline(pdf_folder: str, certifier: SwarmCertifier, swarm, reader, anal
     print_cert(suggest_result["cert"])
 
     if suggest_result["blocked"]:
-        print(f"  ✗ Pipeline stopped: advisory blocked")
+        print("  ✗ Pipeline stopped: advisory blocked")
         return None
 
     suggestions = suggest_result["suggestions"]

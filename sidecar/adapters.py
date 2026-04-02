@@ -18,7 +18,7 @@ IMPORTANT: OpenAI dimensions=384 to match trained projection input.
 """
 
 import os as _os
-from typing import List, Dict, Any, Optional
+from typing import List, Dict
 from .ports import EmbeddingPort, RSNPort
 
 # Checkpoints - use environment variable or cross-platform default

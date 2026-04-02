@@ -6,12 +6,12 @@ Supports SR 11-7 and EU AI Act formatting.
 """
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any, TextIO
+from typing import Dict, List, Optional, Any
 from pathlib import Path
 
-from ..local.engine import RSCTCertificate, GateDecision
+from ..local.engine import RSCTCertificate
 
 
 @dataclass

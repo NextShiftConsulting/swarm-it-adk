@@ -17,22 +17,19 @@ Usage:
 """
 
 import sys
-import os
 import json
 import hashlib
 from datetime import datetime
-from dataclasses import dataclass, asdict
-from typing import List, Dict, Any, Optional, Tuple
+from dataclasses import dataclass
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 
 # Add adk to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "adk"))
 
 from swarm_it import (
-    certify, certify_local, certify_batch,
-    LocalEngine, FluentCertifier,
-    GateDecision, RSCTCertificate,
-    Agent, Swarm, SwarmCertifier, certify_swarm,
+    certify, certify_local, LocalEngine, FluentCertifier,
+    GateDecision, Agent, Swarm, SwarmCertifier, certify_swarm,
     create_pipeline_swarm,
 )
 
@@ -871,7 +868,7 @@ def run_all_hypotheses() -> Dict[str, HypothesisResult]:
     results = {}
 
     print("\n" + "="*70)
-    print(f"  SWARM-01: Comprehensive Agent Validation Experiment")
+    print("  SWARM-01: Comprehensive Agent Validation Experiment")
     print(f"  Started: {datetime.utcnow().isoformat()}Z")
     print("="*70)
 

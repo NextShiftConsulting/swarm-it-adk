@@ -223,7 +223,7 @@ def main():
     syn_agent = SynthesizerAgent(synthesizer, certifier)
     val_agent = ValidatorAgent(validator, certifier)
 
-    print(f"\nTopology: user → retriever → synthesizer → validator")
+    print("\nTopology: user → retriever → synthesizer → validator")
     print("-" * 70)
 
     # === Test 1: Good query ===

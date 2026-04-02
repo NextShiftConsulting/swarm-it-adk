@@ -11,20 +11,17 @@ Also generates yrsn-compatible evidence for ExperimentTimeline integration.
 """
 
 import json
-import sys
 from pathlib import Path
 from datetime import datetime
-from dataclasses import dataclass
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.patches import FancyBboxPatch, Circle, Rectangle
+from matplotlib.patches import FancyBboxPatch, Circle
 from matplotlib.gridspec import GridSpec
 import numpy as np
 
 # Import our RSCT chart library
-from rsct_charts import RSCTChartGenerator, YRSNColors, CertificateData
+from rsct_charts import YRSNColors
 
 # Paths
 EVIDENCE_DIR = Path(__file__).parent / "evidence"

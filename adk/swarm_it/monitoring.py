@@ -19,14 +19,13 @@ Implements:
 - Dashboard templates
 """
 
-from typing import Optional, Dict, Any, List, Callable
+from typing import Optional, Dict, List, Callable
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-import time
 
 try:
-    from prometheus_client import (
+    from prometheus_client import (  # noqa: F401 - availability check
         Counter, Histogram, Gauge, Summary,
         CollectorRegistry, generate_latest, CONTENT_TYPE_LATEST
     )

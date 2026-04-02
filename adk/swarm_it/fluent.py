@@ -18,8 +18,7 @@ Implements:
 - Method chaining for all operations
 """
 
-from typing import Optional, Dict, Any, List, Callable, TYPE_CHECKING
-from dataclasses import dataclass
+from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from swarm_it.local.engine import RSCTCertificate

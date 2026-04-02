@@ -23,7 +23,7 @@ try:
 
     # Test convenience function
     cert1 = certify_local("What is the capital of France?", policy="default")
-    print(f"[OK] certify_local() works")
+    print("[OK] certify_local() works")
     print(f"   ID: {cert1.id}")
     print(f"   Decision: {cert1.decision.value}")
     print(f"   Kappa: {cert1.kappa_gate:.3f}")
@@ -33,7 +33,7 @@ try:
     # Test engine class
     engine = LocalEngine(policy="medical")
     cert2 = engine.certify("Patient shows symptoms of fever and cough.")
-    print(f"[OK] LocalEngine().certify() works")
+    print("[OK] LocalEngine().certify() works")
     print(f"   ID: {cert2.id}")
     print(f"   Decision: {cert2.decision.value}")
 
@@ -52,7 +52,7 @@ try:
 
     # Test convenience function
     cert1 = certify("Quick test")
-    print(f"[OK] certify() convenience function works")
+    print("[OK] certify() convenience function works")
     print(f"   Decision: {cert1.decision.value}")
     print(f"   Kappa: {cert1.kappa_gate:.3f}")
 
@@ -63,7 +63,7 @@ try:
         .for_medical()
         .certify()
     )
-    print(f"[OK] FluentCertifier works")
+    print("[OK] FluentCertifier works")
     print(f"   Decision: {cert2.decision.value}")
     print(f"   Kappa: {cert2.kappa_gate:.3f}")
     print(f"   R: {cert2.R:.3f}, S: {cert2.S:.3f}, N: {cert2.N:.3f}")
@@ -75,7 +75,7 @@ try:
         .for_research()
         .certify_batch()
     )
-    print(f"[OK] Batch processing works")
+    print("[OK] Batch processing works")
     print(f"   Processed: {len(certs)} prompts")
 
     print()
@@ -98,14 +98,14 @@ try:
     )
     breaker = CircuitBreaker("test_service", config)
 
-    print(f"[OK] CircuitBreaker created")
+    print("[OK] CircuitBreaker created")
     print(f"   State: {breaker.state}")
     print(f"   Failure threshold: {config.failure_threshold}")
 
     # Test context manager
     with breaker:
         result = "success"
-    print(f"[OK] Circuit breaker context manager works")
+    print("[OK] Circuit breaker context manager works")
 
     print()
 except Exception as e:
@@ -119,26 +119,25 @@ print("Test 4: Chaos Engineering")
 print("-" * 40)
 try:
     from swarm_it.chaos import (
-        ChaosManager, LatencyInjection, FaultInjection,
-        ErrorRateInjection
+        ChaosManager, LatencyInjection, ErrorRateInjection
     )
 
     manager = ChaosManager()
     manager.add_scenario(LatencyInjection(mean_ms=50, probability=0.5))
     manager.add_scenario(ErrorRateInjection(target_error_rate=0.2))
 
-    print(f"[OK] ChaosManager created with 2 scenarios")
+    print("[OK] ChaosManager created with 2 scenarios")
 
     # Test experiment
     with manager.run_experiment("test"):
         latency = manager.inject_latency()
         error = manager.inject_error()
-        print(f"[OK] Chaos injection works")
+        print("[OK] Chaos injection works")
         print(f"   Latency injected: {latency:.1f}ms")
         print(f"   Error injected: {error is not None}")
 
     metrics = manager.get_experiment_metrics("test")
-    print(f"[OK] Metrics collection works")
+    print("[OK] Metrics collection works")
     print(f"   Metrics collected: {len(metrics)} scenarios")
 
     print()
@@ -152,7 +151,7 @@ except Exception as e:
 print("Test 5: Audit Logging")
 print("-" * 40)
 try:
-    from swarm_it.audit import AuditLogger, AuditEvent, AuditLevel
+    from swarm_it.audit import AuditLogger
 
     logger = AuditLogger(enable_console=False)  # Disable console output
 
@@ -168,8 +167,8 @@ try:
         kappa=0.842
     )
 
-    print(f"[OK] AuditLogger works")
-    print(f"   Events: CERT_REQUEST, CERT_SUCCESS")
+    print("[OK] AuditLogger works")
+    print("   Events: CERT_REQUEST, CERT_SUCCESS")
 
     print()
 except Exception as e:
@@ -183,7 +182,7 @@ print("Test 6: Storage Plugins (Local)")
 print("-" * 40)
 try:
     from swarm_it.storage_plugins import (
-        LocalStorageProvider, get_storage_registry
+        LocalStorageProvider
     )
 
     storage = LocalStorageProvider(base_path="test_evidence")
@@ -194,17 +193,17 @@ try:
         evidence_data={"decision": "EXECUTE", "kappa": 0.842},
         metadata={"user_id": "test_user"}
     )
-    print(f"[OK] LocalStorageProvider works")
+    print("[OK] LocalStorageProvider works")
     print(f"   Stored at: {location}")
 
     # Retrieve evidence
     evidence = storage.retrieve_evidence("test_123")
-    print(f"[OK] Evidence retrieval works")
+    print("[OK] Evidence retrieval works")
     print(f"   Decision: {evidence['decision']}")
 
     # List evidence
     evidence_ids = storage.list_evidence()
-    print(f"[OK] Evidence listing works")
+    print("[OK] Evidence listing works")
     print(f"   Found: {len(evidence_ids)} items")
 
     # Clean up
@@ -236,13 +235,13 @@ try:
         metadata={"test": True}
     )
 
-    print(f"[OK] Notification creation works")
+    print("[OK] Notification creation works")
     print(f"   Title: {notification.title}")
     print(f"   Severity: {notification.severity.value}")
 
     # Convert to dict
     data = notification.to_dict()
-    print(f"[OK] Notification serialization works")
+    print("[OK] Notification serialization works")
     print(f"   Fields: {list(data.keys())}")
 
     print()
@@ -265,14 +264,14 @@ try:
         context={"prompt_length": 5, "min_length": 10}
     )
 
-    print(f"[OK] CertificationError works")
+    print("[OK] CertificationError works")
     print(f"   Code: {error.code.value}")
     print(f"   Message: {error.message}")
     print(f"   Guidance: {error.guidance}")
 
     # Test JSON serialization
     error_dict = error.to_dict()
-    print(f"[OK] Error serialization works")
+    print("[OK] Error serialization works")
     print(f"   Fields: {list(error_dict.keys())}")
 
     print()

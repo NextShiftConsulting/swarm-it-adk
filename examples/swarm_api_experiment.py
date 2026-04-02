@@ -27,7 +27,6 @@ MiMo-V2-Flash: https://huggingface.co/XiaomiMiMo/MiMo-V2-Flash
 
 import sys
 import os
-import json
 from datetime import datetime
 from dataclasses import dataclass
 from typing import List, Dict, Any
@@ -494,8 +493,8 @@ def main():
         mimo_key = os.environ.get("MIMO_API_KEY")
         if BYOK_AVAILABLE and mimo_key:
             byok_engine = BYOKEngine(provider="mimo", api_key=mimo_key)
-            print(f"Backend: MiMo ($0.00001/1k tokens)")
-            print(f"  See: adk/swarm_it/byok_engine.py")
+            print("Backend: MiMo ($0.00001/1k tokens)")
+            print("  See: adk/swarm_it/byok_engine.py")
         else:
             if not BYOK_AVAILABLE:
                 print("BYOK engine not available")
@@ -503,8 +502,8 @@ def main():
                 print("Set MIMO_API_KEY environment variable")
             print("Falling back to local mode")
     else:
-        print(f"Backend: Local (deterministic, no API calls)")
-        print(f"  For MiMo: python swarm_api_experiment.py --backend mimo")
+        print("Backend: Local (deterministic, no API calls)")
+        print("  For MiMo: python swarm_api_experiment.py --backend mimo")
 
     print()
     orchestrator = SwarmOrchestrator()

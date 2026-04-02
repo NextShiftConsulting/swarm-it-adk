@@ -40,12 +40,11 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # Paths
 EXPERIMENT_DIR = Path(__file__).parent.parent
@@ -575,11 +574,11 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved (Test): Accuracy = {test_results['accuracy']:.1%}")
     print(f"Status: {'PASS' if test_results['accuracy'] > 0.90 else 'FAIL'}")
     print(f"\nMethod: Certificate-feature classifier ({args.model})")
-    print(f"Rotor: FROZEN (preserves RSCT geometry)")
+    print("Rotor: FROZEN (preserves RSCT geometry)")
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ Hex arch: Engine depends on PORTS, not implementations.
 Adapters injected at construction time.
 """
 
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any
 from ..ports import EmbeddingPort, RSNPort
 from .patterns import get_detector
 

@@ -29,10 +29,9 @@ Reference: MIMO LangGraph Swarm Architecture (CLAUDE.md)
 import json
 import argparse
 import sys
-import os
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
 import logging
@@ -352,7 +351,7 @@ def main():
     print("=" * 70)
     print("SWARM-06: SWARM TITAN JAILBREAK CLASSIFIER")
     print("=" * 70)
-    print(f"\nConfig:")
+    print("\nConfig:")
     print(f"  Workers: {args.workers}")
     print(f"  Embed dim: {args.embed_dim}")
     print(f"  Epochs: {args.epochs}")
@@ -466,7 +465,7 @@ def main():
     print("\n" + "=" * 70)
     print("SUMMARY (SWARM TITAN)")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved: {test_results['accuracy']:.1%}")
     print(f"Status: {'PASS' if test_results['accuracy'] > 0.90 else 'NEEDS WORK'}")
 

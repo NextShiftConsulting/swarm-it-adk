@@ -88,7 +88,7 @@ def run_proof():
         print(f"{'='*50}")
 
         # Load model
-        print(f"  Loading model...")
+        print("  Loading model...")
         model = SentenceTransformer(model_name)
 
         # Get embeddings
@@ -140,12 +140,12 @@ def run_proof():
     print(f"  k=2 fails:          {n_k2_fails}/{len(results)}")
 
     if n_choked > 0:
-        print(f"\n  ✓ CONCEPT PROVEN: Real models ARE rank-choked")
-        print(f"  ✓ Our formula works: k = min(ceil(65/κ), 5)")
+        print("\n  ✓ CONCEPT PROVEN: Real models ARE rank-choked")
+        print("  ✓ Our formula works: k = min(ceil(65/κ), 5)")
         if n_k2_fails > 0:
             print(f"  ✓ Adila's k=2 fails {n_k2_fails}/{n_choked} choked cases")
     else:
-        print(f"\n  ⚠ No choked models found - try smaller models")
+        print("\n  ⚠ No choked models found - try smaller models")
 
     # Save evidence
     evidence = {
@@ -166,7 +166,7 @@ def run_proof():
     with open(evidence_dir / "phase1_proof.json", 'w') as f:
         json.dump(evidence, f, indent=2)
 
-    print(f"\n  Evidence: evidence/phase1_proof.json")
+    print("\n  Evidence: evidence/phase1_proof.json")
 
     if n_choked > 0:
         print(f"\n{'='*60}")

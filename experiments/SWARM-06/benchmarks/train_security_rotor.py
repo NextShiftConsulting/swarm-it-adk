@@ -27,7 +27,7 @@ import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 import numpy as np
 
 import torch
@@ -585,7 +585,7 @@ def main():
     print(f"  Learning rate: {args.lr}")
     print(f"  Batch size: {args.batch_size}")
     print(f"  Device: {args.device}")
-    print(f"  Loss: CertificateLoss (RSN=1.0, T4=0.3, Admissibility=0.2)")
+    print("  Loss: CertificateLoss (RSN=1.0, T4=0.3, Admissibility=0.2)")
 
     history = train_rotor(
         rotor=rotor,
@@ -684,10 +684,10 @@ def main():
     print("\n" + "=" * 70)
     print("H3 SUMMARY")
     print("=" * 70)
-    print(f"Target: Accuracy > 90%")
+    print("Target: Accuracy > 90%")
     print(f"Achieved: Accuracy = {val_results['accuracy']:.1%}")
     print(f"Status: {'PASS' if val_results['accuracy'] > 0.90 else 'FAIL'}")
-    print(f"\nCertificate System: FULL (T4, kappa, sigma, admissibility)")
+    print("\nCertificate System: FULL (T4, kappa, sigma, admissibility)")
 
 
 if __name__ == "__main__":

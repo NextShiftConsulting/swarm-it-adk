@@ -23,7 +23,7 @@ Usage:
     streamlit run playground.py
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 import sys
 from pathlib import Path
 
@@ -37,7 +37,6 @@ except ImportError:
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from swarm_it.fluent import FluentCertifier
-from swarm_it.validation import CertificationDomain
 
 
 # Domain presets matching fluent.py

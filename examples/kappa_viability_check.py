@@ -72,11 +72,11 @@ def main():
         print(f"  κ (kappa):    {result.kappa:.2f} [{status}]")
 
         if not result.is_viable:
-            print(f"\n  [!] EXPANSION NEEDED")
+            print("\n  [!] EXPANSION NEEDED")
             print(f"      Recommended k: {result.recommended_k}")
             print(f"      κ after expansion: {result.kappa_after_expansion:.2f}")
         else:
-            print(f"\n  [✓] Ready for geometric operations")
+            print("\n  [✓] Ready for geometric operations")
 
     # Quick check example
     print(f"\n{'='*60}")
@@ -88,16 +88,16 @@ def main():
 
     # One-liner check
     result = check_kappa(embeddings)
-    print(f"\n  check_kappa() result:")
+    print("\n  check_kappa() result:")
     print(f"  {result}")
 
     # Decision logic
-    print(f"\n  Decision logic:")
+    print("\n  Decision logic:")
     if result.is_viable:
-        print(f"    → Proceed with rotor operations (k=1)")
+        print("    → Proceed with rotor operations (k=1)")
     else:
         print(f"    → Expand MLP capacity by k={result.recommended_k}")
-        print(f"    → Reference: Adila et al. 'Grow, Don't Overwrite'")
+        print("    → Reference: Adila et al. 'Grow, Don't Overwrite'")
 
 
 if __name__ == "__main__":

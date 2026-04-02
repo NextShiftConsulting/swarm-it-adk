@@ -245,7 +245,7 @@ def main():
     agg_result = agg.aggregate(worker_results, swarm)
     status = "✓" if agg_result["input_cert"]["allowed"] else "✗"
     print(f"  Input certification: κ={agg_result['input_cert']['kappa']:.2f} {status}")
-    print(f"\n  Combined analysis:")
+    print("\n  Combined analysis:")
     for line in agg_result["synthesis"].split("\n"):
         print(f"    {line}")
 

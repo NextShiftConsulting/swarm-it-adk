@@ -26,6 +26,7 @@ Example:
 
     results = swarm.execute("Analyze quantum computing")
 """
+from __future__ import annotations
 
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -89,7 +90,7 @@ class ProviderAgentWrapper:
         self.max_tokens = max_tokens
         self.model = provider.model
 
-    def execute(self, prompt: str) -> 'AgentOutput':
+    def execute(self, prompt: str) -> 'AgentOutput':  # noqa: F821
         """
         Execute agent with given prompt.
 
@@ -137,7 +138,7 @@ class ProviderAgentWrapper:
         )
 
 
-def create_swarm(config: Dict[str, Any]) -> 'SwarmExecutor':
+def create_swarm(config: Dict[str, Any]) -> 'SwarmExecutor':  # noqa: F821
     """
     Create a multi-provider agent swarm from configuration.
 
@@ -380,7 +381,7 @@ Output: Critical evaluation with specific concerns."""
 }
 
 
-def create_preset_swarm(preset: str) -> 'SwarmExecutor':
+def create_preset_swarm(preset: str) -> 'SwarmExecutor':  # noqa: F821
     """
     Create a swarm from a preset configuration.
 

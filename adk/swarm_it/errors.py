@@ -82,7 +82,7 @@ class CertificationError(Exception):
         """Format error for display."""
         lines = [
             f"[{self.code.value}] {self.message}",
-            f"",
+            "",
             f"Guidance: {self.guidance}",
         ]
 

@@ -6,10 +6,9 @@ Shows how to add RSCT certification to a FastAPI application.
 
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-from typing import Optional
 
 from swarm_it import SwarmIt
-from swarm_it.integrations import SwarmItMiddleware, require_certificate
+from swarm_it.integrations import require_certificate
 
 # Initialize
 app = FastAPI(title="Swarm It Demo API")

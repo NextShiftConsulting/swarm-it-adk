@@ -20,7 +20,7 @@ import os
 import sys
 import argparse
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 import re
 import requests
 
@@ -126,7 +126,7 @@ class PodcastMIMOAgent:
             "quality": self.model
         }
 
-        print(f"[*] Initialized MIMO Agent")
+        print("[*] Initialized MIMO Agent")
         print(f"    LLM Provider: {self.provider}")
         print(f"    LLM Endpoint: {self.endpoint}")
         print(f"    LLM Model: {self.model}")
@@ -508,7 +508,7 @@ Content (first 2000 chars):
                       peer_review['engagement']]
             peer_review['overall_score'] = sum(scores) / len(scores)
 
-        print(f"\n[*] Podcast Peer Review (Stage 1/2):")
+        print("\n[*] Podcast Peer Review (Stage 1/2):")
         print(f"    Source Fidelity: {peer_review['source_fidelity']}/10")
         print(f"    Hallucination Check: {peer_review['hallucination_check']}/10")
         print(f"    Dialogue Flow: {peer_review['dialogue_flow']}/10")
@@ -720,7 +720,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
             'issues': peer_review.get('issues', [])
         }
 
-        print(f"\n[*] RSCT Quality Certificate (Stage 2/2):")
+        print("\n[*] RSCT Quality Certificate (Stage 2/2):")
         print(f"    DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
         print(f"    QUALITY: alpha={certificate['alpha']:.2f}")
         print(f"    DERIVED: kappa={certificate['kappa_gate']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
@@ -740,7 +740,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         Returns combined certificate with both reviews.
         """
         print(f"\n{'='*60}")
-        print(f"[*] TWO-STAGE QUALITY REVIEW")
+        print("[*] TWO-STAGE QUALITY REVIEW")
         print(f"{'='*60}")
 
         # Stage 1: Peer Review
@@ -751,7 +751,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
 
         # Combined summary
         print(f"\n{'='*60}")
-        print(f"[*] COMBINED REVIEW SUMMARY")
+        print("[*] COMBINED REVIEW SUMMARY")
         print(f"{'='*60}")
         print(f"    Peer Review: {peer_review['overall_score']:.1f}/10 ({peer_review['recommendation']})")
         print(f"    RSCT: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
@@ -781,11 +781,11 @@ N (Noise): Fraction that is hallucinated or factually incorrect
                 print(f"\n[*] RETRY ATTEMPT {attempt}/{max_attempts} (Morph Repair Cycle)")
 
             # Step 1: Producer creates outline
-            print(f"[1] Step 1: Producer creating outline...")
+            print("[1] Step 1: Producer creating outline...")
             outline = self.producer_agent(blog_post)
 
             # Step 2: Generate dialogue segments
-            print(f"\n[2] Step 2: Generating dialogue...")
+            print("\n[2] Step 2: Generating dialogue...")
             dialogue_script = []
             conversation_context = ""
 
@@ -809,45 +809,45 @@ N (Noise): Fraction that is hallucinated or factually incorrect
                 conversation_context += f"\nEXPERT: {expert_dialogue}"
 
             # Step 3: Quality validation with state-based decision
-            print(f"\n\n[3] Step 3: Quality validation...")
+            print("\n\n[3] Step 3: Quality validation...")
             cert = self.quality_agent(dialogue_script, blog_post)
 
             # === CONTROL LAYER: Act on typed decision ===
 
             if cert['decision'] == 'EXECUTE':
                 # Gate passed - accept dialogue
-                print(f"\n[+] Gate evaluation: EXECUTE (All gates passed)")
+                print("\n[+] Gate evaluation: EXECUTE (All gates passed)")
                 return dialogue_script, cert
 
             elif cert['decision'] == 'RE_ENCODE':
                 # Morph Repair: Regenerate dialogue
-                print(f"\n[!] Gate evaluation: RE_ENCODE")
+                print("\n[!] Gate evaluation: RE_ENCODE")
                 print(f"    Reason: {cert['gate_feedback']}")
                 if attempt < max_attempts:
-                    print(f"    Applying graph transformation: regenerate dialogue")
+                    print("    Applying graph transformation: regenerate dialogue")
                     attempt += 1
                     continue  # Retry loop
                 else:
-                    print(f"    Max attempts reached - returning failed dialogue")
+                    print("    Max attempts reached - returning failed dialogue")
                     return dialogue_script, cert
 
             elif cert['decision'] == 'REPAIR':
                 # Morph Repair: Attempt targeted fix
-                print(f"\n[!] Gate evaluation: REPAIR")
+                print("\n[!] Gate evaluation: REPAIR")
                 print(f"    Reason: {cert['gate_feedback']}")
                 if attempt < max_attempts:
-                    print(f"    Applying graph transformation: regenerate dialogue")
+                    print("    Applying graph transformation: regenerate dialogue")
                     attempt += 1
                     continue  # Retry loop
                 else:
-                    print(f"    Max attempts reached - returning failed dialogue")
+                    print("    Max attempts reached - returning failed dialogue")
                     return dialogue_script, cert
 
             elif cert['decision'] in ['REJECT', 'BLOCK']:
                 # Terminal failure - no retry
                 print(f"\n[-] Gate evaluation: {cert['decision']}")
                 print(f"    Reason: {cert['gate_feedback']}")
-                print(f"    Terminal failure - no retry")
+                print("    Terminal failure - no retry")
                 return dialogue_script, cert
 
             else:
@@ -862,7 +862,6 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         """
         Fallback: Save individual MP3 files when pydub/ffmpeg not available
         """
-        from pathlib import Path
         output_dir = Path(output_path).parent / f"{Path(output_path).stem}_segments"
         output_dir.mkdir(exist_ok=True)
 
@@ -887,9 +886,9 @@ N (Noise): Fraction that is hallucinated or factually incorrect
 
         print(f"\n[+] Individual MP3 segments saved to: {output_dir}/")
         print(f"   Total segments: {len(dialogue_script)}")
-        print(f"\n[!] To combine segments, install ffmpeg:")
-        print(f"   Windows: choco install ffmpeg")
-        print(f"   Then re-run the script to generate combined MP3")
+        print("\n[!] To combine segments, install ffmpeg:")
+        print("   Windows: choco install ffmpeg")
+        print("   Then re-run the script to generate combined MP3")
 
         return str(output_dir)
 
@@ -1005,7 +1004,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         except (FileNotFoundError, OSError) as e:
             # ffmpeg not found or pydub error - fall back to individual files
             print(f"\n[!] Audio mixing failed (ffmpeg not found): {e}")
-            print(f"[!] Falling back to individual MP3 files...")
+            print("[!] Falling back to individual MP3 files...")
             return self._save_individual_audio_files(dialogue_script, output_path)
 
     def generate_podcast(self, blog_path: str, output_path: str) -> Dict:

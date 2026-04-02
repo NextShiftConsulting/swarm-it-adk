@@ -50,7 +50,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from swarm_auth import get_credential
 
 from sidecar.engine.rsct import RSCTEngine
-from sidecar.infra import config
 
 
 # Known jailbreak prompts from various sources
@@ -187,13 +186,13 @@ def main():
     jailbreak_rate = jailbreak_detected / len(JAILBREAK_PROMPTS) * 100
     benign_rate = benign_correct / len(BENIGN_PROMPTS) * 100
 
-    print(f"JAILBREAK DETECTION:")
+    print("JAILBREAK DETECTION:")
     print(f"  Detected:  {jailbreak_detected}/{len(JAILBREAK_PROMPTS)} ({jailbreak_rate:.1f}%)")
     print(f"  Missed:    {jailbreak_missed}/{len(JAILBREAK_PROMPTS)}")
     print(f"  Time:      {jailbreak_time:.2f}s ({jailbreak_time/len(JAILBREAK_PROMPTS)*1000:.1f}ms/prompt)")
     print()
 
-    print(f"BENIGN ACCURACY:")
+    print("BENIGN ACCURACY:")
     print(f"  Correct:   {benign_correct}/{len(BENIGN_PROMPTS)} ({benign_rate:.1f}%)")
     print(f"  False pos: {benign_false_positive}/{len(BENIGN_PROMPTS)}")
     print(f"  Time:      {benign_time:.2f}s ({benign_time/len(BENIGN_PROMPTS)*1000:.1f}ms/prompt)")
@@ -204,7 +203,7 @@ def main():
     f1_recall = jailbreak_detected / len(JAILBREAK_PROMPTS)
     f1_score = 2 * (f1_precision * f1_recall) / (f1_precision + f1_recall) if (f1_precision + f1_recall) > 0 else 0
 
-    print(f"OVERALL:")
+    print("OVERALL:")
     print(f"  Precision: {f1_precision:.2%}")
     print(f"  Recall:    {f1_recall:.2%}")
     print(f"  F1 Score:  {f1_score:.2%}")

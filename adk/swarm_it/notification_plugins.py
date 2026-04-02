@@ -204,7 +204,7 @@ class SlackNotificationProvider(NotificationProvider):
         })
 
         try:
-            import requests
+            import requests  # noqa: F401 - availability check
             self.requests_available = True
         except ImportError:
             self.requests_available = False
@@ -310,7 +310,7 @@ class PagerDutyNotificationProvider(NotificationProvider):
         })
 
         try:
-            import requests
+            import requests  # noqa: F401 - availability check
             self.requests_available = True
         except ImportError:
             self.requests_available = False
@@ -494,7 +494,7 @@ class WebhookNotificationProvider(NotificationProvider):
         })
 
         try:
-            import requests
+            import requests  # noqa: F401 - availability check
             self.requests_available = True
         except ImportError:
             self.requests_available = False

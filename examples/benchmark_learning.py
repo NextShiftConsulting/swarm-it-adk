@@ -33,7 +33,6 @@ Expected Output:
       ✓ Gate decisions work correctly
 """
 
-import sys
 import os
 import time
 

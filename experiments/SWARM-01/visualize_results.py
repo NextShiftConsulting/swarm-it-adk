@@ -11,7 +11,6 @@ Uses YRSN color scheme for consistency.
 """
 
 import json
-import sys
 from pathlib import Path
 from datetime import datetime
 

@@ -19,12 +19,11 @@ Implements:
 - Redis-backed distributed rate limiting
 """
 
-from typing import Optional, Dict, Any, Callable
-from dataclasses import dataclass, field
+from typing import Optional, Dict, Callable
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 import time
-import hashlib
 
 try:
     import redis

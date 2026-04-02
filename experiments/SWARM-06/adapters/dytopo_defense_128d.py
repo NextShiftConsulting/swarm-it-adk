@@ -21,10 +21,9 @@ Usage:
 """
 
 import sys
-import json
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, List, Tuple, Set
+from typing import Dict, Any, Optional, List, Set
 from enum import Enum
 import numpy as np
 import logging
@@ -606,7 +605,7 @@ if __name__ == "__main__":
     print("=" * 70)
 
     # Show rotor_config status
-    print(f"\n[0] Rotor Configuration:")
+    print("\n[0] Rotor Configuration:")
     print(f"  ROTOR_DIMENSION: {get_rotor_dimension()}")
     print(f"  Supported: {SUPPORTED_ROTOR_DIMENSIONS}")
     print(f"  Has rotor_config: {_HAS_ROTOR_CONFIG}")

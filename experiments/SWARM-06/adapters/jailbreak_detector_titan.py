@@ -15,11 +15,10 @@ Usage:
         print(f"Blocked: {result.state}")
 """
 
-import sys
 import json
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, Optional, List
 import numpy as np
 import logging
 

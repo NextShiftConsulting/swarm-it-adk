@@ -1,6 +1,5 @@
 """Tests for taxonomy classification."""
 
-import pytest
 from swarm_it.local.engine import RSCTCertificate, GateDecision
 from swarm_it.taxonomy.classification import (
     RSCTMode,

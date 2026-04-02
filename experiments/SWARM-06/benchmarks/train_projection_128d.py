@@ -18,12 +18,11 @@ Usage:
     python train_projection_128d.py --epochs 200 --lr 1e-3
 """
 
-import json
 import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple
+from typing import Dict, Tuple
 import numpy as np
 
 import torch
@@ -328,7 +327,7 @@ def main():
     print("=" * 70)
     print("SWARM-06: Train 384d → 128d Projection")
     print("=" * 70)
-    print(f"\nConfig:")
+    print("\nConfig:")
     print(f"  Epochs: {args.epochs}")
     print(f"  LR: {args.lr}")
     print(f"  λ_recon: {args.lambda_recon}")
@@ -431,16 +430,16 @@ def main():
     print("\n" + "=" * 70)
     print("128d PROJECTION TRAINING COMPLETE")
     print("=" * 70)
-    print(f"\nEncoder: 384d → 128d")
+    print("\nEncoder: 384d → 128d")
     print(f"Test accuracy: {test_metrics['accuracy']:.1%}")
     print(f"Reconstruction loss: {test_metrics['recon_loss']:.4f}")
-    print(f"\nIntegration with yrsn.config.rotor_config:")
-    print(f"  # Set dimension via environment:")
-    print(f"  export ROTOR_DIMENSION=128")
-    print(f"")
-    print(f"  # DyTopo router auto-loads weights:")
-    print(f"  from yrsn.config.rotor_config import ROTOR_DIMENSION")
-    print(f"  router = DyTopoRouter.create()  # Uses ROTOR_DIMENSION")
+    print("\nIntegration with yrsn.config.rotor_config:")
+    print("  # Set dimension via environment:")
+    print("  export ROTOR_DIMENSION=128")
+    print("")
+    print("  # DyTopo router auto-loads weights:")
+    print("  from yrsn.config.rotor_config import ROTOR_DIMENSION")
+    print("  router = DyTopoRouter.create()  # Uses ROTOR_DIMENSION")
 
 
 if __name__ == "__main__":

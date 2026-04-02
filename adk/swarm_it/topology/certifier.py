@@ -7,10 +7,10 @@ with per-agent breakdowns.
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 import uuid
 
-from .models import Swarm, Agent, Channel
+from .models import Swarm
 from ..local.engine import RSCTCertificate, GateDecision
 
 

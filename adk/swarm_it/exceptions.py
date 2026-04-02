@@ -3,7 +3,6 @@ Swarm It Exceptions
 """
 
 # Import structured CertificationError from errors module for backward compatibility
-from .errors import CertificationError
 
 
 class SwarmItError(Exception):

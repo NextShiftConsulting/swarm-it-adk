@@ -4,7 +4,7 @@ Anthropic Provider - Claude models (direct API).
 For AWS Bedrock Claude, use BedrockProvider instead.
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from .base import LLMProvider, LLMResponse, ProviderType, LLMProviderConfig
 
 

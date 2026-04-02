@@ -1,6 +1,5 @@
 """Tests for swarm topology models and certification."""
 
-import pytest
 from swarm_it.topology.models import (
     SolverType,
     Modality,
@@ -9,7 +8,6 @@ from swarm_it.topology.models import (
     Swarm,
 )
 from swarm_it.topology.certifier import (
-    SwarmCertifier,
     certify_swarm,
 )
 from swarm_it.topology.patterns import (

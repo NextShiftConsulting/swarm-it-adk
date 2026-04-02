@@ -80,7 +80,7 @@ def certified_chat(
         print(f"[Error] {e}")
 
     # Step 3: Post-execution validation
-    print(f"[Validating] Recording feedback...")
+    print("[Validating] Recording feedback...")
     swarm.validate(
         cert.id,
         ValidationType.TYPE_I,  # Groundedness

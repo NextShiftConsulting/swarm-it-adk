@@ -7,7 +7,7 @@ from mcp.client.stdio import stdio_client
 
 # Define the connection parameters to our compiled Go binary
 server_params = StdioServerParameters(
-    command="./rsct-mcp-server", 
+    command="./rsct-mcp-server",
     args=[],
     env={"ANTHROPIC_API_KEY": "your-api-key-here"} # Pass necessary env vars
 )
@@ -32,22 +32,22 @@ async def run_hardware_validation(request: HardwareValidationRequest) -> Hardwar
         async with ClientSession(read, write) as session:
             # 1. Handshake with the Go Server
             await session.initialize()
-            
+
             # 2. Execute the tool
             result = await session.call_tool(
-                name="validate_physical_hardware", 
+                name="validate_physical_hardware",
                 arguments={
                     "board_id": request.board_id,
                     "code": request.code
                 }
             )
-            
+
             # 3. Parse the JSON response from Go back into our Pydantic model
             # The Go server returns the data wrapped in a text content block
             raw_data = json.loads(result.content[0].text)
-            
+
             failed_assertions = [a for a in raw_data.get("assertions", []) if a.get("outcome") != "pass"]
-            
+
             return HardwareValidationResponse(
                 status=raw_data.get("status", "error"),
                 assertions_passed=len(raw_data.get("assertions", [])) - len(failed_assertions),
@@ -62,6 +62,6 @@ if __name__ == "__main__":
         board_id="esp32",
         code="void LED_Init(void) { /* ... */ }"
     )
-    
+
     response = asyncio.run(run_hardware_validation(test_req))
     print(f"Hardware Test Status: {response.status}")

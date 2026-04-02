@@ -14,7 +14,7 @@ from typing import Dict, Any, Optional, List, Callable
 import json
 import hashlib
 from functools import wraps
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 import time
 
 try:

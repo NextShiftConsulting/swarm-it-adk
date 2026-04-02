@@ -178,7 +178,7 @@ class Swarm:
         """Link with lowest kappa_interface."""
         if not self.links:
             return None
-        return min(self.links, key=lambda l: l.kappa_interface)
+        return min(self.links, key=lambda link: link.kappa_interface)
 
 
 @dataclass

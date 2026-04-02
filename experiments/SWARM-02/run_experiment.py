@@ -14,8 +14,7 @@ import torch
 import torch.nn as nn
 from pathlib import Path
 from datetime import datetime
-from dataclasses import dataclass, asdict
-from typing import Tuple, Dict, List, Optional
+from typing import Tuple, Dict
 
 # Experiment paths
 EXP_DIR = Path(__file__).parent

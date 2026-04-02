@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List
 
 from .models import (
-    Agent, AgentLink, Swarm, Message, SwarmCertificate, AgentRole
+    Agent, AgentLink, Swarm, Message, SwarmCertificate
 )
 
 

@@ -1,6 +1,5 @@
 """Tests for RSCT Engine."""
 
-import pytest
 from engine.rsct import RSCTEngine
 
 
@@ -157,7 +156,7 @@ class TestThresholds:
         """Stricter kappa threshold should block more."""
         # With default threshold
         cert1 = self.engine.certify(prompt="Test")
-        decision1 = cert1["decision"]
+        _ = cert1["decision"]  # Capture but don't use - testing that stricter threshold changes result
 
         # With stricter threshold
         self.engine.set_threshold("kappa_threshold", 0.95)

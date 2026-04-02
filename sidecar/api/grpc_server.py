@@ -9,7 +9,6 @@ For now, this uses grpclib for async support.
 
 import asyncio
 import json
-from typing import Optional
 
 try:
     from grpclib.server import Server

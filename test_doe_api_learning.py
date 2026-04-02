@@ -19,7 +19,6 @@ Output:
 """
 
 import json
-import sys
 import os
 from typing import Dict, List, Any, Tuple, Optional
 from dataclasses import dataclass, field, asdict
@@ -450,7 +449,7 @@ class DOEAPIValidator:
             # Test ACTUAL gate decision (what API returns)
             proof.assertions.append({
                 "id": "CG_A1_ACTUAL_DECISION",
-                "description": f"yrsn_adapter decision matches expected",
+                "description": "yrsn_adapter decision matches expected",
                 "expected": level.expected_decision,
                 "actual": actual_decision,
                 "pass": actual_decision == level.expected_decision,
@@ -458,7 +457,7 @@ class DOEAPIValidator:
 
             proof.assertions.append({
                 "id": "CG_A2_ACTUAL_GATE",
-                "description": f"yrsn_adapter gate matches expected",
+                "description": "yrsn_adapter gate matches expected",
                 "expected": level.expected_gate,
                 "actual": actual_gate,
                 "pass": actual_gate == level.expected_gate,

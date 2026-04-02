@@ -7,8 +7,6 @@ Abstract interface and implementations for certificate persistence.
 import json
 import sqlite3
 from abc import ABC, abstractmethod
-from datetime import datetime
-from pathlib import Path
 from typing import Dict, List, Optional, Any, Iterator
 from collections import OrderedDict
 

@@ -18,7 +18,7 @@ import hashlib
 import sys
 import os
 from datetime import datetime
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 
 # Use infra port
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -28,7 +28,6 @@ from .interface import (
     YRSNAdapter,
     CertifyRequest,
     CertifyResponse,
-    EmbeddingsRequired,
     YRSNError,
 )
 

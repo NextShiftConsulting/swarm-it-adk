@@ -6,7 +6,6 @@ NO SIMULATIONS. Only real data from real models.
 """
 
 import torch
-import numpy as np
 import json
 import math
 from pathlib import Path

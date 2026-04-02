@@ -13,8 +13,7 @@ These patterns affect the N (noise) and R (relevance) scores.
 from __future__ import annotations
 
 import re
-import string
-from typing import Dict, List, Tuple
+from typing import List
 from dataclasses import dataclass
 
 

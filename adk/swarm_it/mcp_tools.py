@@ -10,11 +10,10 @@ Inspired by Stripe's "Toolshed" (400+ MCP tools):
 Pattern: Pluggable tool ecosystem with standard interface
 """
 
-from typing import Dict, Any, Optional, List, Callable
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from enum import Enum
-import inspect
 
 
 class ToolCategory(Enum):

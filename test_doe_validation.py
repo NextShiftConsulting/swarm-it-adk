@@ -27,7 +27,6 @@ from swarm_it import (
     LocalEngine,
     FluentCertifier,
     RSCTCertificate,
-    GateDecision,
     CertificationError,
     ErrorCode,
 )
@@ -807,7 +806,7 @@ def main():
     for proof in validator.proofs[:5]:
         print(f"Experiment: {proof.experiment_id}")
         print(f"Verdict: {proof.pass_fail} - {proof.verdict} (confidence: {proof.confidence:.0%})")
-        print(f"Evidence:")
+        print("Evidence:")
         if proof.evidence:
             print(f"  Prompt Level: {proof.evidence.prompt_level}")
             print(f"  Domain Level: {proof.evidence.domain_level}")
@@ -820,7 +819,7 @@ def main():
                   f"N={fmt_float(proof.evidence.N)} "
                   f"(sum={fmt_float(proof.evidence.simplex_sum)})")
 
-        print(f"Assertions:")
+        print("Assertions:")
         for assertion in proof.assertions:
             status = "[OK]" if assertion["pass"] else "[FAIL]"
             print(f"  {status} {assertion['id']}: {assertion['description']}")

@@ -6,13 +6,11 @@ P18 Compliance: Credentials via swarm-it-auth when available.
 """
 
 import os
-import sys
 import torch
 import hashlib
 import uuid
 from typing import Dict, Any, Optional
 from datetime import datetime
-from pathlib import Path
 
 # P18 v3.0 - Unified credential access
 try:
@@ -122,7 +120,7 @@ class BYOKEngine:
                 self.rotor = HybridSimplexRotor(embed_dim=64)
             except Exception as e:
                 print(f"[BYOK] Warning: Failed to load rotor: {e}")
-                print(f"[BYOK] Falling back to hash-based approximation")
+                print("[BYOK] Falling back to hash-based approximation")
                 self.rotor = None  # Will use fallback
 
     def _get_embedding(self, text: str) -> torch.Tensor:

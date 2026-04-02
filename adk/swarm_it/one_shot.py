@@ -10,7 +10,7 @@ Inspired by Stripe's one-shot end-to-end agents:
 Pattern: Context → Agent → Rotor → Gates → Evidence
 """
 
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import json

@@ -23,7 +23,6 @@ Structure expected per experiment:
         └── h*_*.json
 """
 
-import os
 import sys
 import re
 import json
@@ -34,7 +33,7 @@ import argparse
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 
 
@@ -283,10 +282,10 @@ def run_experiment(exp_id: str, hypothesis: Optional[str] = None) -> Dict[str, A
             with open(evidence_path) as f:
                 evidence = json.load(f)
             results[h.id] = {"status": "PASS", "evidence": evidence}
-            print(f"  Status: PASS (evidence exists)")
+            print("  Status: PASS (evidence exists)")
         else:
             results[h.id] = {"status": "NOT_TESTED", "evidence": None}
-            print(f"  Status: NOT_TESTED")
+            print("  Status: NOT_TESTED")
         print()
 
     return {"status": "completed", "results": results}
@@ -408,7 +407,7 @@ def run_autoloop(exp_id: str, max_iterations: Optional[int] = None):
         # Brief pause
         time.sleep(1)
 
-    print(f"\n=== AutoLoop Complete ===")
+    print("\n=== AutoLoop Complete ===")
     print(f"Iterations: {iteration}")
     print(f"Best {config.metric}: {best_metric:.6f}")
 
