@@ -401,8 +401,13 @@ class TidyLLMSentenceProvider(EmbeddingProvider):
             self._method = method
             self._model_name = f"tidyllm-{method}-{embedding_dim}"
 
-            # Load GloVe vectors for SIF if provided
-            if method == 'sif' and glove_path:
+            # Load GloVe vectors for SIF - required for this method
+            if method == 'sif':
+                if not glove_path:
+                    raise ValueError(
+                        "glove_path required for method='sif'. "
+                        "Provide path to GloVe vectors or use method='lsa' instead."
+                    )
                 from tidyllm_sentence import load_glove
                 self._word_vectors = load_glove(glove_path)
             else:
