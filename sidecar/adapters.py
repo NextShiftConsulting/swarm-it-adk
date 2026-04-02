@@ -1,31 +1,40 @@
 """
 Adapters - Implementations of ports via yrsn.
 
-P18 Compliance: Credentials via config_manager.
+P18 v4.0 Compliance: Credentials via swarm_auth.
 
 TRAINED RSN PIPELINE:
     OpenAI text-embedding-3-small (dimensions=384)
         ↓
-    text_mlp_384to64_trained.pt (384 → 192 → 128 → 64)
+    adapter_384to64_text_sbert_v1.pt (384 → 192 → 128 → 64)
         ↓
-    trained_rotor_text64.pt (64 → R, S, N)
+    rotor_64_text_sbert_v1.pt (64 → R, S, N)
 
 NOTE: yrsn uses "natural" dimension reduction via trained checkpoints.
       Do NOT use untrained projections - they produce random RSN!
-      See /Users/rudy/GitHub/yrsn/checkpoints/README.md
 
 IMPORTANT: OpenAI dimensions=384 to match trained projection input.
            1536 or 768 dim would require different trained checkpoints.
 """
 
+import os as _os
 from typing import List, Dict, Any, Optional
 from .ports import EmbeddingPort, RSNPort
-from .config.config_manager import get_config
 
-# Checkpoints
-YRSN_CHECKPOINTS = "/Users/rudy/GitHub/yrsn/checkpoints"
-TEXT_PROJECTION = f"{YRSN_CHECKPOINTS}/text_mlp_384to64_trained.pt"
-ROTOR_64 = f"{YRSN_CHECKPOINTS}/trained_rotor_text64.pt"
+# Checkpoints - use environment variable or cross-platform default
+YRSN_CHECKPOINTS = _os.environ.get("YRSN_CHECKPOINTS", _os.path.expanduser("~/github/yrsn/checkpoints"))
+# Naming convention: {type}_{dim}_{channel}_{provider}_v{version}.{format}
+TEXT_PROJECTION = f"{YRSN_CHECKPOINTS}/adapter_384to64_text_sbert_v1.pt"
+ROTOR_64 = f"{YRSN_CHECKPOINTS}/rotor_64_text_sbert_v1.pt"
+
+
+def _get_credential(key: str, default: str = None):
+    """P18 v4.0: Get credential via swarm_auth with fallback."""
+    try:
+        from swarm_auth import get_credential
+        return get_credential(key, default)
+    except ImportError:
+        return _os.environ.get(key, default)
 
 
 class OpenAIEmbeddingAdapter(EmbeddingPort):
@@ -35,10 +44,10 @@ class OpenAIEmbeddingAdapter(EmbeddingPort):
         self,
         api_key: str | None = None,
         model: str = "text-embedding-3-small",
-        dimensions: int = 384,  # Match text_mlp projection input
+        dimensions: int = 384,  # Match adapter projection input
     ):
-        # P18 compliant: credentials via config_manager
-        self._api_key = api_key or get_config().openai_api_key
+        # P18 v4.0: credentials via swarm_auth
+        self._api_key = api_key or _get_credential('OPENAI_API_KEY')
         self._model = model
         self._dimensions = dimensions
         self._client = None
@@ -105,7 +114,7 @@ class YRSNRotorAdapter(RSNPort):
     """
     Adapter: RSN via trained yrsn pipeline.
 
-    Pipeline: 384-dim → text_mlp (384→64) → rotor (64→RSN)
+    Pipeline: 384-dim → adapter (384→64) → rotor (64→RSN)
     Both projection and rotor are TRAINED checkpoints.
     """
 
