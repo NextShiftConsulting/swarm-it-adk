@@ -39,6 +39,9 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+# P18 v3.0 - Unified credential access
+from swarm_auth import get_credential
+
 from sidecar.engine.rsct import RSCTEngine
 from sidecar.engine.semantic import get_semantic_analyzer
 
@@ -49,12 +52,12 @@ def main():
     print("=" * 70)
     print()
 
-    # Check for API key
-    if not os.environ.get("OPENAI_API_KEY"):
+    # Check for API key via P18 gateway
+    if not get_credential("OPENAI_API_KEY"):
         print("❌ OPENAI_API_KEY not set!")
         print()
         print("This demo requires OpenAI API key for semantic analysis.")
-        print("Run: OPENAI_API_KEY=sk-... python examples/demo_semantic.py")
+        print("Set OPENAI_API_KEY environment variable")
         return
 
     engine = RSCTEngine()

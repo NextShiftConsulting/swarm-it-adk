@@ -4,6 +4,14 @@ MIMO Podcast Agent - Transform blog narration into natural dialogue
 
 Usage:
     python podcast_mimo.py --blog-post /path/to/post.mdx --output /path/to/output.mp3
+
+Options:
+    --provider       LLM provider: mimo or xiami (default: xiami)
+    --tts-provider   TTS provider: elevenlabs or polly (default: elevenlabs)
+
+TTS Voices:
+    ElevenLabs: Maya (host), Rudy (expert) - higher quality, requires ELEVENLABS_API_KEY
+    AWS Polly:  Matthew (host), Joanna (expert) - lower cost, requires AWS credentials
 """
 
 import boto3
@@ -35,8 +43,9 @@ class PodcastMIMOAgent:
     from technical blog posts.
     """
 
-    def __init__(self, provider="mimo"):
+    def __init__(self, provider="mimo", tts_provider="elevenlabs"):
         self.provider = provider
+        self.tts_provider = tts_provider
 
         # P18 v3.0 - Unified credential access (no prefix needed)
         if provider == "mimo":
@@ -73,11 +82,41 @@ class PodcastMIMOAgent:
             # swarm_auth not available, use default chain
             self.polly = boto3.client('polly', region_name='us-east-1')
 
-        # Voice configuration
-        self.voices = {
+        # P18 v3.0 - ElevenLabs credentials
+        self.elevenlabs_api_key = get_credential('ELEVENLABS_API_KEY')
+
+        # Voice configuration - AWS Polly
+        self.polly_voices = {
             "host": "Matthew",      # Male, professional
             "expert": "Joanna"      # Female, warm, authoritative
         }
+
+        # Voice configuration - ElevenLabs (higher quality)
+        self.elevenlabs_voices = {
+            "host": {
+                "id": get_credential('ELEVENLABS_HOST_VOICE_ID') or 'XB0fDUnXU5powFXDhCwa',  # Charlotte
+                "name": "Maya",
+                "settings": {
+                    "stability": 0.75,
+                    "similarity_boost": 0.6,
+                    "style": 0.1,
+                    "use_speaker_boost": False,
+                }
+            },
+            "expert": {
+                "id": get_credential('ELEVENLABS_RUDY_VOICE_ID') or get_credential('ELEVENLABS_EXPERT_VOICE_ID') or 'P39vtd0NQF1OwoxKSFaF',  # Rudy
+                "name": "Rudy",
+                "settings": {
+                    "stability": 0.4,
+                    "similarity_boost": 0.75,
+                    "style": 0.3,
+                    "use_speaker_boost": True,
+                }
+            }
+        }
+
+        # Legacy alias for backwards compatibility
+        self.voices = self.polly_voices
 
         # Model selection for all agents
         self.models = {
@@ -88,9 +127,12 @@ class PodcastMIMOAgent:
         }
 
         print(f"[*] Initialized MIMO Agent")
-        print(f"    Provider: {self.provider}")
-        print(f"    Endpoint: {self.endpoint}")
-        print(f"    Model: {self.model}")
+        print(f"    LLM Provider: {self.provider}")
+        print(f"    LLM Endpoint: {self.endpoint}")
+        print(f"    LLM Model: {self.model}")
+        print(f"    TTS Provider: {self.tts_provider}")
+        if self.tts_provider == "elevenlabs":
+            print(f"    TTS Voices: {self.elevenlabs_voices['host']['name']} (host), {self.elevenlabs_voices['expert']['name']} (expert)")
 
     def call_llm(self, prompt: str, max_tokens: int = 2000) -> str:
         """
@@ -680,8 +722,8 @@ N (Noise): Fraction that is hallucinated or factually incorrect
 
         print(f"\n[*] RSCT Quality Certificate (Stage 2/2):")
         print(f"    DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
-        print(f"    QUALITY: α={certificate['alpha']:.2f}")
-        print(f"    DERIVED: κ={certificate['kappa_gate']:.2f} σ={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
+        print(f"    QUALITY: alpha={certificate['alpha']:.2f}")
+        print(f"    DERIVED: kappa={certificate['kappa_gate']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
         print(f"    EXECUTION STATE: {certificate['execution_state']}")
         print(f"    DECISION: {certificate['decision']} (Gate {certificate['gate_failed'] or 'ALL PASSED'})")
         print(f"    Status: {'[+] EXECUTE' if certificate['approved'] else '[-] ' + certificate['decision']}")
@@ -853,6 +895,47 @@ N (Noise): Fraction that is hallucinated or factually incorrect
 
     def text_to_speech(self, speaker: str, text: str) -> bytes:
         """
+        Convert text to speech using configured TTS provider
+        """
+        if self.tts_provider == "elevenlabs":
+            return self._tts_elevenlabs(speaker, text)
+        else:
+            return self._tts_polly(speaker, text)
+
+    def _tts_elevenlabs(self, speaker: str, text: str) -> bytes:
+        """
+        Convert text to speech using ElevenLabs API
+        """
+        if not self.elevenlabs_api_key:
+            raise ValueError("ELEVENLABS_API_KEY not found. Set environment variable or use --tts-provider=polly")
+
+        voice_config = self.elevenlabs_voices.get(speaker, self.elevenlabs_voices["expert"])
+
+        try:
+            response = requests.post(
+                f"https://api.elevenlabs.io/v1/text-to-speech/{voice_config['id']}",
+                headers={
+                    "Accept": "audio/mpeg",
+                    "Content-Type": "application/json",
+                    "xi-api-key": self.elevenlabs_api_key,
+                },
+                json={
+                    "text": text,
+                    "model_id": "eleven_multilingual_v2",
+                    "voice_settings": voice_config["settings"],
+                },
+                timeout=120
+            )
+            response.raise_for_status()
+            return response.content
+        except Exception as e:
+            print(f"[!] ElevenLabs TTS failed: {e}")
+            print(f"    Speaker: {speaker}, Voice: {voice_config['name']} ({voice_config['id']})")
+            print(f"    Text length: {len(text)} chars")
+            raise
+
+    def _tts_polly(self, speaker: str, text: str) -> bytes:
+        """
         Convert text to speech using AWS Polly
         """
         try:
@@ -860,10 +943,9 @@ N (Noise): Fraction that is hallucinated or factually incorrect
                 Engine='neural',
                 Text=text,
                 OutputFormat='mp3',
-                VoiceId=self.voices[speaker]
+                VoiceId=self.polly_voices[speaker]
             )
 
-            # AWS Polly returns 'AudioStream' not 'AudioBody'
             if 'AudioStream' in response:
                 return response['AudioStream'].read()
             else:
@@ -871,7 +953,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
                 raise KeyError("AudioStream not in Polly response")
         except Exception as e:
             print(f"[!] AWS Polly TTS failed: {e}")
-            print(f"    Speaker: {speaker}, Voice: {self.voices.get(speaker)}")
+            print(f"    Speaker: {speaker}, Voice: {self.polly_voices.get(speaker)}")
             print(f"    Text length: {len(text)} chars")
             raise
 
@@ -969,11 +1051,12 @@ def main():
     parser.add_argument('--blog-post', required=True, help='Path to MDX blog post')
     parser.add_argument('--output', required=True, help='Output MP3 path')
     parser.add_argument('--provider', default='xiami', help='LLM provider: mimo or xiami (default: xiami)')
+    parser.add_argument('--tts-provider', default='elevenlabs', help='TTS provider: elevenlabs or polly (default: elevenlabs)')
 
     args = parser.parse_args()
 
     # Initialize agent (P18 v3.0 - credentials from environment)
-    agent = PodcastMIMOAgent(provider=args.provider)
+    agent = PodcastMIMOAgent(provider=args.provider, tts_provider=args.tts_provider)
 
     # Generate podcast
     result = agent.generate_podcast(args.blog_post, args.output)

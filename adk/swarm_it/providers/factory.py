@@ -94,7 +94,7 @@ def get_provider(
 
 def _load_api_key_from_auth(provider: str) -> Optional[str]:
     """
-    Load API key from swarm-it-auth.
+    Load API key from swarm-it-auth (P18 v3.0).
 
     Args:
         provider: Provider name
@@ -102,26 +102,14 @@ def _load_api_key_from_auth(provider: str) -> Optional[str]:
     Returns:
         API key or None
     """
+    import os
+
     try:
-        # Try to import swarm-it-auth
-        import sys
-        from pathlib import Path
-
-        # Add swarm-it-auth to path
-        auth_path = Path(__file__).parent.parent.parent.parent.parent / 'swarm-it-auth'
-        if auth_path.exists() and str(auth_path) not in sys.path:
-            sys.path.insert(0, str(auth_path))
-
-        from swarm_auth.adapters import EnvCredentialAdapter
-
-        creds = EnvCredentialAdapter(prefix="")
-        api_key = creds.retrieve(f"{provider.upper()}_API_KEY")
-
-        return api_key
-
+        from swarm_auth import get_credential
+        return get_credential(f"{provider.upper()}_API_KEY")
     except ImportError:
-        # swarm-it-auth not available, return None
-        return None
+        # Fallback to environment variable
+        return os.environ.get(f"{provider.upper()}_API_KEY")
 
 
 def list_providers() -> List[Dict[str, Any]]:

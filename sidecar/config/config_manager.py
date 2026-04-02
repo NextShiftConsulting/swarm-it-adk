@@ -1,7 +1,15 @@
 """
 Configuration Manager for Swarm-It
 
-P17 Principle: ALL credential access MUST flow through config_manager.
+DEPRECATED: Use swarm_auth.get_credential() instead (P18 v3.0)
+
+    # OLD (deprecated)
+    from config.config_manager import get_config
+    api_key = get_config().openai_api_key
+
+    # NEW (P18 v3.0)
+    from swarm_auth import get_credential
+    api_key = get_credential('OPENAI_API_KEY')
 
 Priority (3-Tier):
 1. Environment variables (highest)
@@ -17,8 +25,19 @@ Usage:
 """
 
 import os
+import warnings
 from pathlib import Path
 from typing import Any, Optional, Dict
+
+
+def _emit_deprecation_warning():
+    """Emit deprecation warning once per session."""
+    warnings.warn(
+        "sidecar.config.config_manager is deprecated. "
+        "Use swarm_auth.get_credential() instead (P18 v3.0).",
+        DeprecationWarning,
+        stacklevel=3
+    )
 
 try:
     import yaml

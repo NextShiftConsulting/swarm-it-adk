@@ -9,8 +9,9 @@ import sys
 import os
 
 # Configure yrsn path (deployment config, not hardcoded in core)
-YRSN_SRC = os.environ.get("YRSN_SRC", "/Users/rudy/GitHub/yrsn/src")
-YRSN_KEYS = os.environ.get("YRSN_KEYS", "/Users/rudy/GitHub/yrsn/keys")
+# Cross-platform: use ~/github/yrsn as default
+YRSN_SRC = os.environ.get("YRSN_SRC", os.path.expanduser("~/github/yrsn/src"))
+YRSN_KEYS = os.environ.get("YRSN_KEYS", os.path.expanduser("~/github/yrsn/keys"))
 
 if YRSN_SRC not in sys.path:
     sys.path.insert(0, YRSN_SRC)

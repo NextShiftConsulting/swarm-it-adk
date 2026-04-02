@@ -48,6 +48,9 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+# P18 v3.0 - Unified credential access
+from swarm_auth import get_credential
+
 from typing import Optional, Dict, Any
 from sidecar.engine.rsct import RSCTEngine
 
@@ -324,7 +327,7 @@ def rag_example():
 
 if __name__ == "__main__":
     # Check for API key
-    if not os.environ.get("OPENAI_API_KEY"):
+    if not get_credential("OPENAI_API_KEY"):
         print("Note: OPENAI_API_KEY not set. Using mock embeddings for demo.")
         print("Set OPENAI_API_KEY for real embeddings.\n")
 

@@ -26,8 +26,8 @@ import json
 import sys
 import os
 
-# Ensure yrsn is available
-YRSN_SRC = os.environ.get("YRSN_SRC", "/Users/rudy/GitHub/yrsn/src")
+# Ensure yrsn is available (cross-platform default)
+YRSN_SRC = os.environ.get("YRSN_SRC", os.path.expanduser("~/github/yrsn/src"))
 if YRSN_SRC not in sys.path:
     sys.path.insert(0, YRSN_SRC)
 

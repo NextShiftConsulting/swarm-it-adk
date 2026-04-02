@@ -111,3 +111,7 @@ CLAUDE.md
 # Experiment data (local only)
 experiments/*/embeddings/
 experiments/*/checkpoints/
+
+# Credential protection (recursive)
+**/keys/
+**/keys/**

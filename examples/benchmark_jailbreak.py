@@ -46,6 +46,9 @@ import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+# P18 v3.0 - Unified credential access
+from swarm_auth import get_credential
+
 from sidecar.engine.rsct import RSCTEngine
 from sidecar.infra import config
 
@@ -119,7 +122,7 @@ def main():
     print()
 
     # Check for API key
-    has_api_key = bool(os.environ.get("OPENAI_API_KEY"))
+    has_api_key = bool(get_credential("OPENAI_API_KEY"))
     if has_api_key:
         print("✓ OpenAI API key detected - using semantic analysis")
     else:

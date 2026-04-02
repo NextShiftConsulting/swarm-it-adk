@@ -40,23 +40,13 @@ from mcp.client.stdio import stdio_client
 
 from .mcp_tools import Tool, ToolMetadata, ToolCategory, ToolRegistry
 
-# Add swarm-it-auth to path for credential management (P18)
-sys.path.insert(0, str(Path.home() / "GitHub" / "swarm-it-auth"))
-
-# Optional: swarm-it-auth for credentials (P18 compliant)
+# P18 v3.0 - Unified credential access
 try:
-    from swarm_auth.adapters import EnvCredentialAdapter
-    HAS_SWARM_AUTH = True
+    from swarm_auth import get_credential as _get_credential
 except ImportError:
-    HAS_SWARM_AUTH = False
-
-
-def _get_credential(key: str) -> Optional[str]:
-    """Get credential via swarm-it-auth (P18 compliant)."""
-    if HAS_SWARM_AUTH:
-        adapter = EnvCredentialAdapter()
-        return adapter.retrieve(key)
-    return None
+    # Fallback to environment variables
+    def _get_credential(key: str, default: Optional[str] = None) -> Optional[str]:
+        return os.environ.get(key, default)
 
 
 # =============================================================================
