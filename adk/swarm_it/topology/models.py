@@ -99,7 +99,7 @@ class Agent:
     def hierarchy_gap(self) -> Optional[float]:
         """Gap between high-level and low-level kappa."""
         if self.kappa_H is not None and self.kappa_L is not None:
-            return abs(self.kappa_H - self.kappa_L)
+            return round(abs(self.kappa_H - self.kappa_L), 4)
         return None
 
     @property

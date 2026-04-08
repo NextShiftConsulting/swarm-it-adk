@@ -259,7 +259,7 @@ def extract_hierarchy(cert: "RSCTCertificate") -> CertificateHierarchy:
         kappas = [k for k in [cert.kappa_H, cert.kappa_L, cert.kappa_A] if k is not None]
         hierarchy.kappa_gate = min(kappas) if kappas else None
         if cert.kappa_H is not None and cert.kappa_L is not None:
-            hierarchy.hierarchy_gap = abs(cert.kappa_H - cert.kappa_L)
+            hierarchy.hierarchy_gap = round(abs(cert.kappa_H - cert.kappa_L), 4)
             hierarchy.dominant_modality = "H" if cert.kappa_H > cert.kappa_L else "L"
 
     return hierarchy

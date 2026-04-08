@@ -2,7 +2,8 @@
 Swarm It Exceptions
 """
 
-# Import structured CertificationError from errors module for backward compatibility
+# Re-export CertificationError from errors module (canonical location)
+from swarm_it.errors import CertificationError  # noqa: F401
 
 
 class SwarmItError(Exception):
