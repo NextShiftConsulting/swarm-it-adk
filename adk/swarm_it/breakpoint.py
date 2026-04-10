@@ -63,18 +63,21 @@ class BreakpointRouteResult:
     epsilon: float
     winning_proxy: str
 
-    # Proxy scores (Stage A routing law outputs)
+    # Proxy scores
     kappa_tree_pre: float
     kappa_edge_pre: float
     delta: float
     arm3_lift: float
     compression_penalty_bits: float
 
-    # sigma passed through for audit — kappa_req lives in enforcement pipeline
+    # Oobleck admissibility
     sigma: float
+    kappa_req: float
+    admissibility_status: str
+    margin_vs_kappa_req: Optional[float]
+    selected_proxy_value: Optional[float]
 
     # Advisory metadata
-    law_version: str
     advisory_only: bool
     canonical_certificate_material: bool
     warnings: list[str]
@@ -86,6 +89,7 @@ class BreakpointRouteResult:
     def from_api_response(cls, data: dict) -> "BreakpointRouteResult":
         derived = data["derived"]
         routing = data["routing"]
+        adm = data["proxy_admissibility"]
         return cls(
             predicted_route=routing["predicted_route"],
             decision_basis=routing["decision_basis"],
@@ -96,8 +100,11 @@ class BreakpointRouteResult:
             delta=derived["delta"],
             arm3_lift=derived["arm3_lift"],
             compression_penalty_bits=derived["compression_penalty_bits"],
-            sigma=data["inputs"]["metrics"].get("sigma", 0.0),
-            law_version=data["law_version"],
+            sigma=adm["sigma"],
+            kappa_req=adm["kappa_req"],
+            admissibility_status=adm["status"],
+            margin_vs_kappa_req=adm.get("margin_vs_kappa_req"),
+            selected_proxy_value=adm.get("selected_proxy_value"),
             advisory_only=data["advisory_only"],
             canonical_certificate_material=data["canonical_certificate_material"],
             warnings=data.get("warnings", []),
@@ -110,7 +117,8 @@ class BreakpointRouteResult:
             f"route={self.predicted_route!r}, "
             f"κ_edge={self.kappa_edge_pre:.3f}, "
             f"κ_tree={self.kappa_tree_pre:.3f}, "
-            f"δ={self.delta:+.3f})"
+            f"δ={self.delta:+.3f}, "
+            f"admissibility={self.admissibility_status!r})"
         )
 
 
