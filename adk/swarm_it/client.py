@@ -181,6 +181,11 @@ class SwarmIt:
         # Models cache
         self._models_cache: Optional[List[Dict[str, Any]]] = None
 
+        # Routing advisory namespaces
+        from swarm_it.breakpoint import BreakpointNamespace, ProfilesNamespace
+        self.breakpoint = BreakpointNamespace(self._client, self.base_url)
+        self.profiles = ProfilesNamespace(self._client, self.base_url)
+
     def _headers(self) -> Dict[str, str]:
         """Build request headers."""
         headers = {"Content-Type": "application/json"}
