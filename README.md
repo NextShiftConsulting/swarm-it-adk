@@ -11,7 +11,16 @@ This repository contains the **batteries-included Python SDK** for RSCT (Relevan
 
 ---
 
-## 🚀 Quick Start (30 seconds)
+## Gate Authority (ADR-004)
+
+All production gate outcomes are delegated to [`yrsn-controlplane.SequentialGatekeeper`](https://github.com/NextShiftConsulting/yrsn-controlplane). The ADK does not contain inline gate logic — see `adk/swarm_it/_compat.py` for the bridge layer.
+
+- **Single-request certification** (this SDK's use case): Calls `SequentialGatekeeper` directly.
+- **Multi-step / multi-agent workflows**: Use [`yrsn-orchestration`](https://github.com/NextShiftConsulting/yrsn-orchestration) for chained certification steps, multi-agent routing, policy-aware retries, or cross-call audit composition.
+
+---
+
+## Quick Start (30 seconds)
 
 ### Installation
 
