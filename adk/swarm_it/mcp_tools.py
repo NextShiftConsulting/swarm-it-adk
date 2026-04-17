@@ -296,65 +296,46 @@ class YRSNRotorTool(Tool):
 
 
 class QualityGateTool(Tool):
-    """Quality gate validator tool."""
+    """Quality gate validator tool.
+
+    Delegates gate evaluation to yrsn-controlplane SequentialGatekeeper.
+    """
 
     def __init__(self, thresholds: Optional[Dict[str, float]] = None):
+        from yrsn_controlplane import SequentialGatekeeper
+
+        from ._config_bridge import thresholds_to_config
+
         self.thresholds = thresholds or {
             "kappa": 0.7,
             "R": 0.3,
             "S": 0.4,
             "N": 0.5,
         }
+        config = thresholds_to_config(self.thresholds)
+        self._gatekeeper = SequentialGatekeeper(config)
 
     def execute(self, R: float, S: float, N: float) -> Dict[str, Any]:
-        """Apply quality gates."""
-        kappa = min(R, S)
+        """Apply quality gates via controlplane gatekeeper."""
+        from ._compat import to_certificate_estimate
 
-        # Gate 1: Integrity
-        if N > 0.7:
-            return {
-                "decision": "REJECT",
-                "gate_reached": 1,
-                "reason": f"High noise: N={N:.3f} (integrity gate)",
-            }
+        alpha = R / (R + N) if (R + N) > 0 else 0.0
+        kappa = 0.5 + 0.3 * R
+        sigma = 0.3
 
-        # Gate 2: Noise
-        if N > self.thresholds["N"]:
-            return {
-                "decision": "BLOCK",
-                "gate_reached": 2,
-                "reason": f"Noise threshold: N={N:.3f} > {self.thresholds['N']}",
-            }
+        cert_estimate = to_certificate_estimate(
+            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+        )
+        result = self._gatekeeper.evaluate(cert_estimate)
 
-        # Gate 3: Relevance
-        if R < self.thresholds["R"]:
-            return {
-                "decision": "BLOCK",
-                "gate_reached": 3,
-                "reason": f"Low relevance: R={R:.3f} < {self.thresholds['R']}",
-            }
+        from .local.engine import _gate_identifier_to_int
+        gate = _gate_identifier_to_int(result.gate_reached)
 
-        # Gate 4: Stability
-        if S < self.thresholds["S"]:
-            return {
-                "decision": "REPAIR",
-                "gate_reached": 4,
-                "reason": f"Low stability: S={S:.3f} < {self.thresholds['S']}",
-            }
-
-        # Gate 5: Compatibility
-        if kappa < self.thresholds["kappa"]:
-            return {
-                "decision": "BLOCK",
-                "gate_reached": 5,
-                "reason": f"Low compatibility: kappa={kappa:.3f} < {self.thresholds['kappa']}",
-            }
-
-        # All gates passed
         return {
-            "decision": "EXECUTE",
-            "gate_reached": 5,
-            "reason": f"All gates passed (kappa={kappa:.3f}, R={R:.3f}, S={S:.3f})",
+            "decision": result.decision.value,
+            "gate_reached": gate,
+            "reason": f"{result.decision.value} at {result.gate_reached.value} "
+                      f"(kappa={kappa:.3f}, R={R:.3f}, S={S:.3f})",
         }
 
     @property

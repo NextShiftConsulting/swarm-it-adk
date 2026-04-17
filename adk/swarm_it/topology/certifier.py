@@ -199,7 +199,10 @@ class SwarmCertifier:
         )
 
     def _generate_agent_certificates(self, swarm: Swarm) -> Dict[str, RSCTCertificate]:
-        """Generate certificates from agent kappa values."""
+        """Generate certificates from agent kappa values.
+
+        Gate decisions delegate to controlplane SequentialGatekeeper.
+        """
         certs = {}
 
         for agent in swarm.agents:
@@ -209,20 +212,37 @@ class SwarmCertifier:
             N = 0.1 + 0.2 * (1 - kappa)  # Estimate N inverse to kappa
             S = 1.0 - R - N
 
+            R = max(0, min(1, R))
+            S = max(0, min(1, S))
+            N = max(0, min(1, N))
+
+            # Delegate gate evaluation to controlplane
+            alpha = R / (R + N) if (R + N) > 0 else 0.0
+            cert_estimate = to_certificate_estimate(
+                R=R, S=S, N=N, kappa_gate=kappa, sigma=0.3, alpha=alpha,
+                kappa_H=agent.kappa_H, kappa_L=agent.kappa_L,
+                kappa_interface=agent.kappa_interface,
+            )
+            gk_result = self._gatekeeper.evaluate(cert_estimate)
+            decision = from_gatekeeper_result(gk_result)
+
+            from ..local.engine import _gate_identifier_to_int
+            gate = _gate_identifier_to_int(gk_result.gate_reached)
+
             certs[agent.id] = RSCTCertificate(
                 id=f"agent-{agent.id}-{uuid.uuid4().hex[:8]}",
                 timestamp=datetime.now(timezone.utc).isoformat() + "Z",
-                R=max(0, min(1, R)),
-                S=max(0, min(1, S)),
-                N=max(0, min(1, N)),
+                R=R,
+                S=S,
+                N=N,
                 kappa_gate=kappa,
-                sigma=0.3,  # Default
+                sigma=0.3,
                 kappa_H=agent.kappa_H,
                 kappa_L=agent.kappa_L,
                 kappa_interface=agent.kappa_interface,
-                decision=GateDecision.EXECUTE if kappa >= 0.4 else GateDecision.BLOCK,
-                gate_reached=5 if kappa >= 0.4 else 3,
-                reason=f"Agent {agent.name}: kappa={kappa:.3f}",
+                decision=decision,
+                gate_reached=gate,
+                reason=f"Agent {agent.name}: {gk_result.decision.value} at {gk_result.gate_reached.value}",
             )
 
         return certs

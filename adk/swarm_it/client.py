@@ -545,9 +545,14 @@ class SwarmIt:
         - Graceful degradation
 
         Production MUST use the API with trained RSCT models.
+        Gate evaluation delegates to yrsn-controlplane SequentialGatekeeper.
         """
         import uuid
         from datetime import datetime
+
+        from yrsn_controlplane import SequentialGatekeeper
+
+        from ._compat import from_gatekeeper_result, to_certificate_estimate
 
         # Hash-based pseudo-RSN (deterministic but not RSCT-compliant)
         h = hashlib.sha256(context.encode()).hexdigest()
@@ -561,24 +566,21 @@ class SwarmIt:
         S = raw_s / total
         N = raw_n / total
 
-        # Simple gating logic
+        # Compute derived signals
         alpha = R / (R + N) if (R + N) > 0 else 0.0
         kappa = 0.5 + 0.3 * R  # Simplified kappa estimate
         sigma = 0.3  # Default turbulence
 
-        # Gate decision
-        if N > 0.5:
-            decision = GateDecision.REJECT
-            reason = f"High noise: N={N:.3f}"
-            gate = 1
-        elif kappa < 0.4:
-            decision = GateDecision.BLOCK
-            reason = f"Low compatibility: kappa={kappa:.3f}"
-            gate = 3
-        else:
-            decision = GateDecision.EXECUTE
-            reason = "Local mode: passed basic checks"
-            gate = 5
+        # Delegate gate evaluation to controlplane
+        cert_estimate = to_certificate_estimate(
+            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+        )
+        gk_result = SequentialGatekeeper().evaluate(cert_estimate)
+        decision = from_gatekeeper_result(gk_result)
+
+        from .local.engine import _gate_identifier_to_int
+        gate = _gate_identifier_to_int(gk_result.gate_reached)
+        reason = f"Local mode: {gk_result.decision.value} at {gk_result.gate_reached.value}"
 
         return Certificate(
             id=str(uuid.uuid4()),
