@@ -1,0 +1,19 @@
+name: Gate Authority Check
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  gate-authority:
+    name: No inline gate outcomes (ADR-004)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check gate authority
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: bash scripts/check_gate_authority.sh
