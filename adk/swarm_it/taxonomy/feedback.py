@@ -6,7 +6,7 @@ post-execution validation failure rates.
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional, Any
 from collections import deque
@@ -166,7 +166,7 @@ class ValidationFeedbackLoop:
             FeedbackEvent record
         """
         event = FeedbackEvent(
-            timestamp=datetime.utcnow().isoformat() + "Z",
+            timestamp=datetime.now(timezone.utc).isoformat() + "Z",
             certificate_id=certificate_id,
             validation_type=validation_type,
             score=score,
