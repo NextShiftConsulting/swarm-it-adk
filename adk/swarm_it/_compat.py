@@ -42,6 +42,10 @@ class GateDecision(str, Enum):
     RE_ENCODE = "RE_ENCODE"
     REPAIR = "REPAIR"
 
+    # Routing decisions (from controlplane)
+    WARN = "WARN"
+    FALLBACK = "FALLBACK"
+
     # ADK runtime extensions
     HALT = "HALT"
     TIMEOUT = "TIMEOUT"
@@ -59,6 +63,8 @@ class GateDecision(str, Enum):
             GateDecision.PASS_FAST,
             GateDecision.PASS_GUARDED,
             GateDecision.REPAIR,
+            GateDecision.WARN,
+            GateDecision.FALLBACK,
         )
 
     @property
@@ -68,6 +74,8 @@ class GateDecision(str, Enum):
             GateDecision.RE_ENCODE,
             GateDecision.REPAIR,
             GateDecision.ESCALATE,
+            GateDecision.WARN,
+            GateDecision.FALLBACK,
         )
 
     def to_enforcement_decision(self) -> Optional[EnforcementDecision]:
@@ -78,6 +86,8 @@ class GateDecision(str, Enum):
             GateDecision.BLOCK: EnforcementDecision.BLOCK,
             GateDecision.RE_ENCODE: EnforcementDecision.RE_ENCODE,
             GateDecision.REPAIR: EnforcementDecision.REPAIR,
+            GateDecision.WARN: EnforcementDecision.WARN,
+            GateDecision.FALLBACK: EnforcementDecision.FALLBACK,
             GateDecision.PASS_FAST: EnforcementDecision.EXECUTE,
             GateDecision.PASS_GUARDED: EnforcementDecision.EXECUTE,
         }

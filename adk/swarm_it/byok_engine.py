@@ -206,13 +206,16 @@ class BYOKEngine:
         sigma = N / (R + S + N)
 
         # 4. Delegate gate evaluation to controlplane gatekeeper
+        from ._compat import from_gatekeeper_result
+        from .local.engine import _gate_identifier_to_int
+
         cert_estimate = to_certificate_estimate(
             R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = self._gatekeeper.evaluate(cert_estimate)
-        decision = gk_result.decision.value
-        gate_reached = gk_result.gate_reached.value
-        reason = f"{decision} at {gate_reached}"
+        decision = from_gatekeeper_result(gk_result)
+        gate = _gate_identifier_to_int(gk_result.gate_reached)
+        reason = f"{gk_result.decision.value} at {gk_result.gate_reached.value}"
 
         # 5. Estimate cost
         cost_usd = self._estimate_cost(prompt)
@@ -227,8 +230,9 @@ class BYOKEngine:
             "alpha": alpha,
             "kappa": kappa,
             "sigma": sigma,
-            "decision": decision,
-            "gate_reached": gate_reached,
+            "decision": decision.value,
+            "gate_decision": decision,
+            "gate_reached": gate,
             "reason": reason,
             "policy": "byok",
             "raw": {
