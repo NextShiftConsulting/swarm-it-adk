@@ -6,12 +6,39 @@ Supports SR 11-7 and EU AI Act formatting.
 """
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from pathlib import Path
 
 from ..local.engine import RSCTCertificate
+
+
+@dataclass(frozen=True)
+class RiskThresholds:
+    """Configurable thresholds for audit risk classification.
+
+    These are reporting thresholds (not gate logic). They determine how
+    certificates are classified in SR 11-7 compliance reports.
+    """
+
+    # CRITICAL if N >= this or kappa_gate < kappa_critical
+    N_critical: float = 0.5
+    kappa_critical: float = 0.3
+
+    # HIGH if N >= this or sigma > sigma_high or kappa_gate < kappa_high
+    N_high: float = 0.3
+    sigma_high: float = 0.7
+    kappa_high: float = 0.4
+
+    # MEDIUM if N >= this or sigma > sigma_medium
+    N_medium: float = 0.2
+    sigma_medium: float = 0.5
+
+    # Flag thresholds (for risk_indicators section)
+    noise_flag: float = 0.3
+    stability_flag: float = 0.5
+    compatibility_flag: float = 0.4
 
 
 @dataclass
@@ -241,15 +268,26 @@ class SR117AuditFormatter:
     - Section 4(c): Back-testing records
     - Section 5(a): Validation documentation
     - Section 6(b): Ongoing monitoring
+
+    Can be used as a class with static methods (default thresholds)
+    or instantiated with custom ``RiskThresholds``.
     """
 
-    @staticmethod
-    def format_validation_record(cert: RSCTCertificate) -> Dict[str, Any]:
-        """
-        Format certificate as SR 11-7 validation record.
+    def __init__(self, risk_thresholds: Optional[RiskThresholds] = None):
+        self.risk_thresholds = risk_thresholds or _DEFAULT_RISK_THRESHOLDS
 
-        Returns a dict suitable for regulatory submission.
+    @staticmethod
+    def format_validation_record(
+        cert: RSCTCertificate,
+        risk_thresholds: Optional[RiskThresholds] = None,
+    ) -> Dict[str, Any]:
+        """Format certificate as SR 11-7 validation record.
+
+        Args:
+            cert: Certificate to format.
+            risk_thresholds: Optional risk thresholds (uses defaults if None).
         """
+        thr = risk_thresholds or _DEFAULT_RISK_THRESHOLDS
         entry = AuditEntry.from_certificate(cert)
         return {
             "record_type": "MODEL_VALIDATION",
@@ -279,10 +317,10 @@ class SR117AuditFormatter:
             },
 
             "risk_indicators": {
-                "noise_flag": cert.N >= 0.3,
-                "stability_flag": cert.sigma > 0.5,
-                "compatibility_flag": cert.kappa_gate < 0.4,
-                "overall_risk": _compute_risk_level(cert),
+                "noise_flag": cert.N >= thr.noise_flag,
+                "stability_flag": cert.sigma > thr.stability_flag,
+                "compatibility_flag": cert.kappa_gate < thr.compatibility_flag,
+                "overall_risk": _compute_risk_level(cert, thr),
             },
 
             "compliance_assertions": {
@@ -296,14 +334,19 @@ class SR117AuditFormatter:
     def generate_batch_report(
         certificates: List[RSCTCertificate],
         report_title: str = "Model Validation Report",
+        risk_thresholds: Optional[RiskThresholds] = None,
     ) -> Dict[str, Any]:
-        """
-        Generate batch validation report for multiple certificates.
+        """Generate batch validation report for multiple certificates.
 
-        Suitable for periodic regulatory reporting.
+        Args:
+            certificates: Certificates to include.
+            report_title: Report title.
+            risk_thresholds: Optional risk thresholds (uses defaults if None).
         """
         if not certificates:
             return {"error": "No certificates provided"}
+
+        thr = risk_thresholds or _DEFAULT_RISK_THRESHOLDS
 
         # Compute aggregates
         total = len(certificates)
@@ -317,7 +360,7 @@ class SR117AuditFormatter:
         # Risk distribution
         risk_counts = {"LOW": 0, "MEDIUM": 0, "HIGH": 0, "CRITICAL": 0}
         for cert in certificates:
-            risk = _compute_risk_level(cert)
+            risk = _compute_risk_level(cert, thr)
             risk_counts[risk] += 1
 
         return {
@@ -347,18 +390,29 @@ class SR117AuditFormatter:
             },
 
             "individual_records": [
-                SR117AuditFormatter.format_validation_record(c)
+                SR117AuditFormatter.format_validation_record(c, thr)
                 for c in certificates
             ],
         }
 
 
-def _compute_risk_level(cert: RSCTCertificate) -> str:
-    """Compute risk level from certificate."""
-    if cert.N >= 0.5 or cert.kappa_gate < 0.3:
+_DEFAULT_RISK_THRESHOLDS = RiskThresholds()
+
+
+def _compute_risk_level(
+    cert: RSCTCertificate,
+    thresholds: RiskThresholds = _DEFAULT_RISK_THRESHOLDS,
+) -> str:
+    """Compute risk level from certificate.
+
+    Args:
+        cert: Certificate to classify.
+        thresholds: Risk thresholds (defaults to RiskThresholds()).
+    """
+    if cert.N >= thresholds.N_critical or cert.kappa_gate < thresholds.kappa_critical:
         return "CRITICAL"
-    if cert.N >= 0.3 or cert.sigma > 0.7 or cert.kappa_gate < 0.4:
+    if cert.N >= thresholds.N_high or cert.sigma > thresholds.sigma_high or cert.kappa_gate < thresholds.kappa_high:
         return "HIGH"
-    if cert.N >= 0.2 or cert.sigma > 0.5:
+    if cert.N >= thresholds.N_medium or cert.sigma > thresholds.sigma_medium:
         return "MEDIUM"
     return "LOW"

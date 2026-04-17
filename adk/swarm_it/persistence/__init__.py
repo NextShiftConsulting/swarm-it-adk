@@ -13,6 +13,7 @@ from .store import (
 from .audit import (
     AuditLog,
     AuditEntry,
+    RiskThresholds,
     SR117AuditFormatter,
 )
 
@@ -24,5 +25,6 @@ __all__ = [
     # Audit
     "AuditLog",
     "AuditEntry",
+    "RiskThresholds",
     "SR117AuditFormatter",
 ]
