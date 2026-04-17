@@ -1,1 +1,0 @@
-"""Swarm-It Sidecar Tests."""

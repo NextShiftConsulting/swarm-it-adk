@@ -30,7 +30,6 @@ router = APIRouter()
 # Engine uses mock adapter by default (set USE_YRSN=1 for real yrsn)
 import os
 engine = RSCTEngine(
-    use_mock=os.environ.get("USE_YRSN", "0") != "1",
     embed_model=os.environ.get("EMBED_MODEL", "text-embedding-3-small"),
     rotor_checkpoint=os.environ.get("ROTOR_CHECKPOINT"),
 )
