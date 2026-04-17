@@ -16,45 +16,11 @@ import hashlib
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
 from typing import Optional, Dict, Any, List
 
+from yrsn_controlplane import SequentialGatekeeper, GatekeeperConfig
 
-class GateDecision(Enum):
-    """RSCT gate decisions aligned with yrsn gatekeeper."""
-
-    # Primary decisions
-    EXECUTE = "EXECUTE"
-    REJECT = "REJECT"
-    BLOCK = "BLOCK"
-    RE_ENCODE = "RE_ENCODE"
-    REPAIR = "REPAIR"
-    HALT = "HALT"
-    TIMEOUT = "TIMEOUT"
-    ESCALATE = "ESCALATE"
-
-    # Legacy compatibility
-    PASS_FAST = "PASS_FAST"
-    PASS_GUARDED = "PASS_GUARDED"
-
-    @property
-    def allowed(self) -> bool:
-        """Returns True if execution should proceed."""
-        return self in (
-            GateDecision.EXECUTE,
-            GateDecision.PASS_FAST,
-            GateDecision.PASS_GUARDED,
-            GateDecision.REPAIR,  # Proceed with repair
-        )
-
-    @property
-    def requires_action(self) -> bool:
-        """Returns True if remediation is needed."""
-        return self in (
-            GateDecision.RE_ENCODE,
-            GateDecision.REPAIR,
-            GateDecision.ESCALATE,
-        )
+from .._compat import GateDecision, from_gatekeeper_result, to_certificate_estimate
 
 
 @dataclass
@@ -344,6 +310,8 @@ class LocalEngine:
     Local RSCT certification engine.
 
     Provides offline certification using hash-based simplex projection.
+    Gate evaluation delegated to yrsn-controlplane SequentialGatekeeper.
+
     NOT production-grade. Use for:
     - Development/testing
     - Graceful degradation when API unavailable
@@ -353,8 +321,7 @@ class LocalEngine:
     def __init__(
         self,
         policy: str = "default",
-        n_threshold: float = 0.5,
-        kappa_threshold: float = 0.4,
+        config: Optional[GatekeeperConfig] = None,
         sigma_default: float = 0.3,
     ):
         """
@@ -362,14 +329,12 @@ class LocalEngine:
 
         Args:
             policy: Default policy name
-            n_threshold: Noise threshold for rejection
-            kappa_threshold: Kappa threshold for blocking
+            config: GatekeeperConfig (uses controlplane defaults if None)
             sigma_default: Default turbulence value
         """
         self.policy = policy
-        self.n_threshold = n_threshold
-        self.kappa_threshold = kappa_threshold
         self.sigma_default = sigma_default
+        self._gatekeeper = SequentialGatekeeper(config)
 
     def certify(
         self,
@@ -405,19 +370,13 @@ class LocalEngine:
         kappa = 0.5 + 0.3 * R  # Simplified kappa estimate
         sigma = self.sigma_default
 
-        # Gate decision
-        if N >= self.n_threshold:
-            decision = GateDecision.REJECT
-            reason = f"High noise: N={N:.3f} >= {self.n_threshold}"
-            gate = 1
-        elif kappa < self.kappa_threshold:
-            decision = GateDecision.BLOCK
-            reason = f"Low compatibility: kappa={kappa:.3f} < {self.kappa_threshold}"
-            gate = 3
-        else:
-            decision = GateDecision.EXECUTE
-            reason = "Local mode: passed basic checks"
-            gate = 5
+        # Delegate gate evaluation to controlplane gatekeeper
+        cert_estimate = to_certificate_estimate(
+            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+        )
+        gk_result = self._gatekeeper.evaluate(cert_estimate)
+        decision = from_gatekeeper_result(gk_result)
+        gate_reached = _gate_identifier_to_int(gk_result.gate_reached)
 
         return RSCTCertificate(
             id=str(uuid.uuid4()),
@@ -429,11 +388,25 @@ class LocalEngine:
             sigma=sigma,
             alpha=alpha,
             decision=decision,
-            gate_reached=gate,
-            reason=reason,
+            gate_reached=gate_reached,
+            reason=f"{gk_result.decision.value} at {gk_result.gate_reached.value}",
             policy=policy or self.policy,
             raw={"_local_mode": True, "_engine": "hash_simplex"},
         )
+
+
+def _gate_identifier_to_int(gate_id) -> int:
+    """Map controlplane GateIdentifier to legacy integer gate number."""
+    from yrsn_controlplane import GateIdentifier
+    mapping = {
+        GateIdentifier.GATE_1_INTEGRITY: 1,
+        GateIdentifier.GATE_2_CONSENSUS: 2,
+        GateIdentifier.GATE_3_ADMISSIBILITY: 3,
+        GateIdentifier.GATE_3B_TRAJECTORY: 3,
+        GateIdentifier.GATE_4_GROUNDING: 4,
+        GateIdentifier.ALL_PASSED: 5,
+    }
+    return mapping.get(gate_id, 0)
 
 
 def certify_local(

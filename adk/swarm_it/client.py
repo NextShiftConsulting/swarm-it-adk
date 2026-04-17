@@ -10,9 +10,10 @@ import os
 import hashlib
 import time
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import Optional, Dict, Any, Callable, List
 import httpx
+
+from ._compat import GateDecision
 
 # P18 v3.0 - Unified credential access
 try:
@@ -21,28 +22,6 @@ except ImportError:
     # Fallback to environment variables
     def _get_credential(key: str, default: Optional[str] = None) -> Optional[str]:
         return os.environ.get(key, default)
-
-
-class GateDecision(Enum):
-    """RSCT gate decisions."""
-    EXECUTE = "EXECUTE"
-    REJECT = "REJECT"
-    BLOCK = "BLOCK"
-    RE_ENCODE = "RE_ENCODE"
-    REPAIR = "REPAIR"
-
-    # Legacy compatibility
-    PASS_FAST = "PASS_FAST"
-    PASS_GUARDED = "PASS_GUARDED"
-
-    @property
-    def allowed(self) -> bool:
-        """Returns True if execution should proceed."""
-        return self in (
-            GateDecision.EXECUTE,
-            GateDecision.PASS_FAST,
-            GateDecision.PASS_GUARDED,
-        )
 
 
 @dataclass

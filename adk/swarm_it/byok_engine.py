@@ -12,6 +12,11 @@ import uuid
 from typing import Dict, Any, Optional
 from datetime import datetime
 
+from yrsn_controlplane import SequentialGatekeeper
+
+from ._compat import to_certificate_estimate
+from ._config_bridge import thresholds_to_config
+
 # P18 v3.0 - Unified credential access
 try:
     from swarm_auth import get_credential as _get_credential
@@ -71,6 +76,9 @@ class BYOKEngine:
             "S": 0.4,
             "N": 0.5,
         }
+
+        # Controlplane gatekeeper (canonical gate logic)
+        self._gatekeeper = SequentialGatekeeper(thresholds_to_config(self.thresholds))
 
         # Initialize embedding client
         self.embed_client = self._init_embedding_client()
@@ -194,11 +202,17 @@ class BYOKEngine:
 
         # 3. Compute metrics
         alpha = R / (R + N) if (R + N) > 0 else 0.0
-        kappa = min(R, S)  # Simplified kappa
+        kappa = 0.5 + 0.3 * R  # Simplified kappa estimate
         sigma = N / (R + S + N)
 
-        # 4. Apply gate logic
-        decision, gate_reached, reason = self._apply_gates(R, S, N, kappa)
+        # 4. Delegate gate evaluation to controlplane gatekeeper
+        cert_estimate = to_certificate_estimate(
+            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+        )
+        gk_result = self._gatekeeper.evaluate(cert_estimate)
+        decision = gk_result.decision.value
+        gate_reached = gk_result.gate_reached.value
+        reason = f"{decision} at {gate_reached}"
 
         # 5. Estimate cost
         cost_usd = self._estimate_cost(prompt)
@@ -225,36 +239,6 @@ class BYOKEngine:
                 "_has_rotor": self.rotor is not None,
             }
         }
-
-    def _apply_gates(self, R: float, S: float, N: float, kappa: float):
-        """
-        Apply RSCT quality gates.
-
-        Returns:
-            (decision, gate_reached, reason)
-        """
-        # Gate 1: Integrity (N < 0.7)
-        if N > 0.7:
-            return "REJECT", 1, f"High noise: N={N:.3f} (threshold: 0.5)"
-
-        # Gate 2: Noise (N < 0.5)
-        if N > self.thresholds.get("N", 0.5):
-            return "BLOCK", 2, f"Noise threshold: N={N:.3f}"
-
-        # Gate 3: Relevance (R >= threshold)
-        if R < self.thresholds.get("R", 0.3):
-            return "BLOCK", 3, f"Low relevance: R={R:.3f}"
-
-        # Gate 4: Stability (S >= threshold)
-        if S < self.thresholds.get("S", 0.4):
-            return "REPAIR", 4, f"Low stability: S={S:.3f}"
-
-        # Gate 5: Compatibility (kappa >= threshold)
-        if kappa < self.thresholds.get("kappa", 0.7):
-            return "BLOCK", 5, f"Low compatibility: kappa={kappa:.3f}"
-
-        # All gates passed
-        return "EXECUTE", 5, f"All gates passed (kappa={kappa:.3f})"
 
     def _hash_based_rsn(self, text: str):
         """

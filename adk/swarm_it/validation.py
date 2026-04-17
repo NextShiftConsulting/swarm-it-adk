@@ -218,18 +218,15 @@ class QualityThresholds(BaseModel):
 
     @root_validator
     def validate_threshold_logic(cls, values):
-        """Validate threshold logic is sensible."""
+        """Validate threshold ranges are sensible."""
         kappa = values.get('kappa')
-        R = values.get('R')
-        S = values.get('S')
+        N = values.get('N')
 
-        # kappa should be <= min(R, S) since kappa = min(R, S) by definition
-        if kappa is not None and R is not None and S is not None:
-            expected_kappa = min(R, S)
-            if kappa > expected_kappa:
-                raise ValueError(
-                    f"kappa threshold ({kappa}) cannot exceed min(R, S) = {expected_kappa:.3f}"
-                )
+        # kappa threshold must be achievable given noise threshold
+        # kappa_req(sigma) = kappa_base + lambda * sigma, so kappa must be
+        # within a reasonable range relative to other thresholds
+        if kappa is not None and kappa > 1.0:
+            raise ValueError(f"kappa threshold ({kappa}) cannot exceed 1.0")
 
         return values
 

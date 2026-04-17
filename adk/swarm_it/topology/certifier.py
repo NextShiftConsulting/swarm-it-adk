@@ -6,12 +6,15 @@ with per-agent breakdowns.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional, Any
 import uuid
 
+from yrsn_controlplane import SequentialGatekeeper, GatekeeperConfig
+
 from .models import Swarm
-from ..local.engine import RSCTCertificate, GateDecision
+from ..local.engine import RSCTCertificate
+from .._compat import GateDecision, from_gatekeeper_result, to_certificate_estimate
 
 
 @dataclass
@@ -111,6 +114,7 @@ class SwarmCertifier:
         consensus_threshold: float = 0.4,
         kappa_min_threshold: float = 0.3,
         interface_threshold: float = 0.3,
+        config: Optional[GatekeeperConfig] = None,
     ):
         """
         Initialize certifier.
@@ -119,10 +123,12 @@ class SwarmCertifier:
             consensus_threshold: Minimum consensus for EXECUTE
             kappa_min_threshold: Minimum agent kappa for EXECUTE
             interface_threshold: Minimum channel kappa for EXECUTE
+            config: GatekeeperConfig for canonical gate evaluation
         """
         self.consensus_threshold = consensus_threshold
         self.kappa_min_threshold = kappa_min_threshold
         self.interface_threshold = interface_threshold
+        self._gatekeeper = SequentialGatekeeper(config)
 
     def certify(
         self,
@@ -173,7 +179,7 @@ class SwarmCertifier:
         # Create certificate
         return SwarmCertificate(
             id=str(uuid.uuid4()),
-            timestamp=datetime.utcnow().isoformat() + "Z",
+            timestamp=datetime.now(timezone.utc).isoformat() + "Z",
             swarm_id=swarm.id,
             R=R,
             S=S,
@@ -205,7 +211,7 @@ class SwarmCertifier:
 
             certs[agent.id] = RSCTCertificate(
                 id=f"agent-{agent.id}-{uuid.uuid4().hex[:8]}",
-                timestamp=datetime.utcnow().isoformat() + "Z",
+                timestamp=datetime.now(timezone.utc).isoformat() + "Z",
                 R=max(0, min(1, R)),
                 S=max(0, min(1, S)),
                 N=max(0, min(1, N)),
@@ -230,31 +236,33 @@ class SwarmCertifier:
         N: float,
         sigma_max: float,
     ) -> tuple:
-        """Compute swarm-level gate decision."""
+        """Compute swarm-level gate decision via controlplane gatekeeper."""
+        alpha = 1.0 - N  # Approximate alpha from aggregate noise
+        cert_estimate = to_certificate_estimate(
+            R=1.0 - N,  # Approximate R from aggregate
+            S=0.0,
+            N=N,
+            kappa_gate=kappa_min,
+            sigma=sigma_max,
+            alpha=alpha,
+            kappa_L=interface_min,
+            coherence=consensus,
+        )
+        gk_result = self._gatekeeper.evaluate(cert_estimate)
+        decision = from_gatekeeper_result(gk_result)
 
-        # Check noise (Gate 1)
-        if N >= 0.5:
-            return GateDecision.REJECT, 1, f"Swarm noise too high: N={N:.3f}"
+        from ..local.engine import _gate_identifier_to_int
+        gate_int = _gate_identifier_to_int(gk_result.gate_reached)
 
-        # Check consensus (Gate 2)
-        if consensus < self.consensus_threshold:
-            return GateDecision.BLOCK, 2, f"Low consensus: c={consensus:.3f}"
-
-        # Check weakest agent (Gate 3)
-        if kappa_min < self.kappa_min_threshold:
-            weakest = swarm.weakest_agent
-            return GateDecision.REPAIR, 3, f"Weakest agent {weakest.name if weakest else 'unknown'}: kappa={kappa_min:.3f}"
-
-        # Check weakest channel (Gate 4)
-        if interface_min is not None and interface_min < self.interface_threshold:
+        reason = f"Swarm: {gk_result.decision.value} at {gk_result.gate_reached.value}"
+        if decision == GateDecision.REPAIR and gate_int == 4:
             weakest = swarm.weakest_channel
-            return GateDecision.REPAIR, 4, f"Weakest channel: kappa_interface={interface_min:.3f}"
+            reason = f"Weakest channel: kappa_interface={interface_min:.3f}"
+        elif decision == GateDecision.REPAIR and gate_int == 3:
+            weakest = swarm.weakest_agent
+            reason = f"Weakest agent {weakest.name if weakest else 'unknown'}: kappa={kappa_min:.3f}"
 
-        # Check turbulence
-        if sigma_max > 0.7:
-            return GateDecision.BLOCK, 2, f"High turbulence: sigma_max={sigma_max:.3f}"
-
-        return GateDecision.EXECUTE, 5, "Swarm certified for execution"
+        return decision, gate_int, reason
 
     def _compute_topology_hash(self, swarm: Swarm) -> str:
         """Compute hash of swarm topology for change detection."""

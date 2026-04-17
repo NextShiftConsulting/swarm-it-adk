@@ -198,7 +198,9 @@ class TestLocalEngine:
         assert cert1.N == cert2.N
 
     def test_certify_high_noise_rejects(self):
-        engine = LocalEngine(n_threshold=0.3)
+        from yrsn_controlplane import GatekeeperConfig
+        config = GatekeeperConfig(N_thr=0.3)
+        engine = LocalEngine(config=config)
         # Find an input that produces high N
         cert = engine.certify("x" * 1000)
 
@@ -207,10 +209,9 @@ class TestLocalEngine:
         assert cert.simplex_valid
 
     def test_custom_thresholds(self):
-        engine = LocalEngine(
-            n_threshold=0.3,
-            kappa_threshold=0.5,
-        )
+        from yrsn_controlplane import GatekeeperConfig
+        config = GatekeeperConfig(N_thr=0.3, kappa_base=0.5)
+        engine = LocalEngine(config=config)
         cert = engine.certify("test")
         assert cert is not None
 
