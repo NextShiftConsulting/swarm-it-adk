@@ -38,6 +38,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # P18 v3.0 - Unified credential access
 from swarm_auth import get_credential

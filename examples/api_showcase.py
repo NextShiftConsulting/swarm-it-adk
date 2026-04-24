@@ -7,6 +7,8 @@ This example shows the improved API after critical fixes:
 3. yrsn round-trip compatibility
 4. Structured error handling
 """
+import sys
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from swarm_it import (
     # Core - all return RSCTCertificate
@@ -143,7 +145,7 @@ print("-" * 40)
 
 config = CircuitBreakerConfig(
     failure_threshold=3,
-    timeout_duration=10.0
+    timeout_seconds=10.0
 )
 breaker = CircuitBreaker("certification", config)
 
@@ -193,9 +195,9 @@ print("[OK] Builder pattern for fluent configuration")
 print("[OK] Circuit breaker integration ready")
 print()
 print("Server-Side API Features (see benchmark_learning.py):")
-print("  - Threshold Learning: POST /api/v1/validate → adaptive adjustment")
-print("  - Tier Evolution: GET /api/v1/constraints/tiers → EMERGENT→LEARNED→ACTUAL")
-print("  - Constraint Graph: POST /api/v1/constraints/evaluate → 4-gate system")
+print("  - Threshold Learning: POST /api/v1/validate -> adaptive adjustment")
+print("  - Tier Evolution: GET /api/v1/constraints/tiers -> EMERGENT->LEARNED->ACTUAL")
+print("  - Constraint Graph: POST /api/v1/constraints/evaluate -> 4-gate system")
 print()
 print("Production Readiness: 8.5/10")
 print("All 8/8 core tests passing")
