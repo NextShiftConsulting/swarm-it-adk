@@ -24,8 +24,11 @@ Usage:
 """
 
 import json
+import logging
 from typing import Callable, Optional, List, TYPE_CHECKING
 from functools import wraps
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from ..client import SwarmIt
@@ -129,8 +132,12 @@ class SwarmItMiddleware:
 
         except json.JSONDecodeError:
             pass  # Not JSON, skip certification
-        except Exception:
-            pass  # Certification failed, allow through (fail-open)
+        except Exception as exc:
+            # Fail-closed: if certification cannot be performed, block the request.
+            # Fail-open would let uncertified requests through when the API is down.
+            logger.error("Certification failed (fail-closed): %s", exc)
+            await self._send_error_response(send, str(exc))
+            return
 
         # Reconstruct receive for downstream
         body_sent = False
@@ -173,6 +180,26 @@ class SwarmItMiddleware:
                     return str(msg["content"])
 
         return None
+
+    async def _send_error_response(self, send, error_msg: str):
+        """Send 503 response when certification cannot be performed."""
+        response_body = json.dumps({
+            "error": "Certification service unavailable",
+            "detail": error_msg,
+        }).encode()
+
+        await send({
+            "type": "http.response.start",
+            "status": 503,
+            "headers": [
+                [b"content-type", b"application/json"],
+                [b"x-swarm-it-blocked", b"true"],
+            ],
+        })
+        await send({
+            "type": "http.response.body",
+            "body": response_body,
+        })
 
     async def _send_blocked_response(self, send, cert):
         """Send 403 response for blocked requests."""
@@ -244,25 +271,33 @@ def require_certificate(
                             context = d[context_param]
                             break
 
-            if context:
-                cert = client.certify(str(context), policy=policy)
+            if not context:
+                raise HTTPException(
+                    status_code=422,
+                    detail={
+                        "error": "No certifiable context found",
+                        "detail": f"Parameter '{context_param}' not found or empty",
+                    },
+                )
 
-                if not cert.allowed:
-                    raise HTTPException(
-                        status_code=403,
-                        detail={
-                            "error": "Request blocked by execution gate",
-                            "reason": cert.reason,
-                            "decision": cert.decision.value,
-                            "certificate_id": cert.id,
-                        },
-                    )
+            cert = client.certify(str(context), policy=policy)
 
-                # Inject certificate if function accepts it
-                import inspect
-                sig = inspect.signature(func)
-                if "certificate" in sig.parameters:
-                    kwargs["certificate"] = cert
+            if not cert.allowed:
+                raise HTTPException(
+                    status_code=403,
+                    detail={
+                        "error": "Request blocked by execution gate",
+                        "reason": cert.reason,
+                        "decision": cert.decision.value,
+                        "certificate_id": cert.id,
+                    },
+                )
+
+            # Inject certificate if function accepts it
+            import inspect
+            sig = inspect.signature(func)
+            if "certificate" in sig.parameters:
+                kwargs["certificate"] = cert
 
             return await func(*args, **kwargs)
 
