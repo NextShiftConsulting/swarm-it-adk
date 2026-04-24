@@ -14,7 +14,7 @@ from enum import Enum
 from typing import Optional
 
 from yrsn_controlplane import (
-    CertificateEstimate,
+    MeasurementEstimate,
     EnforcementDecision,
     GatekeeperResult,
 )
@@ -104,7 +104,7 @@ def from_gatekeeper_result(result: GatekeeperResult) -> GateDecision:
     return from_enforcement_decision(result.decision)
 
 
-def to_certificate_estimate(
+def to_measurement_estimate(
     R: float,
     S: float,
     N: float,
@@ -115,11 +115,11 @@ def to_certificate_estimate(
     kappa_L: float | None = None,
     kappa_interface: float | None = None,
     coherence: float | None = None,
-) -> CertificateEstimate:
-    """Build a CertificateEstimate from ADK certificate fields.
+) -> MeasurementEstimate:
+    """Build a MeasurementEstimate from ADK certificate fields.
 
     Bridges the gap between ADK's RSCTCertificate (rich, mutable) and
-    controlplane's CertificateEstimate (minimal, for gating).
+    controlplane's MeasurementEstimate (minimal, for gating).
     """
     if alpha is None:
         alpha = R / (R + N) if (R + N) > 0 else 0.0
@@ -128,7 +128,7 @@ def to_certificate_estimate(
     if coherence is not None:
         evidence["coherence"] = coherence
 
-    return CertificateEstimate(
+    return MeasurementEstimate(
         alpha=alpha,
         kappa_gate=kappa_gate,
         sigma=sigma,
@@ -138,3 +138,7 @@ def to_certificate_estimate(
         kappa_L=kappa_L,
         kappa_interface=kappa_interface,
     )
+
+
+# Backward-compat alias
+to_certificate_estimate = to_measurement_estimate
