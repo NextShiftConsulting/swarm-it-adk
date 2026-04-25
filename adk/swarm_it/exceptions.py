@@ -25,6 +25,22 @@ class GateBlockedError(SwarmItError):
         )
 
 
+class MissingContextError(SwarmItError):
+    """Raised when certification context cannot be extracted from arguments.
+
+    Fail-closed guard: if no context can be found, the function must not
+    execute uncertified.  HTTP-layer callers should map this to 422.
+    """
+
+    def __init__(self, func_name: str):
+        self.func_name = func_name
+        super().__init__(
+            f"Certification context required but not found in arguments to "
+            f"'{func_name}'. Ensure the call includes a certifiable string "
+            f"argument (prompt, context, query, message, or input)."
+        )
+
+
 class AuthenticationError(SwarmItError):
     """Raised when API key is invalid or missing."""
 

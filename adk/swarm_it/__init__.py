@@ -108,6 +108,7 @@ from .exceptions import (
     SwarmItError,
     CertificationError,  # Re-exported from errors.py for structured error handling
     GateBlockedError,
+    MissingContextError,
     AuthenticationError,
 )
 
@@ -225,6 +226,7 @@ __all__ = [
     # Exceptions
     "SwarmItError",
     "GateBlockedError",
+    "MissingContextError",
     "AuthenticationError",
 
     # Structured Errors

@@ -8,6 +8,8 @@ import functools
 import inspect
 from typing import Callable, Optional, Any, TYPE_CHECKING
 
+from .exceptions import MissingContextError
+
 if TYPE_CHECKING:
     from .client import SwarmIt, Certificate
 
@@ -44,8 +46,7 @@ def _create_gate_decorator(
             context = _extract_context(func, args, kwargs)
 
             if context is None:
-                # No context found, execute without gating
-                return func(*args, **kwargs)
+                raise MissingContextError(func.__name__)
 
             # Certify
             cert = client.certify(context, policy=policy)
@@ -166,7 +167,7 @@ def certified(
             context = _extract_context(f, args, kwargs)
 
             if context is None:
-                return f(*args, **kwargs)
+                raise MissingContextError(f.__name__)
 
             cert = c.certify(context, policy=policy)
 
