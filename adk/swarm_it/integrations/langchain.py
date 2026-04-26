@@ -187,6 +187,8 @@ class SwarmItCallbackHandler:
 
         for prompt in prompts:
             cert = self.client.certify(prompt, policy=self.policy)
+            # Stash input prompt for on_llm_end pair certification
+            cert.raw["_input_prompt"] = prompt
             self.certificates.append(cert)
 
             if self.block_on_reject and not cert.allowed:
@@ -202,8 +204,42 @@ class SwarmItCallbackHandler:
         pass  # Could certify chain inputs here
 
     def on_llm_end(self, response, **kwargs) -> None:
-        """Called when LLM ends."""
-        pass
+        """Called when LLM ends — certify output against input (Claim 9/18 handoff)."""
+        from ..exceptions import GateBlockedError
+
+        # Extract output text from LLMResult
+        output_text = ""
+        if hasattr(response, "generations") and response.generations:
+            for gen_list in response.generations:
+                for gen in gen_list:
+                    if hasattr(gen, "text"):
+                        output_text += gen.text
+
+        if not output_text:
+            return
+
+        # Get the most recent input prompt for pair certification
+        input_prompt = ""
+        if self.certificates:
+            # The last certificate was from on_llm_start — its raw has the context
+            last_cert = self.certificates[-1]
+            input_prompt = last_cert.raw.get("_input_prompt", "")
+
+        # Certify the output as a pair (input=premise, output=hypothesis)
+        if input_prompt:
+            cert = self.client.certify_pair(
+                premise=input_prompt,
+                hypothesis=output_text,
+                policy=self.policy,
+            )
+        else:
+            # No input context available — fall back to unary certification
+            cert = self.client.certify(output_text, policy=self.policy)
+
+        self.certificates.append(cert)
+
+        if self.block_on_reject and not cert.allowed:
+            raise GateBlockedError(cert)
 
     def on_llm_error(self, error, **kwargs) -> None:
         """Called on LLM error."""

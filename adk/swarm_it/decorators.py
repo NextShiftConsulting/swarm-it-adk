@@ -141,6 +141,72 @@ def gate(
     return decorator
 
 
+def certify_output(
+    func: Optional[Callable] = None,
+    *,
+    client: Optional["SwarmIt"] = None,
+    policy: Optional[str] = None,
+    on_block: Optional[Callable[["Certificate"], Any]] = None,
+):
+    """
+    Decorator that certifies function OUTPUT (Claim 9/18 handoff loop).
+
+    Runs the function, then certifies the return value as a pair
+    (input=premise, output=hypothesis). If the output fails certification,
+    calls on_block or raises GateBlockedError.
+
+    Usage:
+        @certify_output
+        def ask_llm(prompt):
+            return openai.chat.completions.create(...)
+
+        # With custom block handler
+        @certify_output(on_block=lambda cert: "Output blocked")
+        def ask_llm(prompt):
+            ...
+    """
+    from .client import SwarmIt
+
+    def decorator(f: Callable) -> Callable:
+        c = client or SwarmIt()
+
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            # Extract input context for pair certification
+            input_context = _extract_context(f, args, kwargs)
+
+            # Execute the function first (no input gate)
+            result = f(*args, **kwargs)
+
+            # Extract output text from result
+            output_text = str(result) if result is not None else ""
+
+            # Certify as pair if we have input context, else unary
+            if input_context:
+                cert = c.certify_pair(
+                    premise=input_context,
+                    hypothesis=output_text,
+                    policy=policy,
+                )
+            else:
+                cert = c.certify(output_text, policy=policy)
+
+            if not cert.allowed:
+                if on_block is not None:
+                    return on_block(cert)
+                raise GateBlockedError(cert)
+
+            return result
+
+        wrapper._swarm_it_client = c
+        wrapper._swarm_it_output_cert = True
+        return wrapper
+
+    if func is not None:
+        return decorator(func)
+    return decorator
+
+
 def certified(
     func: Optional[Callable] = None,
     *,

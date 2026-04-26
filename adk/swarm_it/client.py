@@ -225,6 +225,65 @@ class SwarmIt:
         # Local fallback (hash-based, not production-grade)
         return self._local_certify(context, policy or self.default_policy)
 
+    def certify_pair(
+        self,
+        premise: str,
+        hypothesis: str,
+        policy: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Certificate:
+        """
+        Certify a premise-hypothesis pair (output certification).
+
+        Uses /certify/pair with text fallback — the server encodes both
+        texts and runs them through the trained S017 edge head.
+
+        For output certification: premise=input prompt, hypothesis=LLM output.
+
+        Args:
+            premise: The input/reference text (e.g., user prompt)
+            hypothesis: The output text to certify (e.g., LLM response)
+            policy: Certification policy (uses default if not specified)
+            metadata: Optional metadata
+
+        Returns:
+            Certificate with gate decision
+
+        Raises:
+            CertificationError: If certification fails
+            AuthenticationError: If API key is invalid
+        """
+        from .exceptions import CertificationError, AuthenticationError
+
+        if not self._local_mode and self.api_key:
+            try:
+                response = self._client.post(
+                    "/certify/pair",
+                    json={
+                        "premise_text": premise,
+                        "hypothesis_text": hypothesis,
+                        "policy": policy or self.default_policy,
+                    },
+                )
+
+                if response.status_code == 401:
+                    raise AuthenticationError("Invalid API key")
+
+                if response.status_code != 200:
+                    raise CertificationError(
+                        f"Pair certification failed: {response.text}"
+                    )
+
+                data = response.json()
+                return self._parse_certificate(data)
+
+            except httpx.RequestError:
+                self._local_mode = True
+
+        # Local fallback: certify the hypothesis text
+        # (pair semantics degrade to unary in local mode)
+        return self._local_certify(hypothesis, policy or self.default_policy)
+
     def certify_batch(
         self,
         items: List[Dict[str, Any]],

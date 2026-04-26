@@ -101,7 +101,7 @@ from .persistence.audit import (
 )
 
 # === Decorators ===
-from .decorators import gate, certified
+from .decorators import gate, certified, certify_output
 
 # === Exceptions ===
 from .exceptions import (
@@ -222,6 +222,7 @@ __all__ = [
     # Decorators
     "gate",
     "certified",
+    "certify_output",
 
     # Exceptions
     "SwarmItError",
