@@ -47,8 +47,16 @@ class RSCTMode(Enum):
     NOMINAL = "0.0"
 
 
-class DegradationType(Enum):
-    """Core degradation types aligned with yrsn."""
+class ADKDegradationType(Enum):
+    """ADK consumer-facing degradation types.
+
+    These are simplified categories for ADK consumers, distinct from:
+    - DegradationType in yrsn-controlplane (operational gate categories)
+    - CertificateDegradationType in yrsn certificates (patent Section 7.9)
+    - DiagnosisDegradationType in yrsn diagnosis (alpha-kappa grid)
+
+    Renamed from DegradationType per RF.7 consolidation (ADR-009 remediation).
+    """
 
     NOMINAL = "NOMINAL"
     RSN_COLLAPSE = "RSN_COLLAPSE"
@@ -59,6 +67,10 @@ class DegradationType(Enum):
     LOW_RELEVANCE = "LOW_RELEVANCE"
     TRAJECTORY_DIVERGENCE = "TRAJECTORY_DIVERGENCE"
     OOD_FABRICATION = "OOD_FABRICATION"
+
+
+# Backward-compatible alias (deprecated -- use ADKDegradationType)
+DegradationType = ADKDegradationType
 
 
 class Severity(Enum):

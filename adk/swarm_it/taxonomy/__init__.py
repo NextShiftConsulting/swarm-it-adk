@@ -6,7 +6,8 @@ Provides error code classification, degradation typing, and feedback loops.
 
 from .classification import (
     RSCTMode,
-    DegradationType,
+    ADKDegradationType,
+    DegradationType,  # deprecated alias for ADKDegradationType
     Severity,
     classify_certificate,
     add_error_codes,
@@ -27,7 +28,8 @@ from .bridge import (
 __all__ = [
     # Classification
     "RSCTMode",
-    "DegradationType",
+    "ADKDegradationType",
+    "DegradationType",  # deprecated alias
     "Severity",
     "classify_certificate",
     "add_error_codes",
