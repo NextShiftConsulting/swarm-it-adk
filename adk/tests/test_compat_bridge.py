@@ -2,7 +2,7 @@
 
 import pytest
 from yrsn_controlplane import (
-    MeasurementEstimate,
+    CPGatekeeperInput,
     EnforcementDecision,
     GatekeeperConfig,
     GatekeeperResult,
@@ -100,12 +100,12 @@ class TestFromGatekeeperResult:
         assert decision.allowed is False
 
 
-class TestToMeasurementEstimate:
+class TestToCPGatekeeperInput:
     """Tests for to_certificate_estimate()."""
 
     def test_basic_estimate(self):
         est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_gate=0.7, sigma=0.3, alpha=0.85)
-        assert isinstance(est, MeasurementEstimate)
+        assert isinstance(est, CPGatekeeperInput)
         assert est.alpha == 0.85
         assert est.kappa_gate == 0.7
         assert est.sigma == 0.3
