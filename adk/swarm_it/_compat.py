@@ -124,7 +124,18 @@ def to_measurement_estimate(
     if alpha is None:
         alpha = R / (R + N) if (R + N) > 0 else 0.0
 
-    evidence: dict = {"N": N, "R": R, "S_sup": S}
+    # V-011: derive noise_admissibility from raw N. Initially = N,
+    # creating the seam for future evolution to f(N, sigma, omega, ...).
+    # Raw N stays in evidence as measurement fact.
+    noise_admissibility = N
+
+    evidence: dict = {
+        "N": N,
+        "R": R,
+        "S_sup": S,
+        "noise_admissibility": noise_admissibility,
+        "noise_admissibility_method": "raw_N_v1",
+    }
     if coherence is not None:
         evidence["coherence"] = coherence
 
