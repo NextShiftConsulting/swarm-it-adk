@@ -14,7 +14,7 @@ from enum import Enum
 from typing import Optional
 
 from yrsn_controlplane import (
-    MeasurementEstimate,
+    CPGatekeeperInput,
     EnforcementDecision,
     GatekeeperResult,
 )
@@ -115,11 +115,11 @@ def to_measurement_estimate(
     kappa_L: float | None = None,
     kappa_interface: float | None = None,
     coherence: float | None = None,
-) -> MeasurementEstimate:
-    """Build a MeasurementEstimate from ADK certificate fields.
+) -> CPGatekeeperInput:
+    """Build a CPGatekeeperInput from ADK certificate fields.
 
     Bridges the gap between ADK's RSCTCertificate (rich, mutable) and
-    controlplane's MeasurementEstimate (minimal, for gating).
+    controlplane's CPGatekeeperInput (minimal, for gating).
     """
     if alpha is None:
         alpha = R / (R + N) if (R + N) > 0 else 0.0
@@ -139,7 +139,7 @@ def to_measurement_estimate(
     if coherence is not None:
         evidence["coherence"] = coherence
 
-    return MeasurementEstimate(
+    return CPGatekeeperInput(
         alpha=alpha,
         kappa_gate=kappa_gate,
         sigma=sigma,
