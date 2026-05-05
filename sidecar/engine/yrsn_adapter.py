@@ -146,11 +146,12 @@ class LocalYRSNAdapter(YRSNAdapter):
         return R * (1 - N)
 
     def _compute_sigma(self, R: float, S: float, N: float) -> float:
-        """Compute sigma (stability score) from RSN variance."""
-        import math
-        mean = (R + S + N) / 3
-        variance = ((R - mean) ** 2 + (S - mean) ** 2 + (N - mean) ** 2) / 3
-        return min(1.0, math.sqrt(variance) * 2)
+        """Canonical per-request sigma: noise fraction as turbulence proxy.
+
+        sqrt(var([R,S,N])) was direction-blind — R-peaked and N-peaked
+        gave identical sigma, rejecting the best certificates.
+        """
+        return float(N)
 
     def _gate_decision(
         self,
@@ -278,7 +279,7 @@ class LightweightAdapter(YRSNAdapter):
 
         # Compute derived metrics — kappa_compat (Claim 2 dual-path)
         kappa = R * (1 - N)
-        sigma = 0.3  # Default stability
+        sigma = N  # Canonical per-request turbulence proxy
 
         # Gate decision (simplified)
         if N >= 0.5:
