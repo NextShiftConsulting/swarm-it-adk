@@ -142,10 +142,8 @@ class LocalYRSNAdapter(YRSNAdapter):
     # =========================================================================
 
     def _compute_kappa(self, R: float, S: float, N: float) -> float:
-        """Compute kappa (compatibility score). kappa = R / (R + N)"""
-        if R + N == 0:
-            return 0.5
-        return R / (R + N)
+        """Compute kappa_compat = R * (1 - N). Claim 2 dual-path."""
+        return R * (1 - N)
 
     def _compute_sigma(self, R: float, S: float, N: float) -> float:
         """Compute sigma (stability score) from RSN variance."""
@@ -278,8 +276,8 @@ class LightweightAdapter(YRSNAdapter):
         else:
             R, S, N = 0.70, 0.75, 0.20  # Default moderate values
 
-        # Compute derived metrics
-        kappa = R / (R + N) if (R + N) > 0 else 0.5
+        # Compute derived metrics — kappa_compat (Claim 2 dual-path)
+        kappa = R * (1 - N)
         sigma = 0.3  # Default stability
 
         # Gate decision (simplified)

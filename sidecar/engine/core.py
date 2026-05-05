@@ -41,8 +41,8 @@ class RSCTEngine:
         rsn = self.rsn.compute(embeddings)
         R, S, N = rsn["R"], rsn["S"], rsn["N"]
 
-        # 4. Gate decision
-        kappa = R / (R + N) if (R + N) > 0 else 0.5
+        # 4. Gate decision — kappa_compat (Claim 2 dual-path)
+        kappa = R * (1 - N)
         decision, gate = self._gate(R, S, N, kappa)
 
         return {

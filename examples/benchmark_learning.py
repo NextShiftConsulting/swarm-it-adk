@@ -189,7 +189,7 @@ def benchmark_real_data():
         else:
             R, S, N = 0.65, 0.25, 0.10
 
-        kappa = R / (R + N) if (R + N) > 0 else 0.5
+        kappa = R * (1 - N)  # kappa_compat (Claim 2 dual-path)
         sigma = N * 0.7
 
         result = evaluate_paper_constraints(R, S, N, kappa, sigma, track_evolution=False)
