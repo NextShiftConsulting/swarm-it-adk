@@ -163,7 +163,7 @@ class RSCTCertificate:
         # Group 4: Execution
         if self.has_kappa_decomposition:
             min_kappa = min(
-                k for k in [self.kappa_H, self.kappa_L, self.kappa_A]
+                k for k in [self.kappa_H, self.kappa_L, self.kappa_interface]
                 if k is not None
             )
             if min_kappa < 0.3:
