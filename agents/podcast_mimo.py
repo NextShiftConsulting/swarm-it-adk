@@ -613,10 +613,10 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         # σ = "conversational turbulence" (repetition, contradiction)
         # c = "host-expert consensus" (coherence)
 
-        # Simple proxy: κ_gate ≈ R (content alignment)
+        # Simple proxy: κ_compat ≈ R (content alignment) — R*(1-N) proxy
         # σ ≈ S (more filler → more turbulence)
         # c ≈ 1 - N (fewer errors → better consensus)
-        kappa_gate = decomp['R']  # Blog-dialogue alignment
+        kappa_compat = decomp['R']  # Blog-dialogue alignment (R*(1-N) proxy)
         sigma = decomp['S']  # Conversational turbulence (filler)
         coherence = 1.0 - decomp['N']  # Inverse of noise
 
@@ -651,16 +651,16 @@ N (Noise): Fraction that is hallucinated or factually incorrect
             decision = "RE_ENCODE"
             gate_failed = 3
             gate_feedback = f"Gate 3 (Admissibility): σ={sigma:.2f} > {sigma_thr} (hard turbulence barrier). Too much filler/repetition."
-        elif kappa_gate < (kappa_base + lambda_t * sigma):
+        elif kappa_compat < (kappa_base + lambda_t * sigma):
             decision = "RE_ENCODE"
             gate_failed = 3
             kappa_req = kappa_base + lambda_t * sigma
-            gate_feedback = f"Gate 3 (Admissibility): κ={kappa_gate:.2f} < κ_req={kappa_req:.2f} (dynamic threshold). Blog-dialogue alignment insufficient."
+            gate_feedback = f"Gate 3 (Admissibility): κ={kappa_compat:.2f} < κ_req={kappa_req:.2f} (dynamic threshold). Blog-dialogue alignment insufficient."
 
         # Gate 4: Grounding Gate (Modal Compatibility)
         # For podcast: κ_L = "low-level quality" (pacing, natural flow)
         # Proxy: κ_L ≈ overall engagement quality (kappa)
-        kappa_L = alpha * kappa_gate  # Combined quality * alignment
+        kappa_L = alpha * kappa_compat  # Combined quality * alignment
         if kappa_L < kappa_L_min:
             decision = "REPAIR"
             gate_failed = 4
@@ -669,11 +669,11 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         # === Map to Execution States (FIG. 19) ===
 
         # State classification based on (α, κ_gate) conjunction
-        if alpha >= 0.7 and kappa_gate >= 0.7:
+        if alpha >= 0.7 and kappa_compat >= 0.7:
             execution_state = "HEALTHY"  # High quality, high alignment
-        elif alpha >= 0.7 and kappa_gate < 0.7:
+        elif alpha >= 0.7 and kappa_compat < 0.7:
             execution_state = "HALLUCINATION-RISK"  # High quality but misaligned
-        elif alpha < 0.7 and kappa_gate >= 0.7:
+        elif alpha < 0.7 and kappa_compat >= 0.7:
             execution_state = "TARGETED-POISONING"  # Low quality despite alignment (adversarial)
         else:
             execution_state = "SYSTEMIC-DEGRADATION"  # Both low
@@ -693,7 +693,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
             "tau": 1.0 / alpha if alpha > 0 else 2.0,  # Temperature (not a gate operand)
 
             # DERIVED section (1406)
-            "kappa_gate": kappa_gate,  # Execution compatibility score
+            "kappa_compat": kappa_compat,  # Execution compatibility score
             "sigma": sigma,  # Turbulence metric
             "coherence": coherence,  # Consensus coherence
 
@@ -707,7 +707,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
             "gate_feedback": gate_feedback if gate_failed else "All gates passed",
 
             # Legacy fields for compatibility
-            "kappa": alpha * kappa_gate,  # Overall quality score
+            "kappa": alpha * kappa_compat,  # Overall quality score
             "approved": (decision == "EXECUTE"),
             "feedback": decomp.get('feedback', '') + ("\n" + gate_feedback if gate_feedback else "")
         }
@@ -723,7 +723,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
         print("\n[*] RSCT Quality Certificate (Stage 2/2):")
         print(f"    DECOMPOSITION: R={certificate['R']:.2f} S={certificate['S']:.2f} N={certificate['N']:.2f}")
         print(f"    QUALITY: alpha={certificate['alpha']:.2f}")
-        print(f"    DERIVED: kappa={certificate['kappa_gate']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
+        print(f"    DERIVED: kappa={certificate['kappa_compat']:.2f} sigma={certificate['sigma']:.2f} c={certificate['coherence']:.2f}")
         print(f"    EXECUTION STATE: {certificate['execution_state']}")
         print(f"    DECISION: {certificate['decision']} (Gate {certificate['gate_failed'] or 'ALL PASSED'})")
         print(f"    Status: {'[+] EXECUTE' if certificate['approved'] else '[-] ' + certificate['decision']}")

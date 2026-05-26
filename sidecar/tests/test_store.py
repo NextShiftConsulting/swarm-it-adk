@@ -15,7 +15,7 @@ def make_cert(id: str = "test-123") -> dict:
         "R": 0.6,
         "S": 0.3,
         "N": 0.1,
-        "kappa_gate": 0.7,
+        "kappa_compat": 0.7,
         "sigma": 0.3,
         "decision": "EXECUTE",
         "gate_reached": 5,

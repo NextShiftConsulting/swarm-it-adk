@@ -125,7 +125,7 @@ if GRPC_AVAILABLE:
                 'R': cert['R'],
                 'S': cert['S'],
                 'N': cert['N'],
-                'kappa_gate': cert['kappa_gate'],
+                'kappa_compat': cert['kappa_compat'],
                 'sigma': cert['sigma'],
                 'decision': decision_map.get(cert['decision'], 0),
                 'gate_reached': cert['gate_reached'],

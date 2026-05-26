@@ -26,7 +26,7 @@ try:
     print("[OK] certify_local() works")
     print(f"   ID: {cert1.id}")
     print(f"   Decision: {cert1.decision.value}")
-    print(f"   Kappa: {cert1.kappa_gate:.3f}")
+    print(f"   Kappa: {cert1.kappa_compat:.3f}")
     print(f"   R: {cert1.R:.3f}, S: {cert1.S:.3f}, N: {cert1.N:.3f}")
     print(f"   Gate Reached: {cert1.gate_reached}")
 
@@ -54,7 +54,7 @@ try:
     cert1 = certify("Quick test")
     print("[OK] certify() convenience function works")
     print(f"   Decision: {cert1.decision.value}")
-    print(f"   Kappa: {cert1.kappa_gate:.3f}")
+    print(f"   Kappa: {cert1.kappa_compat:.3f}")
 
     # Test fluent builder
     cert2 = (
@@ -65,7 +65,7 @@ try:
     )
     print("[OK] FluentCertifier works")
     print(f"   Decision: {cert2.decision.value}")
-    print(f"   Kappa: {cert2.kappa_gate:.3f}")
+    print(f"   Kappa: {cert2.kappa_compat:.3f}")
     print(f"   R: {cert2.R:.3f}, S: {cert2.S:.3f}, N: {cert2.N:.3f}")
 
     # Test batch

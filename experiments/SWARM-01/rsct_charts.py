@@ -143,7 +143,7 @@ class CertificateData:
             R=d.get('R', 0),
             S=d.get('S', 0),
             N=d.get('N', 0),
-            kappa=d.get('kappa', d.get('kappa_gate', 0)),
+            kappa=d.get('kappa', d.get('kappa_compat', d.get('kappa_gate', 0))),
             sigma=d.get('sigma', 0.3),
             alpha=d.get('alpha'),
             decision=d.get('decision', 'EXECUTE'),

@@ -51,12 +51,12 @@ class TestRSCTEngine:
         assert cert["allowed"] is True
         assert cert["gate_reached"] == 5
 
-    def test_kappa_gate_computed(self):
-        """kappa_gate should be computed."""
+    def test_kappa_compat_computed(self):
+        """kappa_compat should be computed."""
         cert = self.engine.certify(prompt="Test prompt")
 
-        assert cert["kappa_gate"] is not None
-        assert 0 <= cert["kappa_gate"] <= 1
+        assert cert["kappa_compat"] is not None
+        assert 0 <= cert["kappa_compat"] <= 1
 
     def test_multimodal_detection(self):
         """Prompts mentioning images should be detected as multimodal."""

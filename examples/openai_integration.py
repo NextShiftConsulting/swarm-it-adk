@@ -55,7 +55,7 @@ def certified_chat(
     print(f"[Certifying] {prompt[:50]}...")
     cert = swarm.certify(prompt)
 
-    print(f"[Certificate] decision={cert.decision.value} kappa={cert.kappa_gate:.2f}")
+    print(f"[Certificate] decision={cert.decision.value} kappa={cert.kappa_compat:.2f}")
 
     if not cert.allowed:
         return {

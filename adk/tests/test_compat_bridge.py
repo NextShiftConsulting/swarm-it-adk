@@ -87,14 +87,14 @@ class TestFromGatekeeperResult:
 
     def test_execute_result(self):
         gk = SequentialGatekeeper()
-        est = to_certificate_estimate(R=0.7, S=0.2, N=0.1, kappa_gate=0.8, sigma=0.2, alpha=0.875)
+        est = to_certificate_estimate(R=0.7, S=0.2, N=0.1, kappa_compat=0.8, sigma=0.2, alpha=0.875)
         result = gk.evaluate(est)
         decision = from_gatekeeper_result(result)
         assert isinstance(decision, GateDecision)
 
     def test_high_noise_rejects(self):
         gk = SequentialGatekeeper()
-        est = to_certificate_estimate(R=0.1, S=0.1, N=0.8, kappa_gate=0.3, sigma=0.8, alpha=0.11)
+        est = to_certificate_estimate(R=0.1, S=0.1, N=0.8, kappa_compat=0.3, sigma=0.8, alpha=0.11)
         result = gk.evaluate(est)
         decision = from_gatekeeper_result(result)
         assert decision.allowed is False
@@ -104,26 +104,26 @@ class TestToCPGatekeeperInput:
     """Tests for to_certificate_estimate()."""
 
     def test_basic_estimate(self):
-        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_gate=0.7, sigma=0.3, alpha=0.85)
+        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_compat=0.7, sigma=0.3, alpha=0.85)
         assert isinstance(est, CPGatekeeperInput)
         assert est.alpha == 0.85
         assert est.kappa_gate == 0.7
         assert est.sigma == 0.3
 
     def test_alpha_auto_computed(self):
-        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_gate=0.7, sigma=0.3)
+        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_compat=0.7, sigma=0.3)
         expected_alpha = 0.6 / (0.6 + 0.1)
         assert abs(est.alpha - expected_alpha) < 1e-9
 
     def test_alpha_zero_division(self):
-        est = to_certificate_estimate(R=0.0, S=1.0, N=0.0, kappa_gate=0.5, sigma=0.5)
+        est = to_certificate_estimate(R=0.0, S=1.0, N=0.0, kappa_compat=0.5, sigma=0.5)
         assert est.alpha == 0.0
 
     def test_extended_kappa_fields(self):
-        # kappa_gate must equal min(kappa_H, kappa_L, kappa_interface)
+        # CPGatekeeperInput.kappa_gate receives the ADK kappa_compat value; should equal min(kappa_H, kappa_L, kappa_interface) when multimodal
         est = to_certificate_estimate(
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.6, sigma=0.3, alpha=0.85,
+            kappa_compat=0.6, sigma=0.3, alpha=0.85,
             kappa_H=0.8, kappa_L=0.6, kappa_interface=0.7,
         )
         assert est.kappa_H == 0.8
@@ -133,14 +133,14 @@ class TestToCPGatekeeperInput:
     def test_coherence_in_evidence(self):
         est = to_certificate_estimate(
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7, sigma=0.3, alpha=0.85,
+            kappa_compat=0.7, sigma=0.3, alpha=0.85,
             coherence=0.9,
         )
         assert est.evidence["coherence"] == 0.9
 
     def test_estimate_accepted_by_gatekeeper(self):
         """Estimate produced by bridge is valid input for SequentialGatekeeper."""
-        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_gate=0.7, sigma=0.3, alpha=0.85)
+        est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_compat=0.7, sigma=0.3, alpha=0.85)
         gk = SequentialGatekeeper()
         result = gk.evaluate(est)
         assert isinstance(result, GatekeeperResult)
@@ -172,7 +172,7 @@ class TestThresholdsToConfig:
         """Config produced by bridge is valid for SequentialGatekeeper."""
         config = thresholds_to_config({"kappa": 0.6, "N": 0.4})
         gk = SequentialGatekeeper(config)
-        est = to_certificate_estimate(R=0.5, S=0.3, N=0.2, kappa_gate=0.6, sigma=0.3, alpha=0.71)
+        est = to_certificate_estimate(R=0.5, S=0.3, N=0.2, kappa_compat=0.6, sigma=0.3, alpha=0.71)
         result = gk.evaluate(est)
         assert isinstance(result, GatekeeperResult)
 

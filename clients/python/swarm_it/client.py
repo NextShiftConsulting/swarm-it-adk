@@ -122,9 +122,11 @@ class RSCTCertificate(BaseModel):
     N:     float = Field(..., ge=0.0, le=1.0, description="Noise.")
 
     # Gate metrics
-    kappa_gate: float = Field(..., ge=0.0, le=1.0,
-                              description="Compatibility enforcement scalar: R*(1-N) unimodal, "
-                                          "min(kappa_H, kappa_L, kappa_interface) multimodal.")
+    kappa_compat: float = Field(..., ge=0.0, le=1.0,
+                                description="Compatibility enforcement scalar: R*(1-N) unimodal, "
+                                            "min(kappa_H, kappa_L, kappa_interface) multimodal.")
+    kappa_modal_min: Optional[float] = Field(None, ge=0.0, le=1.0,
+                                             description="min(kappa_H, kappa_L, kappa_interface) for multimodal certs.")
     sigma:      float = Field(..., ge=0.0, le=1.0,
                               description="Turbulence: std({kappa_i}) over per-sample scores.")
 

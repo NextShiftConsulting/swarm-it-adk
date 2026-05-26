@@ -91,7 +91,7 @@ def pre_certify_example():
         cert = engine.certify(prompt, embeddings=embeddings)
 
         print(f"  R={cert['R']:.2f} S={cert['S']:.2f} N={cert['N']:.2f}")
-        print(f"  kappa={cert['kappa_gate']:.2f} decision={cert['decision']}")
+        print(f"  kappa={cert['kappa_compat']:.2f} decision={cert['decision']}")
 
         # Step 3: Only call LLM if allowed
         if cert['allowed']:
@@ -142,7 +142,7 @@ def runnable_example():
         if not cert['allowed']:
             raise CertificationError(
                 f"Prompt rejected: {cert['reason']} "
-                f"(R={cert['R']:.2f}, N={cert['N']:.2f}, kappa={cert['kappa_gate']:.2f})"
+                f"(R={cert['R']:.2f}, N={cert['N']:.2f}, kappa={cert['kappa_compat']:.2f})"
             )
 
         # Pass through with certificate attached

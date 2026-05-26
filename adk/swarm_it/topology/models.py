@@ -70,9 +70,9 @@ class Agent:
     config: Dict[str, Any] = field(default_factory=dict)
 
     @property
-    def kappa_gate(self) -> float:
+    def kappa_compat(self) -> float:
         """
-        Enforced kappa: minimum of all modality kappas.
+        Enforced kappa: minimum of all modality kappas (kappa_modal_min for this agent).
 
         This is the "weakest link" that determines agent health.
         """
@@ -111,10 +111,10 @@ class Agent:
 
     @property
     def health_status(self) -> str:
-        """Agent health based on kappa_gate."""
-        if self.kappa_gate >= 0.7:
+        """Agent health based on kappa_compat."""
+        if self.kappa_compat >= 0.7:
             return "healthy"
-        elif self.kappa_gate >= 0.4:
+        elif self.kappa_compat >= 0.4:
             return "degraded"
         else:
             return "critical"
@@ -126,7 +126,7 @@ class Agent:
             "role": self.role,
             "solver_type": self.solver_type.value,
             "modality": self.modality.value,
-            "kappa_gate": self.kappa_gate,
+            "kappa_compat": self.kappa_compat,
             "health_status": self.health_status,
         }
 
@@ -231,7 +231,7 @@ class Swarm:
         if not self.agents:
             return 0.0
 
-        kappas = [a.kappa_gate for a in self.agents]
+        kappas = [a.kappa_compat for a in self.agents]
         if len(kappas) < 2:
             return 1.0
 
@@ -242,11 +242,15 @@ class Swarm:
         return max(0.0, 1.0 - variance * 4)  # Scale variance
 
     @property
-    def kappa_gate_min(self) -> float:
-        """Minimum kappa_gate across all agents (weakest agent)."""
+    def kappa_compat_chain_min(self) -> float:
+        """Minimum kappa_compat across all agents in the chain (weakest agent).
+
+        This is the chain minimum — the min of kappa_compat values across agents.
+        It is NOT kappa_modal_min (which is the min of H/L/interface within one cert).
+        """
         if not self.agents:
             return 0.0
-        return min(a.kappa_gate for a in self.agents)
+        return min(a.kappa_compat for a in self.agents)
 
     @property
     def kappa_interface_min(self) -> Optional[float]:
@@ -258,10 +262,10 @@ class Swarm:
 
     @property
     def weakest_agent(self) -> Optional[Agent]:
-        """Agent with lowest kappa_gate."""
+        """Agent with lowest kappa_compat."""
         if not self.agents:
             return None
-        return min(self.agents, key=lambda a: a.kappa_gate)
+        return min(self.agents, key=lambda a: a.kappa_compat)
 
     @property
     def weakest_channel(self) -> Optional[Channel]:
@@ -274,9 +278,9 @@ class Swarm:
     @property
     def health_status(self) -> str:
         """Overall swarm health."""
-        if self.kappa_gate_min >= 0.7 and (self.kappa_interface_min is None or self.kappa_interface_min >= 0.7):
+        if self.kappa_compat_chain_min >= 0.7 and (self.kappa_interface_min is None or self.kappa_interface_min >= 0.7):
             return "healthy"
-        elif self.kappa_gate_min >= 0.4:
+        elif self.kappa_compat_chain_min >= 0.4:
             return "degraded"
         else:
             return "critical"
@@ -307,7 +311,7 @@ class Swarm:
             "channels": [c.to_dict() for c in self.channels],
             "metrics": {
                 "consensus": self.consensus,
-                "kappa_gate_min": self.kappa_gate_min,
+                "kappa_compat_chain_min": self.kappa_compat_chain_min,
                 "kappa_interface_min": self.kappa_interface_min,
                 "health_status": self.health_status,
             },

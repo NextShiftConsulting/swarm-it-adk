@@ -218,7 +218,7 @@ class SQLiteStore(CertificateStore):
                 R REAL NOT NULL,
                 S REAL NOT NULL,
                 N REAL NOT NULL,
-                kappa_gate REAL NOT NULL,
+                kappa_compat REAL NOT NULL,
                 sigma REAL NOT NULL,
                 reason TEXT,
                 data TEXT NOT NULL,
@@ -243,7 +243,7 @@ class SQLiteStore(CertificateStore):
         conn.execute(
             """
             INSERT OR REPLACE INTO certificates
-            (id, timestamp, policy, decision, gate_reached, R, S, N, kappa_gate, sigma, reason, data)
+            (id, timestamp, policy, decision, gate_reached, R, S, N, kappa_compat, sigma, reason, data)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -255,7 +255,7 @@ class SQLiteStore(CertificateStore):
                 cert.R,
                 cert.S,
                 cert.N,
-                cert.kappa_gate,
+                cert.kappa_compat,
                 cert.sigma,
                 cert.reason,
                 json.dumps(cert.to_dict()),

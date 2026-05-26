@@ -26,7 +26,7 @@ class ChatResponse(BaseModel):
     response: str
     certificate_id: str
     decision: str
-    kappa_gate: float
+    kappa_compat: float
 
 
 @app.get("/")
@@ -105,5 +105,5 @@ async def chat(request: ChatRequest):
             response=content,
             certificate_id=cert["id"],
             decision=cert["decision"],
-            kappa_gate=cert["kappa_gate"],
+            kappa_compat=cert["kappa_compat"],
         )

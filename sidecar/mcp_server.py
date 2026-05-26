@@ -156,7 +156,7 @@ def handle_certify(params: dict) -> dict:
         "R": cert["R"],
         "S": cert["S"],
         "N": cert["N"],
-        "kappa": cert["kappa_gate"],
+        "kappa": cert["kappa_compat"],
         "decision": cert["decision"],
         "allowed": cert["allowed"],
         "reason": cert["reason"],

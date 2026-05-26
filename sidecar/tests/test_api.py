@@ -46,7 +46,7 @@ class TestCertifyEndpoint:
         assert "R" in data
         assert "S" in data
         assert "N" in data
-        assert "kappa_gate" in data
+        assert "kappa_compat" in data
         assert "decision" in data
         assert "allowed" in data
 

@@ -286,7 +286,7 @@ class DOEValidator:
                 evidence.decision = cert.decision.value
                 evidence.has_decision_property = hasattr(cert.decision, 'allowed')
                 evidence.has_allowed_property = hasattr(cert.decision, 'allowed')
-                evidence.kappa = cert.kappa_gate
+                evidence.kappa = cert.kappa_compat
                 evidence.R = cert.R
                 evidence.S = cert.S
                 evidence.N = cert.N
@@ -529,7 +529,7 @@ class DOEValidator:
 
             # Collect aggregate stats
             if all_valid:
-                evidence.kappa = sum(c.kappa_gate for c in certs) / len(certs)
+                evidence.kappa = sum(c.kappa_compat for c in certs) / len(certs)
                 evidence.R = sum(c.R for c in certs) / len(certs)
                 evidence.S = sum(c.S for c in certs) / len(certs)
                 evidence.N = sum(c.N for c in certs) / len(certs)
@@ -619,7 +619,7 @@ class DOEValidator:
 
                     if evidence.is_rsct_certificate:
                         evidence.decision = cert.decision.value
-                        evidence.kappa = cert.kappa_gate
+                        evidence.kappa = cert.kappa_compat
 
                         proof.pass_fail = "PASS"
                         proof.verdict = "Valid input processed correctly"

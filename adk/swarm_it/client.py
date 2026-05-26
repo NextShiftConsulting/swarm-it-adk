@@ -47,7 +47,7 @@ class Certificate:
 
     # Quality metrics
     alpha: float  # Purity: R/(R+N)
-    kappa: float  # Compatibility (kappa_gate)
+    kappa: float  # Compatibility (kappa_compat)
     sigma: float  # Turbulence
 
     # Gate result
@@ -583,7 +583,7 @@ class SwarmIt:
             S=s_value,
             N=data.get("N", 0.0),
             alpha=data.get("alpha", 0.0),
-            kappa=data.get("kappa_gate", data.get("kappa", 0.0)),
+            kappa=data.get("kappa_compat", data.get("kappa", 0.0)),
             sigma=data.get("sigma", 0.0),
             decision=decision,
             gate_reached=data.get("gate_reached", 0),
@@ -632,7 +632,7 @@ class SwarmIt:
 
         # Delegate gate evaluation to controlplane
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = SequentialGatekeeper().evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)

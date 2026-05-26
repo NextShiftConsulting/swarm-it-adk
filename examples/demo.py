@@ -51,7 +51,7 @@ def demo_prompt(engine, prompt, category):
 
     print(f"  {marker} {decision:<8} | {prompt[:50]}")
     print(f"       R={cert.R:.2f} (relevance)  S={cert.S:.2f} (support)  N={cert.N:.2f} (noise)")
-    print(f"       kappa={cert.kappa_gate:.2f} (quality score) -> {'Allowed' if allowed else 'BLOCKED'}")
+    print(f"       kappa={cert.kappa_compat:.2f} (quality score) -> {'Allowed' if allowed else 'BLOCKED'}")
     if cert.reason:
         print(f"       Reason: {cert.reason}")
     print()

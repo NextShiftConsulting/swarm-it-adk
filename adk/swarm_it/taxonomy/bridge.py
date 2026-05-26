@@ -43,7 +43,7 @@ class CertificateHierarchy:
     sigma_L: Optional[float] = None
 
     # Computed
-    kappa_gate: Optional[float] = None  # min(kappa_H, kappa_L, ...)
+    kappa_compat: Optional[float] = None  # min(kappa_H, kappa_L, ...) — kappa_modal_min for this cert
     hierarchy_gap: Optional[float] = None  # |kappa_H - kappa_L|
     dominant_modality: Optional[str] = None  # "H" or "L"
 
@@ -62,7 +62,7 @@ class CertificateHierarchy:
             "kappa_interface": self.kappa_interface,
             "sigma_H": self.sigma_H,
             "sigma_L": self.sigma_L,
-            "kappa_gate": self.kappa_gate,
+            "kappa_compat": self.kappa_compat,
             "hierarchy_gap": self.hierarchy_gap,
             "dominant_modality": self.dominant_modality,
         }
@@ -76,7 +76,7 @@ class CertificateHierarchy:
             kappa_interface=data.get("kappa_interface"),
             sigma_H=data.get("sigma_H"),
             sigma_L=data.get("sigma_L"),
-            kappa_gate=data.get("kappa_gate"),
+            kappa_compat=data.get("kappa_compat", data.get("kappa_gate")),
             hierarchy_gap=data.get("hierarchy_gap"),
             dominant_modality=data.get("dominant_modality"),
         )
@@ -108,7 +108,7 @@ def to_yrsn_dict(cert: "RSCTCertificate") -> Dict[str, Any]:
         "N": cert.N,
 
         # Compatibility
-        "kappa_gate": cert.kappa_gate,
+        "kappa_compat": cert.kappa_compat,
         "sigma": cert.sigma,
 
         # Extended 6D signal
@@ -152,7 +152,7 @@ def to_yrsn_dict(cert: "RSCTCertificate") -> Dict[str, Any]:
                 "kappa_L": cert.kappa_L,
                 "kappa_A": cert.kappa_A,
                 "kappa_interface": cert.kappa_interface,
-                "kappa_gate": min(kappas),
+                "kappa_compat": min(kappas),
                 "hierarchy_gap": abs(cert.kappa_H - cert.kappa_L) if cert.kappa_H and cert.kappa_L else None,
                 "dominant_modality": "H" if (cert.kappa_H or 0) > (cert.kappa_L or 0) else "L",
             }
@@ -203,7 +203,7 @@ def from_yrsn_dict(data: Dict[str, Any]) -> "RSCTCertificate":
         R=data.get("R", 0.0),
         S=s_value,
         N=data.get("N", 0.0),
-        kappa_gate=data.get("kappa_gate", data.get("kappa", 0.0)),
+        kappa_compat=data.get("kappa_compat", data.get("kappa_gate", data.get("kappa", 0.0))),
         sigma=data.get("sigma", 0.0),
 
         # Extended (check both flat and hierarchy)
@@ -257,7 +257,7 @@ def extract_hierarchy(cert: "RSCTCertificate") -> CertificateHierarchy:
 
     if hierarchy.is_multimodal:
         kappas = [k for k in [cert.kappa_H, cert.kappa_L, cert.kappa_A] if k is not None]
-        hierarchy.kappa_gate = min(kappas) if kappas else None
+        hierarchy.kappa_compat = min(kappas) if kappas else None
         if cert.kappa_H is not None and cert.kappa_L is not None:
             hierarchy.hierarchy_gap = round(abs(cert.kappa_H - cert.kappa_L), 4)
             hierarchy.dominant_modality = "H" if cert.kappa_H > cert.kappa_L else "L"
@@ -283,7 +283,7 @@ def validate_round_trip(cert: "RSCTCertificate") -> bool:
         cert.R == restored.R,
         cert.S == restored.S,
         cert.N == restored.N,
-        cert.kappa_gate == restored.kappa_gate,
+        cert.kappa_compat == restored.kappa_compat,
         cert.sigma == restored.sigma,
         cert.decision == restored.decision,
     ]

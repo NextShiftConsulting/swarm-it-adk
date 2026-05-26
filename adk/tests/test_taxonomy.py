@@ -29,7 +29,7 @@ class TestClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.7, S=0.2, N=0.1,
-            kappa_gate=0.8,
+            kappa_compat=0.8,
             sigma=0.2,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -45,7 +45,7 @@ class TestClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.2, S=0.2, N=0.6,  # N >= 0.5
-            kappa_gate=0.5,
+            kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
             gate_reached=1,
@@ -60,7 +60,7 @@ class TestClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.3, S=0.5, N=0.2,  # kappa > 0.7, R < 0.4
-            kappa_gate=0.75,
+            kappa_compat=0.75,
             sigma=0.3,
             decision=GateDecision.REPAIR,
             gate_reached=4,
@@ -75,7 +75,7 @@ class TestClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.5, S=0.3, N=0.2,
-            kappa_gate=0.6,
+            kappa_compat=0.6,
             sigma=0.8,  # sigma > 0.7
             decision=GateDecision.BLOCK,
             gate_reached=2,
@@ -89,7 +89,7 @@ class TestClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.2, S=0.2, N=0.6,
-            kappa_gate=0.5,
+            kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
             gate_reached=1,
@@ -108,7 +108,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.25,  # min of decomposition
+            kappa_compat=0.25,  # min of decomposition
             sigma=0.3,
             kappa_H=0.8,  # Healthy
             kappa_L=0.25,  # Critical - weakest link
@@ -127,7 +127,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.25,
+            kappa_compat=0.25,
             sigma=0.3,
             kappa_H=0.7,
             kappa_L=0.7,
@@ -146,7 +146,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.75,
@@ -166,7 +166,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.5,
+            kappa_compat=0.5,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.5,  # Degraded
@@ -186,7 +186,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.3,
+            kappa_compat=0.3,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.3,  # Critical
@@ -207,7 +207,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -222,7 +222,7 @@ class TestMultimodalClassification:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.4,
+            kappa_compat=0.4,
             sigma=0.3,
             kappa_H=0.9,
             kappa_L=0.4,  # Gap = 0.5 > 0.3
@@ -235,13 +235,13 @@ class TestMultimodalClassification:
         # Should flag high spread
         assert any("spread" in r.lower() or "sync" in r.lower() for r in diag["recommendations"])
 
-    def test_kappa_gate_enforcement(self):
-        """kappa_gate should be used for enforcement, not individual kappas."""
+    def test_kappa_compat_enforcement(self):
+        """kappa_compat should be used for enforcement, not individual kappas."""
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.25,  # This is what matters
+            kappa_compat=0.25,  # This is what matters
             sigma=0.3,
             kappa_H=0.8,  # Individual kappas healthy
             kappa_L=0.25,  # Except this one
@@ -249,7 +249,7 @@ class TestMultimodalClassification:
             gate_reached=4,
             reason="test",
         )
-        # Classify uses kappa_gate for mode detection
+        # Classify uses kappa_compat for mode detection
         result = classify_certificate(cert)
         # Should detect weakest-link pattern
         assert result.rsct_mode in (RSCTMode.WEAKEST_LINK_CASCADE, RSCTMode.CROSS_MODAL_DESYNC)
@@ -263,7 +263,7 @@ class TestAddErrorCodes:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.2, S=0.2, N=0.6,
-            kappa_gate=0.5,
+            kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
             gate_reached=1,
@@ -321,7 +321,7 @@ class TestBridge:
             id="test-123",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -339,7 +339,7 @@ class TestBridge:
             "R": 0.5,
             "S_sup": 0.3,  # yrsn naming
             "N": 0.2,
-            "kappa_gate": 0.6,
+            "kappa_compat": 0.6,
             "sigma": 0.4,
             "gate_decision": "EXECUTE",
             "gate_reached": 5,
@@ -354,7 +354,7 @@ class TestBridge:
             id="test-789",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -368,7 +368,7 @@ class TestBridge:
             id="test-multimodal",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.65,
+            kappa_compat=0.65,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.65,
@@ -390,7 +390,7 @@ class TestBridge:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.65,
+            kappa_compat=0.65,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.65,
@@ -400,6 +400,6 @@ class TestBridge:
         )
         hierarchy = extract_hierarchy(cert)
         assert hierarchy.is_multimodal is True
-        assert hierarchy.kappa_gate == 0.65
+        assert hierarchy.kappa_compat == 0.65
         assert hierarchy.hierarchy_gap == 0.15
         assert hierarchy.dominant_modality == "H"

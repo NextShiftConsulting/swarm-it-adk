@@ -63,9 +63,9 @@ if PROMETHEUS_AVAILABLE:
         buckets=[0.001, 0.005, 0.01, 0.025, 0.05, 0.1]
     )
 
-    KAPPA_GATE_DISTRIBUTION = Histogram(
-        'swarm_it_kappa_gate',
-        'Distribution of kappa_gate values',
+    KAPPA_COMPAT_DISTRIBUTION = Histogram(
+        'swarm_it_kappa_compat',
+        'Distribution of kappa_compat values',
         buckets=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     )
 
@@ -112,7 +112,7 @@ if PROMETHEUS_AVAILABLE:
         """Record certification metrics."""
         decision = cert.get('decision', 'UNKNOWN')
         CERTIFICATIONS_TOTAL.labels(decision=decision).inc()
-        KAPPA_GATE_DISTRIBUTION.observe(cert.get('kappa_gate', 0))
+        KAPPA_COMPAT_DISTRIBUTION.observe(cert.get('kappa_compat', cert.get('kappa_gate', 0)))
         NOISE_DISTRIBUTION.observe(cert.get('N', 0))
 
     def record_validation(validation_type: str, failed: bool):

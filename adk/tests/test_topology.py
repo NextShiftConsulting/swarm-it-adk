@@ -18,6 +18,13 @@ from swarm_it.topology.patterns import (
 )
 
 
+def test_no_kappa_gate_on_certificate():
+    """ADR-020 D7: kappa_gate must not exist; kappa_compat must exist."""
+    from swarm_it.client import RSCTCertificate
+    assert not hasattr(RSCTCertificate, 'kappa_gate'), "kappa_gate still on RSCTCertificate"
+    assert hasattr(RSCTCertificate, 'kappa_compat'), "kappa_compat missing from RSCTCertificate"
+
+
 class TestSolverType:
     """Tests for SolverType enum."""
 
@@ -40,18 +47,18 @@ class TestAgent:
         assert agent.id == "agent-1"
         assert agent.solver_type == SolverType.TRANSFORMER  # Default
 
-    def test_kappa_gate_default(self):
+    def test_kappa_compat_default(self):
         agent = Agent(id="a", name="A", role="r")
-        assert agent.kappa_gate == 0.5  # Default when no per-modality
+        assert agent.kappa_compat == 0.5  # Default when no per-modality
 
-    def test_kappa_gate_multimodal(self):
+    def test_kappa_compat_multimodal(self):
         agent = Agent(
             id="a", name="A", role="r",
             kappa_H=0.8,
             kappa_L=0.6,
             kappa_interface=0.7,
         )
-        assert agent.kappa_gate == 0.6  # min of all
+        assert agent.kappa_compat == 0.6  # min of all
 
     def test_is_multimodal(self):
         agent = Agent(
@@ -150,7 +157,7 @@ class TestSwarm:
             ],
         )
         assert swarm.weakest_agent.id == "a2"
-        assert swarm.kappa_gate_min == 0.3
+        assert swarm.kappa_compat_chain_min == 0.3
 
     def test_weakest_channel(self):
         swarm = Swarm(

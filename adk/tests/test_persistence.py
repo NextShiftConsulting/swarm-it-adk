@@ -25,7 +25,7 @@ def create_test_certificate(
         id=id,
         timestamp="2024-01-01T00:00:00Z",
         R=R, S=S, N=N,
-        kappa_gate=0.7,
+        kappa_compat=0.7,
         sigma=0.3,
         decision=GateDecision.EXECUTE,
         gate_reached=5,
@@ -170,7 +170,7 @@ class TestAuditEntry:
         entry = AuditEntry.from_certificate(cert)
 
         assert entry.certificate_id == cert.id
-        assert entry.kappa_gate == cert.kappa_gate
+        assert entry.kappa_compat == cert.kappa_compat
         assert entry.outcome == "EXECUTE"
 
     def test_to_sr117_format(self):

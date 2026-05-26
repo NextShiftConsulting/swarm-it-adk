@@ -37,7 +37,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -50,7 +50,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.2,  # Sum > 1
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -63,13 +63,13 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
             reason="test",
         )
-        # margin = min(R, kappa_gate, 1-N) = min(0.6, 0.7, 0.9) = 0.6
+        # margin = min(R, kappa_compat, 1-N) = min(0.6, 0.7, 0.9) = 0.6
         assert cert.margin == 0.6
 
     def test_has_extended_signals_false(self):
@@ -77,7 +77,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -90,7 +90,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             alpha=0.85,
             omega=0.9,
@@ -105,7 +105,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             kappa_H=0.8,
             kappa_L=0.7,
@@ -120,7 +120,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.2, S=0.2, N=0.6,  # N >= 0.5
-            kappa_gate=0.5,
+            kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
             gate_reached=1,
@@ -133,7 +133,7 @@ class TestRSCTCertificate:
             id="test",
             timestamp="2024-01-01T00:00:00Z",
             R=0.3, S=0.5, N=0.2,  # kappa > 0.7, R < 0.4
-            kappa_gate=0.75,
+            kappa_compat=0.75,
             sigma=0.3,
             decision=GateDecision.REPAIR,
             gate_reached=4,
@@ -146,7 +146,7 @@ class TestRSCTCertificate:
             id="test-123",
             timestamp="2024-01-01T00:00:00Z",
             R=0.6, S=0.3, N=0.1,
-            kappa_gate=0.7,
+            kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
             gate_reached=5,
@@ -165,7 +165,7 @@ class TestRSCTCertificate:
             "R": 0.5,
             "S": 0.3,
             "N": 0.2,
-            "kappa_gate": 0.6,
+            "kappa_compat": 0.6,
             "sigma": 0.4,
             "gate_decision": "EXECUTE",
             "gate_reached": 5,

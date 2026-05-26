@@ -324,7 +324,7 @@ class FluentCertifier:
                 if cert.decision.value == "EXECUTE":
                     collector.record_success(cert.decision.value, self._domain)
                     collector.record_quality_metrics(
-                        cert.kappa_gate, cert.R, cert.S, cert.N, self._domain
+                        cert.kappa_compat, cert.R, cert.S, cert.N, self._domain
                     )
                 else:
                     collector.record_failure("gate_failed", self._domain)
@@ -341,7 +341,7 @@ class FluentCertifier:
                     user_id=self._user_id,
                     request_id=self._request_id,
                     decision=cert.decision.value,
-                    kappa=cert.kappa_gate,
+                    kappa=cert.kappa_compat,
                     R=cert.R,
                     S=cert.S,
                     N=cert.N

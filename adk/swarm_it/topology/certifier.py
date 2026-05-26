@@ -40,7 +40,7 @@ class SwarmCertificate:
 
     # Swarm-level metrics
     consensus: float  # Phasor coherence
-    kappa_gate_min: float  # Weakest agent
+    kappa_compat_chain_min: float  # Weakest agent in chain
     kappa_interface_min: Optional[float]  # Weakest channel
     sigma_max: float  # Most turbulent agent
 
@@ -67,7 +67,7 @@ class SwarmCertificate:
         """Safety margin for swarm."""
         return min(
             self.R,
-            self.kappa_gate_min,
+            self.kappa_compat_chain_min,
             self.consensus,
             1.0 - self.N,
         )
@@ -84,7 +84,7 @@ class SwarmCertificate:
             },
             "metrics": {
                 "consensus": self.consensus,
-                "kappa_gate_min": self.kappa_gate_min,
+                "kappa_compat_chain_min": self.kappa_compat_chain_min,
                 "kappa_interface_min": self.kappa_interface_min,
                 "sigma_max": self.sigma_max,
             },
@@ -168,7 +168,7 @@ class SwarmCertifier:
 
         # Get swarm metrics
         consensus = swarm.consensus
-        kappa_min = swarm.kappa_gate_min
+        kappa_min = swarm.kappa_compat_chain_min
         interface_min = swarm.kappa_interface_min
 
         # Determine gate decision
@@ -185,7 +185,7 @@ class SwarmCertifier:
             S=S,
             N=N,
             consensus=consensus,
-            kappa_gate_min=kappa_min,
+            kappa_compat_chain_min=kappa_min,
             kappa_interface_min=interface_min,
             sigma_max=sigma_max,
             decision=decision,
@@ -207,7 +207,7 @@ class SwarmCertifier:
 
         for agent in swarm.agents:
             # Create certificate from agent health
-            kappa = agent.kappa_gate
+            kappa = agent.kappa_compat
             R = 0.6 + 0.3 * kappa  # Estimate R from kappa
             N = 0.1 + 0.2 * (1 - kappa)  # Estimate N inverse to kappa
             S = 1.0 - R - N
@@ -219,7 +219,7 @@ class SwarmCertifier:
             # Delegate gate evaluation to controlplane
             alpha = R / (R + N) if (R + N) > 0 else 0.0
             cert_estimate = to_certificate_estimate(
-                R=R, S=S, N=N, kappa_gate=kappa, sigma=0.3, alpha=alpha,
+                R=R, S=S, N=N, kappa_compat=kappa, sigma=0.3, alpha=alpha,
                 kappa_H=agent.kappa_H, kappa_L=agent.kappa_L,
                 kappa_interface=agent.kappa_interface,
             )
@@ -235,7 +235,7 @@ class SwarmCertifier:
                 R=R,
                 S=S,
                 N=N,
-                kappa_gate=kappa,
+                kappa_compat=kappa,
                 sigma=0.3,
                 kappa_H=agent.kappa_H,
                 kappa_L=agent.kappa_L,
@@ -262,7 +262,7 @@ class SwarmCertifier:
             R=1.0 - N,  # Approximate R from aggregate
             S=0.0,
             N=N,
-            kappa_gate=kappa_min,
+            kappa_compat=kappa_min,  # kappa_compat_chain_min passed as kappa_compat to controlplane
             sigma=sigma_max,
             alpha=alpha,
             kappa_L=interface_min,

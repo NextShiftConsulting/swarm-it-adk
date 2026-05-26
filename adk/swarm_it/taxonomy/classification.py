@@ -164,7 +164,7 @@ def _classify_mode(cert: "RSCTCertificate") -> RSCTMode:
         return RSCTMode.TRAJECTORY_DIVERGENCE
 
     # Group 3: Semantic
-    if cert.kappa_gate > 0.7 and cert.R < 0.4:
+    if cert.kappa_compat > 0.7 and cert.R < 0.4:
         return RSCTMode.FLUENT_HALLUCINATION
     if cert.alpha is not None and cert.alpha < 0.3:
         return RSCTMode.PHASOR_CONFLICT
@@ -243,7 +243,7 @@ def _generate_error_codes(cert: "RSCTCertificate", mode: RSCTMode) -> List[str]:
     if cert.sigma > 0.7:
         codes.append("V2.2.1")  # Trajectory Divergence
 
-    if cert.kappa_gate > 0.7 and cert.R < 0.4:
+    if cert.kappa_compat > 0.7 and cert.R < 0.4:
         codes.append("V3.3.1")  # Fluent Hallucination
 
     if not cert.simplex_valid:
@@ -278,7 +278,7 @@ def _generate_diagnostics(cert: "RSCTCertificate", mode: RSCTMode) -> Dict[str, 
     if mode == RSCTMode.NOISE_SATURATION:
         diagnostics["trigger"] = f"N={cert.N:.3f} >= 0.5"
     elif mode == RSCTMode.FLUENT_HALLUCINATION:
-        diagnostics["trigger"] = f"kappa={cert.kappa_gate:.3f} > 0.7, R={cert.R:.3f} < 0.4"
+        diagnostics["trigger"] = f"kappa={cert.kappa_compat:.3f} > 0.7, R={cert.R:.3f} < 0.4"
     elif mode == RSCTMode.TRAJECTORY_DIVERGENCE:
         diagnostics["trigger"] = f"sigma={cert.sigma:.3f} > 0.7"
 
@@ -295,7 +295,7 @@ def _compute_confidence(cert: "RSCTCertificate", mode: RSCTMode) -> float:
         return min(1.0, cert.N / 0.5)  # How far above threshold
 
     if mode == RSCTMode.FLUENT_HALLUCINATION:
-        return (cert.kappa_gate - 0.7) * (0.4 - cert.R) * 4  # Product of exceedances
+        return (cert.kappa_compat - 0.7) * (0.4 - cert.R) * 4  # Product of exceedances
 
     return 0.7  # Default moderate confidence
 

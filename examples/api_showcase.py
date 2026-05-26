@@ -43,7 +43,7 @@ cert1 = certify("Calculate the fibonacci sequence")
 print(f"certify() returns: {type(cert1).__name__}")
 print(f"  Decision: {cert1.decision.value}")
 print(f"  Allowed: {cert1.decision.allowed}")
-print(f"  Kappa: {cert1.kappa_gate:.3f}")
+print(f"  Kappa: {cert1.kappa_compat:.3f}")
 print()
 
 # Method B: Module function
@@ -51,7 +51,7 @@ cert2 = certify_local("Analyze market trends")
 print(f"certify_local() returns: {type(cert2).__name__}")
 print(f"  Decision: {cert2.decision.value}")
 print(f"  Allowed: {cert2.decision.allowed}")
-print(f"  Kappa: {cert2.kappa_gate:.3f}")
+print(f"  Kappa: {cert2.kappa_compat:.3f}")
 print()
 
 # Method C: Class-based
@@ -60,7 +60,7 @@ cert3 = engine.certify("Execute stock trade")
 print(f"LocalEngine.certify() returns: {type(cert3).__name__}")
 print(f"  Decision: {cert3.decision.value}")
 print(f"  Allowed: {cert3.decision.allowed}")
-print(f"  Kappa: {cert3.kappa_gate:.3f}")
+print(f"  Kappa: {cert3.kappa_compat:.3f}")
 print()
 
 # ============================================================================
@@ -98,7 +98,7 @@ prompts = [
 certs = certify_batch(prompts)
 print(f"certify_batch() returns: List[{type(certs[0]).__name__}]")
 for i, cert in enumerate(certs, 1):
-    print(f"  [{i}] {cert.decision.value:12} kappa={cert.kappa_gate:.3f}")
+    print(f"  [{i}] {cert.decision.value:12} kappa={cert.kappa_compat:.3f}")
 print()
 
 # ============================================================================
@@ -129,7 +129,7 @@ from swarm_it import to_yrsn_dict
 cert5 = certify("Test prompt for yrsn compatibility")
 print("RSCTCertificate preserves full structure:")
 print(f"  Core: R={cert5.R:.3f}, S={cert5.S:.3f}, N={cert5.N:.3f}")
-print(f"  Kappa: {cert5.kappa_gate:.3f}")
+print(f"  Kappa: {cert5.kappa_compat:.3f}")
 print(f"  Extended: alpha={cert5.alpha}, omega={cert5.omega}")
 
 # Can convert to yrsn dict when needed
@@ -168,7 +168,7 @@ print("-" * 40)
 def process_certification(cert: RSCTCertificate) -> bool:
     """Type-safe function accepting RSCTCertificate."""
     if cert.decision.allowed:
-        print(f"  [OK] Executing with kappa={cert.kappa_gate:.3f}")
+        print(f"  [OK] Executing with kappa={cert.kappa_compat:.3f}")
         return True
     else:
         print(f"  [BLOCKED] {cert.reason}")

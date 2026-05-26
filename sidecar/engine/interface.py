@@ -67,7 +67,7 @@ class CertifyResponse:
     N: float
 
     # Gate scores (computed by yrsn)
-    kappa_gate: float
+    kappa_compat: float
     sigma: float
 
     # Decision (made by yrsn)

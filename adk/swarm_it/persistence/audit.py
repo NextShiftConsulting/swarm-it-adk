@@ -22,11 +22,11 @@ class RiskThresholds:
     certificates are classified in SR 11-7 compliance reports.
     """
 
-    # CRITICAL if N >= this or kappa_gate < kappa_critical
+    # CRITICAL if N >= this or kappa_compat < kappa_critical
     N_critical: float = 0.5
     kappa_critical: float = 0.3
 
-    # HIGH if N >= this or sigma > sigma_high or kappa_gate < kappa_high
+    # HIGH if N >= this or sigma > sigma_high or kappa_compat < kappa_high
     N_high: float = 0.3
     sigma_high: float = 0.7
     kappa_high: float = 0.4
@@ -38,7 +38,7 @@ class RiskThresholds:
     # Flag thresholds (for risk_indicators section)
     noise_flag: float = 0.3
     stability_flag: float = 0.5
-    compatibility_flag: float = 0.4
+    compatibility_flag: float = 0.4  # applied against kappa_compat
 
 
 @dataclass
@@ -54,11 +54,11 @@ class AuditEntry:
     certificate_id: str
     timestamp: str
 
-    # RSCT tuple (α, ω, α_ω, κ_gate, σ, gate_reached, outcome)
+    # RSCT tuple (α, ω, α_ω, κ_compat, σ, gate_reached, outcome)
     alpha: float  # Purity: R/(R+N)
     omega: Optional[float]  # OOD score
     alpha_omega: Optional[float]  # Combined quality
-    kappa_gate: float
+    kappa_compat: float
     sigma: float
     gate_reached: int
     outcome: str  # Decision value
@@ -81,7 +81,7 @@ class AuditEntry:
                 "alpha": self.alpha,
                 "omega": self.omega,
                 "alpha_omega": self.alpha_omega,
-                "kappa_gate": self.kappa_gate,
+                "kappa_compat": self.kappa_compat,
                 "sigma": self.sigma,
                 "gate_reached": self.gate_reached,
                 "outcome": self.outcome,
@@ -102,7 +102,7 @@ class AuditEntry:
             "quality_metrics": {
                 "purity": self.alpha,
                 "ood_score": self.omega,
-                "compatibility": self.kappa_gate,
+                "compatibility": self.kappa_compat,
                 "stability": 1.0 - self.sigma,
             },
             "gate_outcome": {
@@ -140,7 +140,7 @@ class AuditEntry:
             alpha=alpha,
             omega=cert.omega,
             alpha_omega=alpha_omega,
-            kappa_gate=cert.kappa_gate,
+            kappa_compat=cert.kappa_compat,
             sigma=cert.sigma,
             gate_reached=cert.gate_reached,
             outcome=cert.decision.value,
@@ -192,7 +192,7 @@ class AuditLog:
     def _write_csv_header(self):
         """Write CSV header."""
         with open(self.output_path, "w") as f:
-            f.write("certificate_id,timestamp,alpha,omega,kappa_gate,sigma,gate_reached,outcome,policy\n")
+            f.write("certificate_id,timestamp,alpha,omega,kappa_compat,sigma,gate_reached,outcome,policy\n")
 
     def log(
         self,
@@ -235,7 +235,7 @@ class AuditLog:
                     f.write(
                         f"{entry.certificate_id},{entry.timestamp},"
                         f"{entry.alpha:.4f},{entry.omega or ''},"
-                        f"{entry.kappa_gate:.4f},{entry.sigma:.4f},"
+                        f"{entry.kappa_compat:.4f},{entry.sigma:.4f},"
                         f"{entry.gate_reached},{entry.outcome},{entry.policy}\n"
                     )
 
@@ -305,7 +305,7 @@ class SR117AuditFormatter:
                 "support_score": cert.S,
                 "noise_score": cert.N,
                 "purity_ratio": entry.alpha,
-                "compatibility_score": cert.kappa_gate,
+                "compatibility_score": cert.kappa_compat,
                 "stability_score": 1.0 - cert.sigma,
             },
 
@@ -319,7 +319,7 @@ class SR117AuditFormatter:
             "risk_indicators": {
                 "noise_flag": cert.N >= thr.noise_flag,
                 "stability_flag": cert.sigma > thr.stability_flag,
-                "compatibility_flag": cert.kappa_gate < thr.compatibility_flag,
+                "compatibility_flag": cert.kappa_compat < thr.compatibility_flag,
                 "overall_risk": _compute_risk_level(cert, thr),
             },
 
@@ -354,7 +354,7 @@ class SR117AuditFormatter:
         rejected = total - allowed
 
         avg_R = sum(c.R for c in certificates) / total
-        avg_kappa = sum(c.kappa_gate for c in certificates) / total
+        avg_kappa = sum(c.kappa_compat for c in certificates) / total
         avg_sigma = sum(c.sigma for c in certificates) / total
 
         # Risk distribution
@@ -409,9 +409,9 @@ def _compute_risk_level(
         cert: Certificate to classify.
         thresholds: Risk thresholds (defaults to RiskThresholds()).
     """
-    if cert.N >= thresholds.N_critical or cert.kappa_gate < thresholds.kappa_critical:
+    if cert.N >= thresholds.N_critical or cert.kappa_compat < thresholds.kappa_critical:
         return "CRITICAL"
-    if cert.N >= thresholds.N_high or cert.sigma > thresholds.sigma_high or cert.kappa_gate < thresholds.kappa_high:
+    if cert.N >= thresholds.N_high or cert.sigma > thresholds.sigma_high or cert.kappa_compat < thresholds.kappa_high:
         return "HIGH"
     if cert.N >= thresholds.N_medium or cert.sigma > thresholds.sigma_medium:
         return "MEDIUM"

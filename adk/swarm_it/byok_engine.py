@@ -210,7 +210,7 @@ class BYOKEngine:
         from .local.engine import _gate_identifier_to_int
 
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = self._gatekeeper.evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)

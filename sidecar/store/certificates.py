@@ -108,7 +108,7 @@ class SQLiteCertificateStore(CertificateStore):
                     timestamp TEXT NOT NULL,
                     data TEXT NOT NULL,
                     decision TEXT,
-                    kappa_gate REAL,
+                    kappa_compat REAL,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
@@ -127,7 +127,7 @@ class SQLiteCertificateStore(CertificateStore):
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                INSERT OR REPLACE INTO certificates (id, timestamp, data, decision, kappa_gate)
+                INSERT OR REPLACE INTO certificates (id, timestamp, data, decision, kappa_compat)
                 VALUES (?, ?, ?, ?, ?)
                 """,
                 (
@@ -135,7 +135,7 @@ class SQLiteCertificateStore(CertificateStore):
                     cert.get("timestamp"),
                     json.dumps(cert),
                     cert.get("decision"),
-                    cert.get("kappa_gate"),
+                    cert.get("kappa_compat", cert.get("kappa_gate")),
                 ),
             )
 

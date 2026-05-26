@@ -230,7 +230,7 @@ def test_h2_gate2_consensus() -> HypothesisResult:
                     continue
 
                 # Gate 2: kappa < threshold → BLOCK
-                expected_block = cert.kappa_gate < kappa_threshold
+                expected_block = cert.kappa_compat < kappa_threshold
                 actual_block = cert.decision == GateDecision.BLOCK
                 is_correct = expected_block == actual_block
 
@@ -240,7 +240,7 @@ def test_h2_gate2_consensus() -> HypothesisResult:
 
                 test_cases.append({
                     "kappa_threshold": kappa_threshold,
-                    "kappa_gate": cert.kappa_gate,
+                    "kappa_compat": cert.kappa_compat,
                     "expected_block": expected_block,
                     "actual_block": actual_block,
                     "decision": cert.decision.value,
@@ -493,7 +493,7 @@ def test_h5_gate4_grounding() -> HypothesisResult:
 
     for kappa_L in kappa_L_values:
         # Create a simple swarm with one agent
-        # Note: kappa_gate is computed as min(kappa_H, kappa_L, kappa_interface)
+        # Note: kappa_compat is computed as min(kappa_H, kappa_L, kappa_interface)
         agent = Agent(
             id=f"test-agent-{kappa_L}",
             name=f"TestAgent-{kappa_L:.1f}",
@@ -681,20 +681,20 @@ def test_h7_api_consistency() -> HypothesisResult:
 
         # Entry point 1: certify()
         cert1 = certify(prompt)
-        results["certify"] = {"R": cert1.R, "S": cert1.S, "N": cert1.N, "kappa": cert1.kappa_gate}
+        results["certify"] = {"R": cert1.R, "S": cert1.S, "N": cert1.N, "kappa": cert1.kappa_compat}
 
         # Entry point 2: certify_local()
         cert2 = certify_local(prompt)
-        results["certify_local"] = {"R": cert2.R, "S": cert2.S, "N": cert2.N, "kappa": cert2.kappa_gate}
+        results["certify_local"] = {"R": cert2.R, "S": cert2.S, "N": cert2.N, "kappa": cert2.kappa_compat}
 
         # Entry point 3: LocalEngine
         engine = LocalEngine()
         cert3 = engine.certify(prompt)
-        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S, "N": cert3.N, "kappa": cert3.kappa_gate}
+        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S, "N": cert3.N, "kappa": cert3.kappa_compat}
 
         # Entry point 4: FluentCertifier
         cert4 = FluentCertifier().with_prompt(prompt).certify()
-        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S, "N": cert4.N, "kappa": cert4.kappa_gate}
+        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S, "N": cert4.N, "kappa": cert4.kappa_compat}
 
         # Calculate variance
         R_values = [r["R"] for r in results.values()]
@@ -814,14 +814,14 @@ def test_h8_multiagent_handoff() -> HypothesisResult:
             test_cases.append({
                 "chain_length": chain_length,
                 "kappa_interface_min": kappa_interface,
-                "kappa_gate_min": cert.kappa_gate_min,
+                "kappa_compat_chain_min": cert.kappa_compat_chain_min,
                 "consensus": cert.consensus,
                 "decision": cert.decision.value,
                 "successful": is_successful,
             })
 
             print(f"    κ_interface_min={kappa_interface:.3f} | "
-                  f"κ_gate_min={cert.kappa_gate_min:.3f} | "
+                  f"κ_compat_chain_min={cert.kappa_compat_chain_min:.3f} | "
                   f"{cert.decision.value} | {'✓' if is_successful else '✗'}")
 
     success_rate = successful_handoffs / total_handoffs if total_handoffs > 0 else 0.0

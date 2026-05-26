@@ -108,19 +108,27 @@ def to_measurement_estimate(
     R: float,
     S: float,
     N: float,
-    kappa_gate: float,
+    kappa_compat: float,
     sigma: float,
     alpha: float | None = None,
     kappa_H: float | None = None,
     kappa_L: float | None = None,
     kappa_interface: float | None = None,
     coherence: float | None = None,
+    # Legacy alias accepted for callers that have not yet migrated
+    kappa_gate: float | None = None,
 ) -> CPGatekeeperInput:
     """Build a CPGatekeeperInput from ADK certificate fields.
 
     Bridges the gap between ADK's RSCTCertificate (rich, mutable) and
     controlplane's CPGatekeeperInput (minimal, for gating).
+
+    kappa_compat is the ADK name (ADR-020 D7). The controlplane still uses
+    the field name kappa_gate internally — that is the controlplane's concern.
     """
+    # Accept legacy kappa_gate keyword for callers not yet migrated
+    effective_kappa = kappa_gate if kappa_gate is not None else kappa_compat
+
     if alpha is None:
         alpha = R / (R + N) if (R + N) > 0 else 0.0
 
@@ -141,7 +149,7 @@ def to_measurement_estimate(
 
     return CPGatekeeperInput(
         alpha=alpha,
-        kappa_gate=kappa_gate,
+        kappa_gate=effective_kappa,
         sigma=sigma,
         source_mode="direct",
         evidence=evidence,

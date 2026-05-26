@@ -204,7 +204,7 @@ def certify_with_thresholds(text: str, domain: str, thresholds: Dict,
             "R": cert.R,
             "S": cert.S,
             "N": cert.N,
-            "kappa": cert.kappa_gate,
+            "kappa": cert.kappa_compat,
             "decision": cert.decision.value,
             "gate": cert.gate_reached,
         }

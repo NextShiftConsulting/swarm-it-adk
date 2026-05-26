@@ -324,7 +324,7 @@ class QualityGateTool(Tool):
         sigma = 0.3
 
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         result = self._gatekeeper.evaluate(cert_estimate)
 

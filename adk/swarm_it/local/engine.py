@@ -32,7 +32,7 @@ class RSCTCertificate:
     when received from a full YRSN backend, None otherwise.
 
     Hierarchy:
-        - Core simplex (R, S, N) + kappa_gate + sigma: REQUIRED
+        - Core simplex (R, S, N) + kappa_compat + sigma: REQUIRED
         - Extended signals (alpha, omega, tau, kappa decomposition): OPTIONAL
         - Stability metrics (admissibility, quality_envelope, lyapunov): OPTIONAL
         - Classification (rsct_mode, degradation_type, error_codes): COMPUTED
@@ -49,7 +49,7 @@ class RSCTCertificate:
     N: float  # Noise [0, 1]
 
     # === REQUIRED: Compatibility ===
-    kappa_gate: float  # Enforced compatibility: min(kappa_H, kappa_L, ...)
+    kappa_compat: float  # Enforced compatibility: R*(1-N) unimodal or min(kappa_H, kappa_L, ...) multimodal
     sigma: float  # Turbulence [0, 1]
 
     # === REQUIRED: Gate Result ===
@@ -92,7 +92,7 @@ class RSCTCertificate:
     @property
     def margin(self) -> float:
         """Safety margin: distance from rejection thresholds."""
-        return min(self.R, self.kappa_gate, 1.0 - self.N)
+        return min(self.R, self.kappa_compat, 1.0 - self.N)
 
     @property
     def simplex_valid(self) -> bool:
@@ -155,7 +155,7 @@ class RSCTCertificate:
             return "2.1"  # Trajectory Divergence
 
         # Group 3: Semantic
-        if self.kappa_gate > 0.7 and self.R < 0.4:
+        if self.kappa_compat > 0.7 and self.R < 0.4:
             return "3.1"  # Fluent Hallucination
         if self.alpha is not None and self.alpha < 0.3:
             return "3.2"  # Phasor Conflict
@@ -185,7 +185,7 @@ class RSCTCertificate:
             "R": self.R,
             "S": self.S,
             "N": self.N,
-            "kappa_gate": self.kappa_gate,
+            "kappa_compat": self.kappa_compat,
             "sigma": self.sigma,
 
             # Gate
@@ -270,7 +270,7 @@ class RSCTCertificate:
             R=data.get("R", 0.0),
             S=s_value,
             N=data.get("N", 0.0),
-            kappa_gate=data.get("kappa_gate", data.get("kappa", 0.0)),
+            kappa_compat=data.get("kappa_compat", data.get("kappa_gate", data.get("kappa", 0.0))),
             sigma=data.get("sigma", 0.0),
 
             # Extended (optional, check both flat and nested)
@@ -372,7 +372,7 @@ class LocalEngine:
 
         # Delegate gate evaluation to controlplane gatekeeper
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_gate=kappa, sigma=sigma, alpha=alpha,
+            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = self._gatekeeper.evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)
@@ -384,7 +384,7 @@ class LocalEngine:
             R=R,
             S=S,
             N=N,
-            kappa_gate=kappa,
+            kappa_compat=kappa,
             sigma=sigma,
             alpha=alpha,
             decision=decision,
