@@ -76,7 +76,7 @@ class CertificateHierarchy:
             kappa_interface=data.get("kappa_interface"),
             sigma_H=data.get("sigma_H"),
             sigma_L=data.get("sigma_L"),
-            kappa_compat=data.get("kappa_compat", data.get("kappa_gate")),
+            kappa_compat=data.get("kappa_compat"),
             hierarchy_gap=data.get("hierarchy_gap"),
             dominant_modality=data.get("dominant_modality"),
         )
@@ -203,7 +203,7 @@ def from_yrsn_dict(data: Dict[str, Any]) -> "RSCTCertificate":
         R=data.get("R", 0.0),
         S=s_value,
         N=data.get("N", 0.0),
-        kappa_compat=data.get("kappa_compat", data.get("kappa_gate", data.get("kappa", 0.0))),
+        kappa_compat=data.get("kappa_compat", data.get("kappa", 0.0)),
         sigma=data.get("sigma", 0.0),
 
         # Extended (check both flat and hierarchy)

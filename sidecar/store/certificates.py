@@ -135,7 +135,7 @@ class SQLiteCertificateStore(CertificateStore):
                     cert.get("timestamp"),
                     json.dumps(cert),
                     cert.get("decision"),
-                    cert.get("kappa_compat", cert.get("kappa_gate")),
+                    cert.get("kappa_compat"),
                 ),
             )
 

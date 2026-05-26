@@ -108,7 +108,7 @@ class SwarmCertifier:
         msg.R = cert["R"]
         msg.S = cert["S"]
         msg.N = cert["N"]
-        msg.kappa = cert.get("kappa", cert.get("kappa_gate", 0))
+        msg.kappa = cert.get("kappa", cert.get("kappa_compat", 0))
         msg.decision = cert["decision"]
         msg.allowed = cert["allowed"]
 

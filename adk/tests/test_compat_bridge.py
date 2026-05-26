@@ -107,7 +107,7 @@ class TestToCPGatekeeperInput:
         est = to_certificate_estimate(R=0.6, S=0.3, N=0.1, kappa_compat=0.7, sigma=0.3, alpha=0.85)
         assert isinstance(est, CPGatekeeperInput)
         assert est.alpha == 0.85
-        assert est.kappa_gate == 0.7
+        assert est.kappa_compat == 0.7
         assert est.sigma == 0.3
 
     def test_alpha_auto_computed(self):
@@ -120,7 +120,7 @@ class TestToCPGatekeeperInput:
         assert est.alpha == 0.0
 
     def test_extended_kappa_fields(self):
-        # CPGatekeeperInput.kappa_gate receives the ADK kappa_compat value; should equal min(kappa_H, kappa_L, kappa_interface) when multimodal
+        # CPGatekeeperInput.kappa_compat receives the ADK kappa_compat value; should equal min(kappa_H, kappa_L, kappa_interface) when multimodal
         est = to_certificate_estimate(
             R=0.6, S=0.3, N=0.1,
             kappa_compat=0.6, sigma=0.3, alpha=0.85,

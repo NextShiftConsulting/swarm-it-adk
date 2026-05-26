@@ -112,7 +112,7 @@ if PROMETHEUS_AVAILABLE:
         """Record certification metrics."""
         decision = cert.get('decision', 'UNKNOWN')
         CERTIFICATIONS_TOTAL.labels(decision=decision).inc()
-        KAPPA_COMPAT_DISTRIBUTION.observe(cert.get('kappa_compat', cert.get('kappa_gate', 0)))
+        KAPPA_COMPAT_DISTRIBUTION.observe(cert.get('kappa_compat', 0))
         NOISE_DISTRIBUTION.observe(cert.get('N', 0))
 
     def record_validation(validation_type: str, failed: bool):
