@@ -80,12 +80,12 @@ class LocalYRSNAdapter(YRSNAdapter):
         N = float(rsn_output['N'][0])
 
         # Step 3: Compute derived metrics (yrsn domain logic)
-        kappa = self._compute_kappa(R, S, N)
+        kappa_compat = self._compute_kappa(R, S, N)  # R*(1-N) — ADR-020 D7
         sigma = self._compute_sigma(R, S, N)
 
         # Step 4: Gate decision (yrsn domain logic)
         decision, gate_reached, reason = self._gate_decision(
-            R, S, N, kappa, sigma, request.pre_screen
+            R, S, N, kappa_compat, sigma, request.pre_screen
         )
 
         # Step 5: Multimodal check
@@ -95,7 +95,8 @@ class LocalYRSNAdapter(YRSNAdapter):
         if is_multimodal:
             kappa_H, kappa_L, kappa_interface = self._compute_multimodal_kappas(R, S, N)
             weak_modality = self._identify_weak_modality(kappa_H, kappa_L, kappa_interface)
-            kappa = min(kappa_H, kappa_L, kappa_interface)
+            kappa_modal_min = min(kappa_H, kappa_L, kappa_interface)  # ADR-020 D7
+            kappa_compat = kappa_modal_min
 
         # Build response
         cert_id = self._generate_id(request.prompt)
@@ -107,7 +108,7 @@ class LocalYRSNAdapter(YRSNAdapter):
             R=round(R, 4),
             S=round(S, 4),
             N=round(N, 4),
-            kappa_compat=round(kappa, 4),
+            kappa_compat=round(kappa_compat, 4),
             sigma=round(sigma, 4),
             decision=decision,
             gate_reached=gate_reached,

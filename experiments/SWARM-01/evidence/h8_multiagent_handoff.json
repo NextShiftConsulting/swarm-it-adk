@@ -5,7 +5,7 @@
     {
       "chain_length": 2,
       "kappa_interface_min": 0.608,
-      "kappa_gate_min": 0.5760000000000001,
+      "kappa_compat_min": 0.5760000000000001,
       "consensus": 1.0,
       "decision": "EXECUTE",
       "successful": true
@@ -13,7 +13,7 @@
     {
       "chain_length": 3,
       "kappa_interface_min": 0.6269999999999999,
-      "kappa_gate_min": 0.594,
+      "kappa_compat_min": 0.594,
       "consensus": 1.0,
       "decision": "EXECUTE",
       "successful": true
@@ -21,7 +21,7 @@
     {
       "chain_length": 4,
       "kappa_interface_min": 0.6459999999999999,
-      "kappa_gate_min": 0.612,
+      "kappa_compat_min": 0.612,
       "consensus": 1.0,
       "decision": "EXECUTE",
       "successful": true
@@ -29,7 +29,7 @@
     {
       "chain_length": 5,
       "kappa_interface_min": 0.6649999999999999,
-      "kappa_gate_min": 0.63,
+      "kappa_compat_min": 0.63,
       "consensus": 1.0,
       "decision": "EXECUTE",
       "successful": true

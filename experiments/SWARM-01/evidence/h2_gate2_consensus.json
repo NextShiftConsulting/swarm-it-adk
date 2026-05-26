@@ -4,7 +4,7 @@
   "test_cases": [
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.591960552627009,
+      "kappa_compat": 0.591960552627009,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -12,7 +12,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.6063481060338649,
+      "kappa_compat": 0.6063481060338649,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -20,7 +20,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.5799410638129744,
+      "kappa_compat": 0.5799410638129744,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -28,7 +28,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.504699522658355,
+      "kappa_compat": 0.504699522658355,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -36,7 +36,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.6167639579680804,
+      "kappa_compat": 0.6167639579680804,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -44,7 +44,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.6931443084014229,
+      "kappa_compat": 0.6931443084014229,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -52,7 +52,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.6640578261968395,
+      "kappa_compat": 0.6640578261968395,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -60,7 +60,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.5960860659030995,
+      "kappa_compat": 0.5960860659030995,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -68,7 +68,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.668175775985012,
+      "kappa_compat": 0.668175775985012,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -76,7 +76,7 @@
     },
     {
       "kappa_threshold": 0.3,
-      "kappa_gate": 0.6129938809706418,
+      "kappa_compat": 0.6129938809706418,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -84,7 +84,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.591960552627009,
+      "kappa_compat": 0.591960552627009,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -92,7 +92,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.6063481060338649,
+      "kappa_compat": 0.6063481060338649,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -100,7 +100,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.5799410638129744,
+      "kappa_compat": 0.5799410638129744,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -108,7 +108,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.504699522658355,
+      "kappa_compat": 0.504699522658355,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -116,7 +116,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.6167639579680804,
+      "kappa_compat": 0.6167639579680804,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -124,7 +124,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.6931443084014229,
+      "kappa_compat": 0.6931443084014229,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -132,7 +132,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.6640578261968395,
+      "kappa_compat": 0.6640578261968395,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -140,7 +140,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.5960860659030995,
+      "kappa_compat": 0.5960860659030995,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -148,7 +148,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.668175775985012,
+      "kappa_compat": 0.668175775985012,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -156,7 +156,7 @@
     },
     {
       "kappa_threshold": 0.4,
-      "kappa_gate": 0.6129938809706418,
+      "kappa_compat": 0.6129938809706418,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -164,7 +164,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.591960552627009,
+      "kappa_compat": 0.591960552627009,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -172,7 +172,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.6063481060338649,
+      "kappa_compat": 0.6063481060338649,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -180,7 +180,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.5799410638129744,
+      "kappa_compat": 0.5799410638129744,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -188,7 +188,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.504699522658355,
+      "kappa_compat": 0.504699522658355,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -196,7 +196,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.6167639579680804,
+      "kappa_compat": 0.6167639579680804,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -204,7 +204,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.6931443084014229,
+      "kappa_compat": 0.6931443084014229,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -212,7 +212,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.6640578261968395,
+      "kappa_compat": 0.6640578261968395,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -220,7 +220,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.5960860659030995,
+      "kappa_compat": 0.5960860659030995,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -228,7 +228,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.668175775985012,
+      "kappa_compat": 0.668175775985012,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -236,7 +236,7 @@
     },
     {
       "kappa_threshold": 0.5,
-      "kappa_gate": 0.6129938809706418,
+      "kappa_compat": 0.6129938809706418,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -244,7 +244,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.591960552627009,
+      "kappa_compat": 0.591960552627009,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -252,7 +252,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.6063481060338649,
+      "kappa_compat": 0.6063481060338649,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -260,7 +260,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.5799410638129744,
+      "kappa_compat": 0.5799410638129744,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -268,7 +268,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.504699522658355,
+      "kappa_compat": 0.504699522658355,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -276,7 +276,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.6167639579680804,
+      "kappa_compat": 0.6167639579680804,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -284,7 +284,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.6931443084014229,
+      "kappa_compat": 0.6931443084014229,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -292,7 +292,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.6640578261968395,
+      "kappa_compat": 0.6640578261968395,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -300,7 +300,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.5960860659030995,
+      "kappa_compat": 0.5960860659030995,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -308,7 +308,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.668175775985012,
+      "kappa_compat": 0.668175775985012,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -316,7 +316,7 @@
     },
     {
       "kappa_threshold": 0.6,
-      "kappa_gate": 0.6129938809706418,
+      "kappa_compat": 0.6129938809706418,
       "expected_block": false,
       "actual_block": false,
       "decision": "EXECUTE",
@@ -324,7 +324,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.591960552627009,
+      "kappa_compat": 0.591960552627009,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -332,7 +332,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.6063481060338649,
+      "kappa_compat": 0.6063481060338649,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -340,7 +340,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.5799410638129744,
+      "kappa_compat": 0.5799410638129744,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -348,7 +348,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.504699522658355,
+      "kappa_compat": 0.504699522658355,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -356,7 +356,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.6167639579680804,
+      "kappa_compat": 0.6167639579680804,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -364,7 +364,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.6931443084014229,
+      "kappa_compat": 0.6931443084014229,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -372,7 +372,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.6640578261968395,
+      "kappa_compat": 0.6640578261968395,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -380,7 +380,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.5960860659030995,
+      "kappa_compat": 0.5960860659030995,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -388,7 +388,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.668175775985012,
+      "kappa_compat": 0.668175775985012,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
@@ -396,7 +396,7 @@
     },
     {
       "kappa_threshold": 0.7,
-      "kappa_gate": 0.6129938809706418,
+      "kappa_compat": 0.6129938809706418,
       "expected_block": true,
       "actual_block": true,
       "decision": "BLOCK",
