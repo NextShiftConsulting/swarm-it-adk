@@ -3,7 +3,7 @@ Tests for swarm_it.decorators -- fail-closed gating (R-18.2).
 """
 
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from enum import Enum
 
 from swarm_it.decorators import (

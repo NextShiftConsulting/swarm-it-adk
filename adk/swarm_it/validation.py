@@ -220,7 +220,6 @@ class QualityThresholds(BaseModel):
     def validate_threshold_logic(cls, values):
         """Validate threshold ranges are sensible."""
         kappa = values.get('kappa')
-        N = values.get('N')
 
         # kappa threshold must be achievable given noise threshold
         # kappa_req(sigma) = kappa_base + lambda * sigma, so kappa must be
