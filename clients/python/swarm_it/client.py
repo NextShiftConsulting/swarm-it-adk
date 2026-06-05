@@ -59,7 +59,7 @@ class GateReachedIdentifier(str, Enum):
     """Named gate identifiers per ADR-016. Never an integer."""
     NONE                     = "NONE"
     GATE_1_INTEGRITY         = "GATE_1_INTEGRITY"
-    GATE_1B_N_CEILING        = "GATE_1B_N_CEILING"
+    GATE_1B_TASK_RESIDUAL_FLOOR = "GATE_1B_TASK_RESIDUAL_FLOOR"
     GATE_2_CONSENSUS         = "GATE_2_CONSENSUS"
     GATE_3_ADMISSIBILITY     = "GATE_3_ADMISSIBILITY"
     GATE_3B_TRAJECTORY       = "GATE_3B_TRAJECTORY"
@@ -146,7 +146,7 @@ class RSCTCertificate(BaseModel):
                                      description="Enforcement decision from SequentialGatekeeper.")
     gate_reached: str         = Field(...,
                                      description="First failing gate identifier (ADR-016). "
-                                                 "Values: GATE_1_INTEGRITY, GATE_1B_N_CEILING, "
+                                                 "Values: GATE_1_INTEGRITY, GATE_1B_TASK_RESIDUAL_FLOOR, "
                                                  "GATE_2_CONSENSUS, GATE_3_ADMISSIBILITY, "
                                                  "GATE_3B_TRAJECTORY, GATE_4_GROUNDING, "
                                                  "GATE_5_CONTRACT_COVERAGE, or NONE.")
@@ -169,7 +169,7 @@ class GeoCertificate(BaseModel):
                          description="R*(1-N). NOT the ADK embedding-viability compute_kappa.")
     sigma: float = Field(..., ge=0.0)
 
-    N_ceiling: Optional[float] = Field(None, ge=0.0, le=1.0)
+    task_residual_floor: Optional[float] = Field(None, ge=0.0, le=1.0)
     decision:     PublicDecision        = Field(...)
     gate_reached: GateReachedIdentifier = Field(...)
     gate_reason:  Optional[str]         = Field(None)
