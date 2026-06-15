@@ -39,7 +39,7 @@ message Certificate {
   double R = 3;
   double S = 4;
   double N = 5;
-  double kappa_gate = 6;
+  double kappa_coupling = 6;
   double sigma = 7;
   GateDecision decision = 8;
   int32 gate_reached = 9;

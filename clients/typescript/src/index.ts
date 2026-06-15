@@ -40,7 +40,7 @@ export interface Certificate {
   R: number;
   S: number;
   N: number;
-  kappa_gate: number;
+  kappa_coupling: number;
   sigma: number;
   decision: GateDecision;
   gate_reached: number;

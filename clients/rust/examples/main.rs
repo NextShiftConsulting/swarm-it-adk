@@ -28,7 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("Certificate ID: {}", cert1.id);
     println!("RSN Scores: R={:.3}, S={:.3}, N={:.3}", cert1.r, cert1.s, cert1.n);
-    println!("Kappa Gate: {:.3}", cert1.kappa_gate);
+    println!("Kappa Coupling: {:.3}", cert1.kappa_coupling);
     println!("Decision: {:?} (Allowed: {})", cert1.decision, cert1.allowed);
     println!("Reason: {}\n", cert1.reason);
 

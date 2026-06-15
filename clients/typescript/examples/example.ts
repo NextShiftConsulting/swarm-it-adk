@@ -31,7 +31,7 @@ async function main() {
 
   console.log(`Certificate ID: ${cert1.id}`);
   console.log(`RSN Scores: R=${cert1.R.toFixed(3)}, S=${cert1.S.toFixed(3)}, N=${cert1.N.toFixed(3)}`);
-  console.log(`Kappa Gate: ${cert1.kappa_gate.toFixed(3)}`);
+  console.log(`Kappa Coupling: ${cert1.kappa_coupling.toFixed(3)}`);
   console.log(`Decision: ${cert1.decision} (Allowed: ${cert1.allowed})`);
   console.log(`Reason: ${cert1.reason}\n`);
 

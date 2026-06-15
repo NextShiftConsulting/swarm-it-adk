@@ -77,7 +77,7 @@ pub struct Certificate {
     pub s: f64,
     #[serde(rename = "N")]
     pub n: f64,
-    pub kappa_gate: f64,
+    pub kappa_coupling: f64,
     pub sigma: f64,
     pub decision: GateDecision,
     pub gate_reached: i32,

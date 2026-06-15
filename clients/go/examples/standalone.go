@@ -26,7 +26,7 @@ type Certificate struct {
 	R         float64 `json:"R"`
 	S         float64 `json:"S"`
 	N         float64 `json:"N"`
-	KappaGate float64 `json:"kappa_gate"`
+	KappaCoupling float64 `json:"kappa_coupling"`
 	Decision  string  `json:"decision"`
 	Allowed   bool    `json:"allowed"`
 	Reason    string  `json:"reason"`
@@ -75,7 +75,7 @@ func main() {
 
 	fmt.Printf("Certificate: %s\n", cert.ID)
 	fmt.Printf("RSN: R=%.3f, S=%.3f, N=%.3f\n", cert.R, cert.S, cert.N)
-	fmt.Printf("Kappa: %.3f\n", cert.KappaGate)
+	fmt.Printf("Kappa: %.3f\n", cert.KappaCoupling)
 	fmt.Printf("Decision: %s (Allowed: %v)\n", cert.Decision, cert.Allowed)
 	fmt.Printf("Reason: %s\n", cert.Reason)
 

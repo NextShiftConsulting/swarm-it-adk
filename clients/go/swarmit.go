@@ -54,7 +54,7 @@ type Certificate struct {
 	R              float64      `json:"R"`
 	S              float64      `json:"S"`
 	N              float64      `json:"N"`
-	KappaGate      float64      `json:"kappa_gate"`
+	KappaCoupling  float64      `json:"kappa_coupling"`
 	Sigma          float64      `json:"sigma"`
 	Decision       GateDecision `json:"decision"`
 	GateReached    int          `json:"gate_reached"`
