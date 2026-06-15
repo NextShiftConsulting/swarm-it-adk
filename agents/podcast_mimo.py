@@ -707,7 +707,7 @@ N (Noise): Fraction that is hallucinated or factually incorrect
             "gate_feedback": gate_feedback if gate_failed else "All gates passed",
 
             # Legacy fields for compatibility
-            "kappa": alpha * kappa_compat,  # Overall quality score
+            "kappa_coupling": alpha * kappa_compat,  # Overall quality score
             "approved": (decision == "EXECUTE"),
             "feedback": decomp.get('feedback', '') + ("\n" + gate_feedback if gate_feedback else "")
         }

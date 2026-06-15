@@ -31,7 +31,7 @@ def _make_cert(allowed: bool = True, decision: str = "allow"):
     cert.R = 0.5
     cert.S = 0.5
     cert.N = 0.3
-    cert.kappa = 0.8
+    cert.kappa_coupling = 0.8
     cert.id = "cert-test"
     cert.margin = 0.1
     return cert

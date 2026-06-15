@@ -150,7 +150,7 @@ class TestThresholdsToConfig:
     """Tests for thresholds_to_config()."""
 
     def test_basic_mapping(self):
-        config = thresholds_to_config({"kappa": 0.7, "R": 0.3, "S": 0.4, "N": 0.5})
+        config = thresholds_to_config({"kappa_threshold": 0.7, "R": 0.3, "S": 0.4, "N": 0.5})
         assert isinstance(config, GatekeeperConfig)
         assert config.N_thr == 0.5
         assert config.alpha_min == 0.3
@@ -170,7 +170,7 @@ class TestThresholdsToConfig:
 
     def test_config_accepted_by_gatekeeper(self):
         """Config produced by bridge is valid for SequentialGatekeeper."""
-        config = thresholds_to_config({"kappa": 0.6, "N": 0.4})
+        config = thresholds_to_config({"kappa_threshold": 0.6, "N": 0.4})
         gk = SequentialGatekeeper(config)
         est = to_certificate_estimate(R=0.5, S=0.3, N=0.2, kappa_compat=0.6, sigma=0.3, alpha=0.71)
         result = gk.evaluate(est)

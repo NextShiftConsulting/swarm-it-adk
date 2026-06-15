@@ -68,7 +68,7 @@ class EventNode:
     R: float
     S: float
     N: float
-    kappa: float
+    kappa_coupling: float
     sigma: float
     decision: str
     gate_reached: int
@@ -85,7 +85,7 @@ class EventNode:
             "modality": self.modality.value,
             "certificate": {
                 "R": self.R, "S": self.S, "N": self.N,
-                "kappa": self.kappa, "sigma": self.sigma,
+                "kappa_coupling": self.kappa_coupling, "sigma": self.sigma,
                 "decision": self.decision, "gate": self.gate_reached,
             },
             "source_agent": self.source_agent,
@@ -137,7 +137,7 @@ def certify_output(
     R: float = 0.65,
     S: float = 0.20,
     N: float = 0.15,
-    kappa: float = 0.75,
+    kappa_coupling: float = 0.75,
     sigma: float = 0.25,
 ) -> EventNode:
     """
@@ -149,7 +149,7 @@ def certify_output(
     3. EventNode created with certificate
     """
     # Get gate decision from constraint_graph
-    result = evaluate_paper_constraints(R, S, N, kappa, sigma, track_evolution=False)
+    result = evaluate_paper_constraints(R, S, N, kappa_coupling, sigma, track_evolution=False)
 
     event_id = f"{agent_id}_{datetime.utcnow().strftime('%H%M%S%f')}"
 
@@ -160,7 +160,7 @@ def certify_output(
         R=R,
         S=S,
         N=N,
-        kappa=kappa,
+        kappa_coupling=kappa_coupling,
         sigma=sigma,
         decision=result.decision.value,
         gate_reached=result.gate_reached.value,
@@ -187,8 +187,8 @@ def validate_handoff(
         return False, f"Source event decision={source_event.decision}, need EXECUTE", None
 
     # Check kappa meets interface threshold
-    if source_event.kappa < kappa_interface:
-        return False, f"κ={source_event.kappa:.2f} < κ_interface={kappa_interface}", None
+    if source_event.kappa_coupling < kappa_interface:
+        return False, f"kappa_coupling={source_event.kappa_coupling:.2f} < kappa_interface={kappa_interface}", None
 
     # Handoff allowed - target agent processes
     # Simulate target agent processing (would call LLM in real system)
@@ -203,7 +203,7 @@ def validate_handoff(
         R=source_event.R * 0.95,  # Slight degradation
         S=source_event.S * 1.05,
         N=source_event.N * 1.02,
-        kappa=source_event.kappa * 0.98,
+        kappa_coupling=source_event.kappa_coupling * 0.98,
         sigma=source_event.sigma * 1.05,
     )
 
@@ -303,7 +303,7 @@ def run_doe():
         event = certify_output(
             output=f"Test output for {name}",
             agent_id="agent_single",
-            R=R, S=S, N=N, kappa=kappa, sigma=sigma,
+            R=R, S=S, N=N, kappa_coupling=kappa, sigma=sigma,
         )
         g_r.add_event(event)
 
@@ -337,7 +337,7 @@ def run_doe():
             R=level.source_R,
             S=level.source_S,
             N=level.source_N,
-            kappa=level.source_kappa,
+            kappa_coupling=level.source_kappa,
             sigma=level.source_sigma,
         )
         g_r.add_event(source_event)
@@ -403,7 +403,7 @@ def run_doe():
                 R=0.65,
                 S=0.20,
                 N=0.15,
-                kappa=current_kappa,
+                kappa_coupling=current_kappa,
                 sigma=0.25,
             )
             chain_g_r.add_event(event)
@@ -506,7 +506,7 @@ def run_doe():
             R=0.70 - (i * 0.02),
             S=0.15 + (i * 0.02),
             N=0.15 + (i * 0.01),
-            kappa=kappa,
+            kappa_coupling=kappa,
             sigma=sigma,
         )
         pipeline_g_r.add_event(event)
@@ -514,7 +514,7 @@ def run_doe():
         pipeline_trace.append({
             "agent": agent_id,
             "decision": event.decision,
-            "kappa": event.kappa,
+            "kappa_coupling": event.kappa_coupling,
         })
 
         if event.decision == "EXECUTE":
@@ -529,7 +529,7 @@ def run_doe():
     status = "✓" if passed else "✗"
     print(f"  {status} PL1_PIPELINE: {len(pipeline_trace)}/4 agents executed")
     for t in pipeline_trace:
-        print(f"      {t['agent']}: {t['decision']} (κ={t['kappa']:.2f})")
+        print(f"      {t['agent']}: {t['decision']} (kappa_coupling={t['kappa_coupling']:.2f})")
 
     factor5_results.append({
         "name": "PL1_PIPELINE",

@@ -307,7 +307,7 @@ class QualityGateTool(Tool):
         from ._config_bridge import thresholds_to_config
 
         self.thresholds = thresholds or {
-            "kappa": 0.7,
+            "kappa_threshold": 0.7,
             "R": 0.3,
             "S": 0.4,
             "N": 0.5,

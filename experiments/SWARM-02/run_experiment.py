@@ -479,7 +479,7 @@ def test_h3b_fixed_k_comparison() -> Dict:
 
             test_case["expansions"].append({
                 "k": k,
-                "kappa": round(kappa_k, 2),
+                "kappa_coupling": round(kappa_k, 2),
                 "crossed_50": kappa_k >= 50,
                 "accuracy": round(acc_k, 3),
                 "improvement_vs_base": round((acc_k - acc_base) / acc_base * 100 if acc_base > 0 else 0, 1)

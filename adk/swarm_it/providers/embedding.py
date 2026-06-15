@@ -22,7 +22,7 @@ Usage:
 
     # Check kappa viability
     result = check_kappa(embeddings)
-    print(f"κ = {result.kappa:.2f}, viable: {result.is_viable}")
+    print(f"kappa_coupling = {result.kappa_coupling:.2f}, viable: {result.is_viable}")
     print(f"Recommended expansion: k = {result.recommended_k}")
 
 References:
@@ -47,20 +47,20 @@ except ImportError:
 @dataclass
 class KappaResult:
     """Result of kappa viability check."""
-    kappa: float
+    kappa_coupling: float
     stable_rank: float
     dim: int
-    is_viable: bool  # kappa >= threshold (default 50)
-    recommended_k: int  # Expansion factor: k = min(ceil(65/κ), 5)
-    kappa_after_expansion: float  # κ * k
+    is_viable: bool  # kappa_coupling >= threshold (default 50)
+    recommended_k: int  # Expansion factor: k = min(ceil(65/kappa_coupling), 5)
+    kappa_after_expansion: float  # kappa_coupling * k
     threshold: float = 50.0
 
     def __repr__(self) -> str:
         status = "VIABLE" if self.is_viable else "CHOKED"
         return (
-            f"KappaResult(κ={self.kappa:.2f} [{status}], "
+            f"KappaResult(kappa_coupling={self.kappa_coupling:.2f} [{status}], "
             f"stable_rank={self.stable_rank:.2f}, dim={self.dim}, "
-            f"k={self.recommended_k} → κ={self.kappa_after_expansion:.2f})"
+            f"k={self.recommended_k} -> kappa_coupling={self.kappa_after_expansion:.2f})"
         )
 
 
@@ -217,7 +217,7 @@ def compute_kappa(
     is_viable = kappa >= threshold
 
     return KappaResult(
-        kappa=kappa,
+        kappa_coupling=kappa,
         stable_rank=stable_rank,
         dim=dim,
         is_viable=is_viable,
@@ -316,21 +316,21 @@ class KappaViabilityChecker:
         embeddings = provider.embed(sample_texts)
         return self.check(embeddings)
 
-    def optimal_k(self, kappa: float) -> int:
+    def optimal_k(self, kappa_coupling: float) -> int:
         """
         Compute optimal expansion factor k.
 
-        Formula: k = min(ceil(65/κ), max_k)
+        Formula: k = min(ceil(65/kappa_coupling), max_k)
 
         Args:
-            kappa: Current kappa value
+            kappa_coupling: Current kappa_coupling value
 
         Returns:
             Recommended k (1 if already viable)
         """
-        if kappa >= self.threshold:
+        if kappa_coupling >= self.threshold:
             return 1
-        return min(math.ceil(65 / kappa), self.max_k)
+        return min(math.ceil(65 / kappa_coupling), self.max_k)
 
 
 class TidyLLMSentenceProvider(EmbeddingProvider):

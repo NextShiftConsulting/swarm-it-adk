@@ -21,7 +21,7 @@ class GateBlockedError(SwarmItError):
             f"Execution blocked: {certificate.reason} "
             f"(decision={certificate.decision.value}, "
             f"R={certificate.R:.3f}, N={certificate.N:.3f}, "
-            f"kappa={certificate.kappa:.3f})"
+            f"kappa_coupling={certificate.kappa_coupling:.3f})"
         )
 
 

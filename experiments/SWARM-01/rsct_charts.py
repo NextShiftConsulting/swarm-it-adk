@@ -127,7 +127,7 @@ class CertificateData:
     R: float
     S: float
     N: float
-    kappa: float
+    kappa_coupling: float
     sigma: float
     alpha: Optional[float] = None
     decision: str = "EXECUTE"
@@ -135,7 +135,7 @@ class CertificateData:
 
     @property
     def quality_tier(self) -> Tuple[str, str, str]:
-        return YRSNColors.quality_tier_color(self.kappa)
+        return YRSNColors.quality_tier_color(self.kappa_coupling)
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> 'CertificateData':
@@ -143,7 +143,7 @@ class CertificateData:
             R=d.get('R', 0),
             S=d.get('S', 0),
             N=d.get('N', 0),
-            kappa=d.get('kappa', d.get('kappa_compat', 0)),
+            kappa_coupling=d.get('kappa_coupling', d.get('kappa_compat', 0)),
             sigma=d.get('sigma', 0.3),
             alpha=d.get('alpha'),
             decision=d.get('decision', 'EXECUTE'),
@@ -173,7 +173,7 @@ class RSCTChartGenerator:
 
     def create_quality_badge(
         self,
-        kappa: float,
+        kappa_coupling: float,
         output_path: Optional[Path] = None,
         size: Tuple[int, int] = (3, 1.2),
         show_kappa: bool = True,
@@ -182,7 +182,7 @@ class RSCTChartGenerator:
         Create discovery-style quality badge.
 
         Args:
-            kappa: Compatibility score [0, 1]
+            kappa_coupling: Compatibility score [0, 1]
             output_path: Optional path to save
             size: Figure size (width, height)
             show_kappa: Whether to show κ value
@@ -190,7 +190,7 @@ class RSCTChartGenerator:
         Returns:
             Matplotlib figure
         """
-        color, emoji, label = YRSNColors.quality_tier_color(kappa)
+        color, emoji, label = YRSNColors.quality_tier_color(kappa_coupling)
 
         fig, ax = plt.subplots(figsize=size)
         ax.set_xlim(0, 10)
@@ -217,7 +217,7 @@ class RSCTChartGenerator:
 
         # Kappa value
         if show_kappa:
-            ax.text(5.5, 1.2, f'κ = {kappa:.2f}', fontsize=11,
+            ax.text(5.5, 1.2, f'kappa_coupling = {kappa_coupling:.2f}', fontsize=11,
                     ha='center', va='center', color='white', alpha=0.9)
 
         plt.tight_layout()
@@ -350,10 +350,10 @@ class RSCTChartGenerator:
         if certificates:
             for cert in certificates:
                 color = YRSNColors.gate_decision_color(cert.decision)
-                ax.scatter(cert.sigma, cert.kappa, c=color, s=100,
+                ax.scatter(cert.sigma, cert.kappa_coupling, c=color, s=100,
                           edgecolors='white', linewidth=2, zorder=5)
                 if cert.label:
-                    ax.annotate(cert.label, (cert.sigma, cert.kappa),
+                    ax.annotate(cert.label, (cert.sigma, cert.kappa_coupling),
                                xytext=(5, 5), textcoords='offset points',
                                fontsize=9)
 
@@ -437,10 +437,10 @@ class RSCTChartGenerator:
             for cert in certificates:
                 if cert.alpha is not None:
                     color = YRSNColors.gate_decision_color(cert.decision)
-                    ax.scatter(cert.kappa, cert.alpha, c=color, s=120,
+                    ax.scatter(cert.kappa_coupling, cert.alpha, c=color, s=120,
                               edgecolors='white', linewidth=2, zorder=5)
                     if cert.label:
-                        ax.annotate(cert.label, (cert.kappa, cert.alpha),
+                        ax.annotate(cert.label, (cert.kappa_coupling, cert.alpha),
                                    xytext=(5, 5), textcoords='offset points',
                                    fontsize=9)
 

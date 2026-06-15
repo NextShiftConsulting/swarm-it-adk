@@ -139,7 +139,7 @@ def main():
             print(f"  - {item['slug']}")
             print(f"    Narration: https://dsai-2025-asu.s3.amazonaws.com/audio/{item['slug']}.mp3")
             print(f"    Dialogue:  {item['audio']}")
-            print(f"    Quality:   R={item['certificate']['R']:.2f} S={item['certificate']['S']:.2f} N={item['certificate']['N']:.2f} kappa={item['certificate']['kappa']:.2f}")
+            print(f"    Quality:   R={item['certificate']['R']:.2f} S={item['certificate']['S']:.2f} N={item['certificate']['N']:.2f} kappa_coupling={item['certificate']['kappa_coupling']:.2f}")
             print()
 
 

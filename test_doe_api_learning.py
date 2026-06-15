@@ -112,7 +112,7 @@ class ConstraintLevel:
     R: float
     S: float
     N: float
-    kappa: float
+    kappa_coupling: float
     sigma: float
     expected_decision: str
     expected_gate: int
@@ -430,12 +430,12 @@ class DOEAPIValidator:
 
             # Get ACTUAL decision (what API uses)
             actual_decision, actual_gate = yrsn_gate_decision(
-                level.R, level.S, level.N, level.kappa, level.sigma
+                level.R, level.S, level.N, level.kappa_coupling, level.sigma
             )
 
             # Get enrichment (for diagnosis, recommendations)
             enrichment = evaluate_paper_constraints(
-                level.R, level.S, level.N, level.kappa, level.sigma,
+                level.R, level.S, level.N, level.kappa_coupling, level.sigma,
                 track_evolution=False
             )
 

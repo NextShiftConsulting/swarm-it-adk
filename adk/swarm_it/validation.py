@@ -53,11 +53,11 @@ class CertifyRequest(BaseModel):
     )
 
     # Quality thresholds (optional overrides)
-    kappa: Optional[float] = Field(
+    kappa_threshold: Optional[float] = Field(
         None,
         ge=0.0,
         le=1.0,
-        description="Compatibility threshold (0.0-1.0)"
+        description="Gate threshold for coupling strength (0.0-1.0). Q-007."
     )
 
     R: Optional[float] = Field(
@@ -188,11 +188,11 @@ class QualityThresholds(BaseModel):
     Ensures thresholds are valid and don't conflict.
     """
 
-    kappa: float = Field(
+    kappa_threshold: float = Field(
         0.7,
         ge=0.0,
         le=1.0,
-        description="Compatibility threshold (min of R and S)"
+        description="Gate threshold for coupling strength. Q-007."
     )
 
     R: float = Field(

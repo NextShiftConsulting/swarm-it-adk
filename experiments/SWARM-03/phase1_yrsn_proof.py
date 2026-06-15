@@ -177,7 +177,7 @@ def run_phase1():
                 "dim": dim,
                 "n_samples": len(EXPANDED_TEXTS),
                 "stable_rank": round(stable_rank, 2),
-                "kappa": round(kappa, 2),
+                "kappa_coupling": round(kappa, 2),
                 "is_choked": is_choked,
                 "k_optimal": k_opt,
                 "kappa_after": round(kappa_after, 2),

@@ -42,42 +42,42 @@ from swarm_it.fluent import FluentCertifier
 # Domain presets matching fluent.py
 DOMAIN_PRESETS = {
     "medical": {
-        "kappa": 0.9,
+        "kappa_threshold": 0.9,
         "R": 0.5,
         "S": 0.6,
         "N": 0.3,
         "description": "Medical domain (strict quality requirements)"
     },
     "legal": {
-        "kappa": 0.85,
+        "kappa_threshold": 0.85,
         "R": 0.5,
         "S": 0.5,
         "N": 0.4,
         "description": "Legal domain (strict quality requirements)"
     },
     "financial": {
-        "kappa": 0.8,
+        "kappa_threshold": 0.8,
         "R": 0.45,
         "S": 0.45,
         "N": 0.4,
         "description": "Financial domain (moderate quality requirements)"
     },
     "research": {
-        "kappa": 0.7,
+        "kappa_threshold": 0.7,
         "R": 0.3,
         "S": 0.4,
         "N": 0.5,
         "description": "Research domain (moderate quality requirements)"
     },
     "dev": {
-        "kappa": 0.5,
+        "kappa_threshold": 0.5,
         "R": 0.2,
         "S": 0.2,
         "N": 0.7,
         "description": "Development domain (permissive requirements)"
     },
     "custom": {
-        "kappa": 0.7,
+        "kappa_threshold": 0.7,
         "R": 0.3,
         "S": 0.4,
         "N": 0.3,
@@ -109,7 +109,7 @@ def render_sidebar():
             "Kappa (κ) - Compatibility",
             min_value=0.0,
             max_value=1.0,
-            value=preset["kappa"],
+            value=preset["kappa_threshold"],
             step=0.05,
             help="Minimum compatibility score"
         )
@@ -138,7 +138,7 @@ def render_sidebar():
             help="Maximum noise score"
         )
     else:
-        kappa = preset["kappa"]
+        kappa = preset["kappa_threshold"]
         R = preset["R"]
         S = preset["S"]
         N = preset["N"]
@@ -184,7 +184,7 @@ def render_sidebar():
 
     return {
         "domain": domain,
-        "kappa": kappa,
+        "kappa_threshold": kappa,
         "R": R,
         "S": S,
         "N": N,
@@ -238,7 +238,7 @@ def render_main_content(config: Dict[str, Any]):
                 certifier = certifier.with_prompt(prompt)
                 certifier = certifier.for_domain(config["domain"] if config["domain"] != "custom" else "research")
                 certifier = certifier.with_thresholds(
-                    kappa=config["kappa"],
+                    kappa=config["kappa_threshold"],
                     R=config["R"],
                     S=config["S"],
                     N=config["N"]
@@ -289,8 +289,8 @@ def render_results(result: Dict[str, Any], config: Dict[str, Any]):
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        kappa = result.get("kappa", 0.0)
-        kappa_threshold = config["kappa"]
+        kappa = result.get("kappa_coupling", 0.0)
+        kappa_threshold = config["kappa_threshold"]
         st.metric(
             "Kappa (κ)",
             f"{kappa:.3f}",

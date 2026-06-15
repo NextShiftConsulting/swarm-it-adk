@@ -180,7 +180,7 @@ def create_swarm(config: Dict[str, Any]) -> 'SwarmExecutor':  # noqa: F821
                 }
             ],
             "certifier_thresholds": {
-                "kappa": 0.1,
+                "kappa_threshold": 0.1,
                 "R": 0.1,
                 "S": 0.1,
                 "N": 0.95

@@ -36,17 +36,17 @@ def fig1_kappa_scales_linearly():
 
     # Data from H1 evidence
     data = {
-        'rank=3 (κ₀=23)': {'k': [1, 2, 3, 4], 'kappa': [23.16, 46.32, 69.47, 92.63]},
-        'rank=5 (κ₀=16)': {'k': [1, 2, 3, 4], 'kappa': [15.53, 31.06, 46.59, 62.12]},
-        'rank=8 (κ₀=12)': {'k': [1, 2, 3, 4], 'kappa': [11.76, 23.53, 35.29, 47.05]},
-        'rank=12 (κ₀=10)': {'k': [1, 2, 3, 4], 'kappa': [9.66, 19.31, 28.97, 38.63]},
+        'rank=3 (κ₀=23)': {'k': [1, 2, 3, 4], 'kappa_coupling': [23.16, 46.32, 69.47, 92.63]},
+        'rank=5 (κ₀=16)': {'k': [1, 2, 3, 4], 'kappa_coupling': [15.53, 31.06, 46.59, 62.12]},
+        'rank=8 (κ₀=12)': {'k': [1, 2, 3, 4], 'kappa_coupling': [11.76, 23.53, 35.29, 47.05]},
+        'rank=12 (κ₀=10)': {'k': [1, 2, 3, 4], 'kappa_coupling': [9.66, 19.31, 28.97, 38.63]},
     }
 
     colors = ['#2ecc71', '#3498db', '#9b59b6', '#e74c3c']
     markers = ['o', 's', '^', 'D']
 
     for (label, vals), color, marker in zip(data.items(), colors, markers):
-        ax.plot(vals['k'], vals['kappa'], marker=marker, markersize=10,
+        ax.plot(vals['k'], vals['kappa_coupling'], marker=marker, markersize=10,
                 linewidth=2.5, label=label, color=color)
 
     # Add threshold line

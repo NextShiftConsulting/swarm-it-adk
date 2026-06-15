@@ -69,7 +69,7 @@ def main():
         # Display results
         status = "VIABLE" if result.is_viable else "CHOKED"
         print(f"\n  Stable Rank:  {result.stable_rank:.2f}")
-        print(f"  κ (kappa):    {result.kappa:.2f} [{status}]")
+        print(f"  kappa_coupling: {result.kappa_coupling:.2f} [{status}]")
 
         if not result.is_viable:
             print("\n  [!] EXPANSION NEEDED")

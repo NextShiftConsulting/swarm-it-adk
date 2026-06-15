@@ -180,7 +180,7 @@ class ConfigManager:
     @property
     def kappa_threshold(self) -> float:
         """Kappa gate threshold."""
-        val = os.getenv('SWARM_IT_KAPPA_THRESHOLD') or self.get('thresholds.kappa', self.DEFAULT_THRESHOLDS['kappa_threshold'])
+        val = os.getenv('SWARM_IT_KAPPA_THRESHOLD') or self.get('thresholds.kappa_threshold', self.DEFAULT_THRESHOLDS['kappa_threshold'])
         return float(val)
 
     @property

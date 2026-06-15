@@ -76,7 +76,7 @@ class TracingManager:
         with manager.start_span("certification") as span:
             span.set_attribute("prompt_length", 500)
             result = certify(prompt)
-            span.set_attribute("kappa", result.kappa)
+            span.set_attribute("kappa_coupling", result.kappa_coupling)
     """
 
     def __init__(self, config: Optional[TracingConfig] = None):

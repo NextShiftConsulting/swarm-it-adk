@@ -105,7 +105,7 @@ class PDFReaderAgent:
                 "R": msg.R,
                 "S": msg.S,
                 "N": msg.N,
-                "kappa": msg.kappa,
+                "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,
                 "decision": msg.decision,
             },
@@ -208,7 +208,7 @@ class AnalyzerAgent:
                 "R": msg.R,
                 "S": msg.S,
                 "N": msg.N,
-                "kappa": msg.kappa,
+                "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,
                 "decision": msg.decision,
             },
@@ -350,7 +350,7 @@ class AdvisorAgent:
                 "R": msg.R,
                 "S": msg.S,
                 "N": msg.N,
-                "kappa": msg.kappa,
+                "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,
                 "decision": msg.decision,
             },
@@ -477,7 +477,7 @@ def print_cert(cert: Dict[str, Any], prefix: str = "  "):
     status = "✓ ALLOWED" if cert["allowed"] else "✗ BLOCKED"
     color = '\033[92m' if cert["allowed"] else '\033[91m'
     reset = '\033[0m'
-    print(f"{prefix}{color}R={cert['R']:.2f} S={cert['S']:.2f} N={cert['N']:.2f} κ={cert['kappa']:.2f} → {status}{reset}")
+    print(f"{prefix}{color}R={cert['R']:.2f} S={cert['S']:.2f} N={cert['N']:.2f} kappa_coupling={cert['kappa_coupling']:.2f} -> {status}{reset}")
 
 
 def run_pipeline(pdf_folder: str, certifier: SwarmCertifier, swarm, reader, analyzer, advisor):

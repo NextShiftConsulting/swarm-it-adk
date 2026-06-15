@@ -71,7 +71,7 @@ class BYOKEngine:
 
         # Default thresholds (universal64 policy)
         self.thresholds = thresholds or {
-            "kappa": 0.7,
+            "kappa_threshold": 0.7,
             "R": 0.3,
             "S": 0.4,
             "N": 0.5,
@@ -228,7 +228,7 @@ class BYOKEngine:
             "S": S,
             "N": N,
             "alpha": alpha,
-            "kappa": kappa,
+            "kappa_coupling": kappa,
             "sigma": sigma,
             "decision": decision.value,
             "gate_decision": decision,

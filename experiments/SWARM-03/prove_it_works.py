@@ -111,7 +111,7 @@ def run_proof():
             "model": model_name,
             "dim": dim,
             "stable_rank": round(stable_rank, 2),
-            "kappa": round(kappa, 2),
+            "kappa_coupling": round(kappa, 2),
             "is_choked": is_choked,
             "k_optimal": k_opt,
             "kappa_after": round(kappa_after, 2),

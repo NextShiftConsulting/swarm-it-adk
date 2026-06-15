@@ -47,7 +47,7 @@ class Certificate:
 
     # Quality metrics
     alpha: float  # Purity: R/(R+N)
-    kappa: float  # Compatibility (kappa_compat)
+    kappa_coupling: float  # Compatibility (kappa_compat)
     sigma: float  # Turbulence
 
     # Gate result
@@ -71,8 +71,8 @@ class Certificate:
     @property
     def margin(self) -> float:
         """Safety margin: how far from rejection threshold."""
-        # Simplified: higher R and kappa = more margin
-        return min(self.R, self.kappa)
+        # Simplified: higher R and kappa_coupling = more margin
+        return min(self.R, self.kappa_coupling)
 
     def to_dict(self) -> Dict[str, Any]:
         """Export certificate as dict."""
@@ -83,7 +83,7 @@ class Certificate:
             "S": self.S,
             "N": self.N,
             "alpha": self.alpha,
-            "kappa": self.kappa,
+            "kappa_coupling": self.kappa_coupling,
             "sigma": self.sigma,
             "gate_decision": self.decision.value,
             "gate_reached": self.gate_reached,
@@ -502,7 +502,7 @@ class SwarmIt:
                 "R": cert.R,
                 "S": cert.S,
                 "N": cert.N,
-                "kappa": cert.kappa,
+                "kappa_coupling": cert.kappa_coupling,
                 "decision": cert.decision.value,
                 "rsct_mode": cert.rsct_mode,
             }
@@ -512,7 +512,7 @@ class SwarmIt:
             total_s += cert.S
             total_n += cert.N
 
-            if cert.kappa < min_kappa:
+            if cert.kappa_coupling < min_kappa:
                 min_kappa = cert.kappa
                 weakest_link = agent["agent_id"]
 
@@ -535,7 +535,7 @@ class SwarmIt:
                 "R": round(avg_r, 4),
                 "S": round(avg_s, 4),
                 "N": round(avg_n, 4),
-                "kappa": round(min_kappa, 4),
+                "kappa_coupling": round(min_kappa, 4),
                 "decision": swarm_decision,
                 "rsct_mode": "0.0" if swarm_decision == "EXECUTE" else "4.1",
                 "consensus": 1.0,  # Local mode doesn't compute real consensus
@@ -583,7 +583,7 @@ class SwarmIt:
             S=s_value,
             N=data.get("N", 0.0),
             alpha=data.get("alpha", 0.0),
-            kappa=data.get("kappa_compat", data.get("kappa", 0.0)),
+            kappa_coupling=data.get("kappa_compat", data.get("kappa", 0.0)),
             sigma=data.get("sigma", 0.0),
             decision=decision,
             gate_reached=data.get("gate_reached", 0),
@@ -648,7 +648,7 @@ class SwarmIt:
             S=S,
             N=N,
             alpha=alpha,
-            kappa=kappa,
+            kappa_coupling=kappa,
             sigma=sigma,
             decision=decision,
             gate_reached=gate,

@@ -106,7 +106,7 @@ class AuditLogEntry:
     model: Optional[str] = None
     domain: Optional[str] = None
     decision: Optional[str] = None
-    kappa: Optional[float] = None
+    kappa_coupling: Optional[float] = None
     R: Optional[float] = None
     S: Optional[float] = None
     N: Optional[float] = None
@@ -162,7 +162,7 @@ class AuditLogger:
         logger.log_certification_success(
             user_id="user_123",
             decision="EXECUTE",
-            kappa=0.842
+            kappa_coupling=0.842
         )
     """
 
@@ -262,7 +262,7 @@ class AuditLogger:
         user_id: Optional[str] = None,
         request_id: Optional[str] = None,
         decision: Optional[str] = None,
-        kappa: Optional[float] = None,
+        kappa_coupling: Optional[float] = None,
         R: Optional[float] = None,
         S: Optional[float] = None,
         N: Optional[float] = None,
@@ -278,14 +278,14 @@ class AuditLogger:
             user_id=user_id,
             request_id=request_id,
             decision=decision,
-            kappa=kappa,
+            kappa_coupling=kappa_coupling,
             R=R,
             S=S,
             N=N,
             gate_reached=gate_reached,
             latency_ms=latency_ms,
             cache_hit=cache_hit,
-            message=f"Certification success: {decision}, kappa={kappa:.3f}"
+            message=f"Certification success: {decision}, kappa_coupling={kappa_coupling:.3f}"
         )
         self.log(entry)
 
@@ -453,7 +453,7 @@ def audit_log(
             AuditEvent.CERT_SUCCESS,
             "Certification approved",
             user_id="user_123",
-            kappa=0.842
+            kappa_coupling=0.842
         )
     """
     logger = get_audit_logger()

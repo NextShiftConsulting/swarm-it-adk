@@ -2,7 +2,7 @@
 Config bridge — converts ADK threshold dicts to controlplane GatekeeperConfig.
 
 ADK models.py defines thresholds as flat dicts like:
-    {"kappa": 0.7, "R": 0.3, "S": 0.4, "N": 0.5}
+    {"kappa_threshold": 0.7, "R": 0.3, "S": 0.4, "N": 0.5}
 
 This bridge maps them to GatekeeperConfig which uses the canonical
 gate parameters (N_thr, alpha_min, kappa_base, etc.).
@@ -19,7 +19,7 @@ def thresholds_to_config(thresholds: dict[str, Any]) -> GatekeeperConfig:
     """Convert ADK-style threshold dict to GatekeeperConfig.
 
     Args:
-        thresholds: Dict with keys like 'kappa', 'R', 'S', 'N',
+        thresholds: Dict with keys like 'kappa_threshold', 'R', 'S', 'N',
                     optionally 'kappa_H', 'kappa_L', 'kappa_interface'.
 
     Returns:
@@ -29,7 +29,7 @@ def thresholds_to_config(thresholds: dict[str, Any]) -> GatekeeperConfig:
         N_thr=thresholds.get("N", 0.5),
         alpha_min=thresholds.get("R", 0.3),
         c_min=thresholds.get("S", 0.4),
-        kappa_base=thresholds.get("kappa", 0.5),
+        kappa_base=thresholds.get("kappa_threshold", 0.5),
         kappa_L_min=thresholds.get("kappa_L", 0.3),
     )
 

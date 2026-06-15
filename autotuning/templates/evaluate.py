@@ -225,7 +225,7 @@ class MockCertifier:
             "R": R,
             "S": S,
             "N": N,
-            "kappa": kappa,
+            "kappa_coupling": kappa,
             "failed_gate": failed_gate,
         }
 

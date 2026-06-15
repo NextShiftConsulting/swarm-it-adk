@@ -51,7 +51,7 @@ class OneShotResult:
     R: float
     S: float
     N: float
-    kappa: float
+    kappa_coupling: float
 
     # Execution metadata
     gate_reached: int
@@ -89,7 +89,7 @@ class OneShotCertifier:
         ))
 
         if result.decision == "EXECUTE":
-            print(f"Certificate approved: kappa={result.kappa:.3f}")
+            print(f"Certificate approved: kappa_coupling={result.kappa_coupling:.3f}")
             print(f"Evidence: {result.evidence_file}")
     """
 
@@ -116,11 +116,11 @@ class OneShotCertifier:
 
         # Domain-specific thresholds (Stripe pattern: conditional rules)
         self.domain_thresholds = {
-            "medical": {"kappa": 0.9, "R": 0.5, "S": 0.6, "N": 0.3},
-            "legal": {"kappa": 0.85, "R": 0.5, "S": 0.5, "N": 0.4},
-            "financial": {"kappa": 0.85, "R": 0.5, "S": 0.5, "N": 0.4},
-            "research": {"kappa": 0.7, "R": 0.3, "S": 0.4, "N": 0.5},
-            "dev": {"kappa": 0.5, "R": 0.2, "S": 0.2, "N": 0.7},
+            "medical": {"kappa_threshold": 0.9, "R": 0.5, "S": 0.6, "N": 0.3},
+            "legal": {"kappa_threshold": 0.85, "R": 0.5, "S": 0.5, "N": 0.4},
+            "financial": {"kappa_threshold": 0.85, "R": 0.5, "S": 0.5, "N": 0.4},
+            "research": {"kappa_threshold": 0.7, "R": 0.3, "S": 0.4, "N": 0.5},
+            "dev": {"kappa_threshold": 0.5, "R": 0.2, "S": 0.2, "N": 0.7},
         }
 
     def certify(self, request: OneShotRequest) -> OneShotResult:
@@ -199,7 +199,7 @@ class OneShotCertifier:
             R=cert_result.get("R", 0.0),
             S=cert_result.get("S", 0.0),
             N=cert_result.get("N", 0.0),
-            kappa=cert_result.get("kappa", 0.0),
+            kappa_coupling=cert_result.get("kappa_coupling", 0.0),
             gate_reached=cert_result.get("gate_reached", 0),
             reason=cert_result.get("reason", ""),
             iterations=iterations,
@@ -284,7 +284,7 @@ class OneShotCertifier:
                 "R": result.get("R", 0.0),
                 "S": result.get("S", 0.0),
                 "N": result.get("N", 0.0),
-                "kappa": result.get("kappa", 0.0),
+                "kappa_coupling": result.get("kappa_coupling", 0.0),
                 "gate_reached": result.get("gate_reached", 0),
                 "reason": result.get("reason", ""),
             },

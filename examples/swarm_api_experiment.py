@@ -326,7 +326,7 @@ class GammaAgent(SwarmAgent):
             actual = result.decision.value
             exp = {
                 "name": f"gate_decision_{desc.lower().replace(' ', '_')}",
-                "inputs": {"R": R, "S": S, "N": N, "kappa": kappa, "sigma": sigma},
+                "inputs": {"R": R, "S": S, "N": N, "kappa_coupling": kappa, "sigma": sigma},
                 "expected": expected,
                 "actual": actual,
                 "passed": actual == expected,

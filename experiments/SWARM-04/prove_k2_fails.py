@@ -159,7 +159,7 @@ def test_small_models():
                 "dim": dim,
                 "n_samples": len(HIGH_VAR_TEXTS),
                 "stable_rank": round(stable_rank, 2),
-                "kappa": round(kappa, 2),
+                "kappa_coupling": round(kappa, 2),
                 "k_optimal": k_opt,
                 "k2_works": k2_works,
                 "k2_fails": not k2_works,
@@ -203,7 +203,7 @@ def run_swarm04():
                 "concentration": concentration,
                 "n_samples": 300,
                 "stable_rank": round(stable_rank, 2),
-                "kappa": round(kappa, 2),
+                "kappa_coupling": round(kappa, 2),
                 "k_optimal": k_opt,
                 "k2_works": k2_works,
                 "k2_fails": not k2_works,
@@ -231,7 +231,7 @@ def run_swarm04():
                 "n_clusters": n_clusters,
                 "n_samples": 300,
                 "stable_rank": round(stable_rank, 2),
-                "kappa": round(kappa, 2),
+                "kappa_coupling": round(kappa, 2),
                 "k_optimal": k_opt,
                 "k2_works": k2_works,
                 "k2_fails": not k2_works,
@@ -266,7 +266,7 @@ def run_swarm04():
     if failures:
         print("\n  K=2 FAILURE CASES (κ < 25):")
         for f in failures:
-            print(f"    - {f.get('strategy')}: κ={f['kappa']:.2f}, our k={f['k_optimal']}")
+            print(f"    - {f.get('strategy')}: kappa_coupling={f['kappa_coupling']:.2f}, our k={f['k_optimal']}")
 
         print(f"\n  ✓ HYPOTHESIS PROVEN: k=2 fails {n_k2_fails} cases")
         print("  ✓ Our formula k=min(ceil(65/κ),5) provides correct k")

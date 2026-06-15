@@ -142,15 +142,15 @@ class Conversation:
         Analyze quality metrics over conversation.
 
         Returns:
-            Dictionary of metric trends (kappa, alpha, sigma, R, S, N)
+            Dictionary of metric trends (kappa_coupling, alpha, sigma, R, S, N)
 
         Example:
             >>> trend = conv.get_quality_trend()
-            >>> print(trend['kappa'])
+            >>> print(trend['kappa_coupling'])
             [0.75, 0.72, 0.68, 0.65]  # Degrading over time
         """
         return {
-            "kappa": [turn.certificate.get("kappa", 0.0) for turn in self.turns],
+            "kappa_coupling": [turn.certificate.get("kappa_coupling", 0.0) for turn in self.turns],
             "alpha": [turn.certificate.get("alpha", 0.0) for turn in self.turns],
             "sigma": [turn.certificate.get("sigma", 0.0) for turn in self.turns],
             "R": [turn.certificate.get("R", 0.0) for turn in self.turns],
@@ -158,19 +158,19 @@ class Conversation:
             "N": [turn.certificate.get("N", 0.0) for turn in self.turns],
         }
 
-    def detect_degradation(self, metric: str = "kappa", threshold: float = 0.1) -> bool:
+    def detect_degradation(self, metric: str = "kappa_coupling", threshold: float = 0.1) -> bool:
         """
         Detect if quality is degrading over conversation.
 
         Args:
-            metric: Metric to check ("kappa", "alpha", "R", etc.)
+            metric: Metric to check ("kappa_coupling", "alpha", "R", etc.)
             threshold: Degradation threshold (e.g., 0.1 = 10% drop)
 
         Returns:
             True if metric degraded by more than threshold
 
         Example:
-            >>> if conv.detect_degradation("kappa", threshold=0.15):
+            >>> if conv.detect_degradation("kappa_coupling", threshold=0.15):
             ...     print("WARNING: Conversation quality degrading!")
         """
         trend = self.get_quality_trend().get(metric, [])
@@ -201,8 +201,8 @@ class Conversation:
                 'total_turns': 5,
                 'blocked_turns': 1,
                 'success_rate': 0.8,
-                'avg_kappa': 0.72,
-                'kappa_degradation': 0.15,
+                'avg_kappa_coupling': 0.72,
+                'kappa_coupling_degradation': 0.15,
                 'quality_trend': {...}
             }
         """
@@ -223,20 +223,20 @@ class Conversation:
 
         # Calculate average metrics
         trend = self.get_quality_trend()
-        avg_kappa = sum(trend["kappa"]) / len(trend["kappa"]) if trend["kappa"] else 0.0
+        avg_kappa_coupling = sum(trend["kappa_coupling"]) / len(trend["kappa_coupling"]) if trend["kappa_coupling"] else 0.0
 
         # Calculate degradation
-        kappa_degradation = 0.0
-        if len(trend["kappa"]) >= 2 and trend["kappa"][0] > 0:
-            kappa_degradation = (trend["kappa"][0] - trend["kappa"][-1]) / trend["kappa"][0]
+        kappa_coupling_degradation = 0.0
+        if len(trend["kappa_coupling"]) >= 2 and trend["kappa_coupling"][0] > 0:
+            kappa_coupling_degradation = (trend["kappa_coupling"][0] - trend["kappa_coupling"][-1]) / trend["kappa_coupling"][0]
 
         return {
             "conversation_id": self.conversation_id,
             "total_turns": total_turns,
             "blocked_turns": blocked,
             "success_rate": (total_turns - blocked) / total_turns,
-            "avg_kappa": avg_kappa,
-            "kappa_degradation": kappa_degradation,
+            "avg_kappa_coupling": avg_kappa_coupling,
+            "kappa_coupling_degradation": kappa_coupling_degradation,
             "quality_trend": trend,
             "timestamps": {
                 "start": self.turns[0].timestamp,

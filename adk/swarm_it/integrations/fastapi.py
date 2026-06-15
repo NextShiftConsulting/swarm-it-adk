@@ -212,7 +212,7 @@ class SwarmItMiddleware:
                 "R": cert.R,
                 "S": cert.S,
                 "N": cert.N,
-                "kappa": cert.kappa,
+                "kappa_coupling": cert.kappa_coupling,
             },
         }).encode()
 

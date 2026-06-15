@@ -181,7 +181,7 @@ class Evidence:
     # Output observations
     cert_id: Optional[str] = None
     decision: Optional[str] = None
-    kappa: Optional[float] = None
+    kappa_coupling: Optional[float] = None
     R: Optional[float] = None
     S: Optional[float] = None
     N: Optional[float] = None
@@ -286,7 +286,7 @@ class DOEValidator:
                 evidence.decision = cert.decision.value
                 evidence.has_decision_property = hasattr(cert.decision, 'allowed')
                 evidence.has_allowed_property = hasattr(cert.decision, 'allowed')
-                evidence.kappa = cert.kappa_compat
+                evidence.kappa_coupling = cert.kappa_compat
                 evidence.R = cert.R
                 evidence.S = cert.S
                 evidence.N = cert.N
@@ -432,12 +432,12 @@ class DOEValidator:
         proof.assertions.append(assertion_4)
 
         # Assertion 5: Kappa in valid range
-        kappa_valid = evidence.kappa is not None and 0.0 <= evidence.kappa <= 1.0
+        kappa_valid = evidence.kappa_coupling is not None and 0.0 <= evidence.kappa_coupling <= 1.0
         assertion_5 = {
             "id": "A5_KAPPA_RANGE",
             "description": "Kappa in [0, 1]",
-            "expected": "0.0 <= kappa <= 1.0",
-            "actual": evidence.kappa,
+            "expected": "0.0 <= kappa_coupling <= 1.0",
+            "actual": evidence.kappa_coupling,
             "pass": kappa_valid
         }
         proof.assertions.append(assertion_5)
@@ -529,7 +529,7 @@ class DOEValidator:
 
             # Collect aggregate stats
             if all_valid:
-                evidence.kappa = sum(c.kappa_compat for c in certs) / len(certs)
+                evidence.kappa_coupling = sum(c.kappa_compat for c in certs) / len(certs)
                 evidence.R = sum(c.R for c in certs) / len(certs)
                 evidence.S = sum(c.S for c in certs) / len(certs)
                 evidence.N = sum(c.N for c in certs) / len(certs)
@@ -619,7 +619,7 @@ class DOEValidator:
 
                     if evidence.is_rsct_certificate:
                         evidence.decision = cert.decision.value
-                        evidence.kappa = cert.kappa_compat
+                        evidence.kappa_coupling = cert.kappa_compat
 
                         proof.pass_fail = "PASS"
                         proof.verdict = "Valid input processed correctly"
@@ -697,10 +697,10 @@ def main():
                 "FAIL": "[FAIL]"
             }[proof.pass_fail]
 
-            kappa_str = f"{evidence.kappa:.3f}" if evidence.kappa is not None else "N/A"
+            kappa_str = f"{evidence.kappa_coupling:.3f}" if evidence.kappa_coupling is not None else "N/A"
             print(f"{status} {proof.experiment_id}: "
                   f"{prompt_level.name} × {api_method.name} "
-                  f"-> kappa={kappa_str} "
+                  f"-> kappa_coupling={kappa_str} "
                   f"({proof.pass_fail}: {proof.confidence:.0%})")
 
     print()
@@ -727,7 +727,7 @@ def main():
 
             print(f"{status} {proof.experiment_id}: "
                   f"{domain_level.name} × {prompt_level.name} "
-                  f"-> decision={evidence.decision}, kappa={fmt_float(evidence.kappa)}")
+                  f"-> decision={evidence.decision}, kappa_coupling={fmt_float(evidence.kappa_coupling)}")
 
     print()
 
@@ -747,7 +747,7 @@ def main():
     }[proof.pass_fail]
 
     print(f"{status} {proof.experiment_id}: Batch processing {len(batch_prompts)} prompts")
-    print(f"  Avg kappa: {fmt_float(evidence.kappa)}")
+    print(f"  Avg kappa_coupling: {fmt_float(evidence.kappa_coupling)}")
     print(f"  Avg R={fmt_float(evidence.R)}, "
           f"S={fmt_float(evidence.S)}, "
           f"N={fmt_float(evidence.N)}")
@@ -813,7 +813,7 @@ def main():
             print(f"  API Method: {proof.evidence.api_method}")
             print(f"  Return Type: {proof.evidence.return_type}")
             print(f"  Decision: {proof.evidence.decision}")
-            print(f"  Kappa: {fmt_float(proof.evidence.kappa)}")
+            print(f"  Kappa Coupling: {fmt_float(proof.evidence.kappa_coupling)}")
             print(f"  Simplex: R={fmt_float(proof.evidence.R)}, "
                   f"S={fmt_float(proof.evidence.S)}, "
                   f"N={fmt_float(proof.evidence.N)} "

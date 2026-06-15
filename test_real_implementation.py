@@ -190,7 +190,7 @@ try:
     # Store evidence
     location = storage.store_evidence(
         evidence_id="test_123",
-        evidence_data={"decision": "EXECUTE", "kappa": 0.842},
+        evidence_data={"decision": "EXECUTE", "kappa_coupling": 0.842},
         metadata={"user_id": "test_user"}
     )
     print("[OK] LocalStorageProvider works")

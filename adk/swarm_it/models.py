@@ -26,7 +26,7 @@ CERTIFICATION_MODELS = [
         name="Universal Rotor (64-dim)",
         description="Multi-architecture rotor for general use (default)",
         rotor_checkpoint="rotor_64_universal_titan_v1.pt",
-        thresholds={"kappa": 0.7, "R": 0.3, "S": 0.4, "N": 0.5},
+        thresholds={"kappa_threshold": 0.7, "R": 0.3, "S": 0.4, "N": 0.5},
         cost_per_cert=0.001,
         tags=["default", "production", "balanced"]
     ),
@@ -35,7 +35,7 @@ CERTIFICATION_MODELS = [
         name="Strict Policy",
         description="Tighter thresholds for safety-critical applications",
         rotor_checkpoint="rotor_64_universal_titan_v1.pt",
-        thresholds={"kappa": 0.85, "R": 0.5, "S": 0.6, "N": 0.3},
+        thresholds={"kappa_threshold": 0.85, "R": 0.5, "S": 0.6, "N": 0.3},
         cost_per_cert=0.001,
         tags=["safety-critical", "healthcare", "finance"]
     ),
@@ -44,7 +44,7 @@ CERTIFICATION_MODELS = [
         name="Permissive Policy",
         description="Looser thresholds for experimentation and development",
         rotor_checkpoint="rotor_64_universal_titan_v1.pt",
-        thresholds={"kappa": 0.5, "R": 0.2, "S": 0.3, "N": 0.7},
+        thresholds={"kappa_threshold": 0.5, "R": 0.2, "S": 0.3, "N": 0.7},
         cost_per_cert=0.001,
         tags=["development", "prototyping", "experimentation"]
     ),
@@ -53,7 +53,7 @@ CERTIFICATION_MODELS = [
         name="Research Mode",
         description="Very permissive for research and exploration",
         rotor_checkpoint="rotor_64_universal_titan_v1.pt",
-        thresholds={"kappa": 0.3, "R": 0.1, "S": 0.2, "N": 0.9},
+        thresholds={"kappa_threshold": 0.3, "R": 0.1, "S": 0.2, "N": 0.9},
         cost_per_cert=0.001,
         tags=["research", "academic", "exploration"]
     ),
@@ -63,7 +63,7 @@ CERTIFICATION_MODELS = [
         description="For vision-text hybrid systems with interface scoring",
         rotor_checkpoint="rotor_64_universal_titan_v1.pt",
         thresholds={
-            "kappa": 0.7,
+            "kappa_threshold": 0.7,
             "kappa_H": 0.65,  # High-level (text/symbolic)
             "kappa_L": 0.65,  # Low-level (vision/signal)
             "kappa_interface": 0.60,  # Cross-modal compatibility
@@ -120,7 +120,7 @@ def get_model(model_id: str) -> CertificationModel:
 
     Example:
         >>> model = get_model("strict")
-        >>> print(model.thresholds["kappa"])
+        >>> print(model.thresholds["kappa_threshold"])
         0.85
     """
     for model in CERTIFICATION_MODELS:
@@ -160,7 +160,7 @@ def register_custom_model(model: CertificationModel):
         ...     name="Custom Model",
         ...     description="Company-specific policy",
         ...     rotor_checkpoint="my_rotor.pt",
-        ...     thresholds={"kappa": 0.75, "R": 0.4, "S": 0.5, "N": 0.4},
+        ...     thresholds={"kappa_threshold": 0.75, "R": 0.4, "S": 0.5, "N": 0.4},
         ...     cost_per_cert=0.001,
         ...     tags=["custom", "company"]
         ... )

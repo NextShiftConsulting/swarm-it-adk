@@ -214,14 +214,14 @@ class MetricsCollector:
 
     def record_quality_metrics(
         self,
-        kappa: float,
+        kappa_coupling: float,
         R: float,
         S: float,
         N: float,
         domain: str = "research"
     ):
-        """Record quality metrics (kappa, R, S, N)."""
-        self.kappa_gauge.labels(domain=domain).set(kappa)
+        """Record quality metrics (kappa_coupling, R, S, N)."""
+        self.kappa_gauge.labels(domain=domain).set(kappa_coupling)
         self.rsn_gauges['R'].labels(domain=domain).set(R)
         self.rsn_gauges['S'].labels(domain=domain).set(S)
         self.rsn_gauges['N'].labels(domain=domain).set(N)

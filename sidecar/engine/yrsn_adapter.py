@@ -159,7 +159,7 @@ class LocalYRSNAdapter(YRSNAdapter):
         R: float,
         S: float,
         N: float,
-        kappa: float,
+        kappa_coupling: float,
         sigma: float,
         pre_screen,
     ) -> tuple:
@@ -191,8 +191,8 @@ class LocalYRSNAdapter(YRSNAdapter):
             return "DELEGATE", 3, f"Unstable: sigma={sigma:.2f} > {SIGMA_THRESHOLD}"
 
         # Gate 4: Kappa check
-        if kappa < KAPPA_THRESHOLD:
-            return "REPAIR", 4, f"Low compatibility: kappa={kappa:.2f} < {KAPPA_THRESHOLD}"
+        if kappa_coupling < KAPPA_THRESHOLD:
+            return "REPAIR", 4, f"Low compatibility: kappa_coupling={kappa_coupling:.2f} < {KAPPA_THRESHOLD}"
 
         # Gate 5: All checks passed
         return "EXECUTE", 5, "All gates passed"

@@ -165,7 +165,7 @@ class GeoCertificate(BaseModel):
     S_sup: float = Field(..., ge=0.0, le=1.0)
     N:     float = Field(..., ge=0.0, le=1.0)
     alpha: float = Field(..., ge=0.0, le=1.0)
-    kappa: float = Field(..., ge=0.0, le=1.0,
+    kappa_coupling: float = Field(..., ge=0.0, le=1.0,
                          description="R*(1-N). NOT the ADK embedding-viability compute_kappa.")
     sigma: float = Field(..., ge=0.0)
 

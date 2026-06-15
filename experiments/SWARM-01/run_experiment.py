@@ -383,7 +383,7 @@ def test_h4_landauer_tolerance() -> HypothesisResult:
         test_cases.append({
             "sigma": sigma,
             "kappa_req": kappa_req,
-            "kappa": kappa_hard_fail,
+            "kappa_coupling": kappa_hard_fail,
             "zone": "hard_fail",
             "expected": "RE_ENCODE",
             "is_gray_zone": False,
@@ -403,7 +403,7 @@ def test_h4_landauer_tolerance() -> HypothesisResult:
         test_cases.append({
             "sigma": sigma,
             "kappa_req": kappa_req,
-            "kappa": kappa_gray,
+            "kappa_coupling": kappa_gray,
             "zone": "gray",
             "expected": expected_decision,
             "is_gray_zone": is_gray,
@@ -420,7 +420,7 @@ def test_h4_landauer_tolerance() -> HypothesisResult:
         test_cases.append({
             "sigma": sigma,
             "kappa_req": kappa_req,
-            "kappa": kappa_pass,
+            "kappa_coupling": kappa_pass,
             "zone": "pass",
             "expected": "PROCEED",
             "is_gray_zone": False,
@@ -681,26 +681,26 @@ def test_h7_api_consistency() -> HypothesisResult:
 
         # Entry point 1: certify()
         cert1 = certify(prompt)
-        results["certify"] = {"R": cert1.R, "S": cert1.S, "N": cert1.N, "kappa": cert1.kappa_compat}
+        results["certify"] = {"R": cert1.R, "S": cert1.S, "N": cert1.N, "kappa_coupling": cert1.kappa_compat}
 
         # Entry point 2: certify_local()
         cert2 = certify_local(prompt)
-        results["certify_local"] = {"R": cert2.R, "S": cert2.S, "N": cert2.N, "kappa": cert2.kappa_compat}
+        results["certify_local"] = {"R": cert2.R, "S": cert2.S, "N": cert2.N, "kappa_coupling": cert2.kappa_compat}
 
         # Entry point 3: LocalEngine
         engine = LocalEngine()
         cert3 = engine.certify(prompt)
-        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S, "N": cert3.N, "kappa": cert3.kappa_compat}
+        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S, "N": cert3.N, "kappa_coupling": cert3.kappa_compat}
 
         # Entry point 4: FluentCertifier
         cert4 = FluentCertifier().with_prompt(prompt).certify()
-        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S, "N": cert4.N, "kappa": cert4.kappa_compat}
+        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S, "N": cert4.N, "kappa_coupling": cert4.kappa_compat}
 
         # Calculate variance
         R_values = [r["R"] for r in results.values()]
         S_values = [r["S"] for r in results.values()]
         N_values = [r["N"] for r in results.values()]
-        kappa_values = [r["kappa"] for r in results.values()]
+        kappa_values = [r["kappa_coupling"] for r in results.values()]
 
         R_var = max(R_values) - min(R_values)
         S_var = max(S_values) - min(S_values)
@@ -722,7 +722,7 @@ def test_h7_api_consistency() -> HypothesisResult:
                 "R": R_var,
                 "S": S_var,
                 "N": N_var,
-                "kappa": kappa_var,
+                "kappa_coupling": kappa_var,
                 "total": total_variance,
             },
             "consistent": is_consistent,
@@ -730,7 +730,7 @@ def test_h7_api_consistency() -> HypothesisResult:
 
         for entry_point, values in results.items():
             print(f"    {entry_point:20}: R={values['R']:.4f} S={values['S']:.4f} "
-                  f"N={values['N']:.4f} κ={values['kappa']:.4f}")
+                  f"N={values['N']:.4f} kappa_coupling={values['kappa_coupling']:.4f}")
         print(f"    Variance: {total_variance:.2e} | {'✓' if is_consistent else '✗'}")
 
     passed = max_variance < 1e-10 and consistent == total_tests

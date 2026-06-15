@@ -47,7 +47,7 @@ class FluentCertifier:
             FluentCertifier()
             .with_prompt("Medical diagnosis text")
             .for_domain("medical")
-            .with_threshold("kappa", 0.9)
+            .with_threshold("kappa_threshold", 0.9)
             .with_threshold("R", 0.5)
             .with_user("doc_123")
             .enable_caching()
@@ -128,10 +128,10 @@ class FluentCertifier:
         Set quality threshold.
 
         Args:
-            metric: One of: kappa, R, S, N
+            metric: One of: kappa_threshold, R, S, N
             value: Threshold value (0.0-1.0)
         """
-        if metric == "kappa":
+        if metric == "kappa_threshold":
             self._kappa = value
         elif metric == "R":
             self._R = value
@@ -143,14 +143,14 @@ class FluentCertifier:
 
     def with_thresholds(
         self,
-        kappa: Optional[float] = None,
+        kappa_threshold: Optional[float] = None,
         R: Optional[float] = None,
         S: Optional[float] = None,
         N: Optional[float] = None
     ) -> 'FluentCertifier':
         """Set multiple thresholds at once."""
-        if kappa is not None:
-            self._kappa = kappa
+        if kappa_threshold is not None:
+            self._kappa = kappa_threshold
         if R is not None:
             self._R = R
         if S is not None:

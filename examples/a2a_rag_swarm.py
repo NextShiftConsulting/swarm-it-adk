@@ -77,7 +77,7 @@ class RetrieverAgent:
         )
 
         result = {
-            "query_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+            "query_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "documents": [],
             "blocked": not msg.allowed,
         }
@@ -113,7 +113,7 @@ class SynthesizerAgent:
         )
 
         result = {
-            "context_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+            "context_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "answer": None,
             "blocked": not msg.allowed,
         }
@@ -144,10 +144,10 @@ class ValidatorAgent:
             swarm, source_id=source_id, target_id=self.agent.id, content=answer
         )
 
-        quality_ok = msg.kappa >= 0.5 if msg.kappa else False
+        quality_ok = msg.kappa_coupling >= 0.5 if msg.kappa_coupling else False
 
         result = {
-            "output_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+            "output_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "quality_ok": quality_ok,
             "validation": "PASS" if quality_ok else "FAIL",
         }
@@ -165,7 +165,7 @@ def run_rag_pipeline(query: str, certifier: SwarmCertifier, swarm, retriever, sy
     ret_result = retriever.retrieve(query, swarm, source_id="user")
     rc = ret_result["query_cert"]
     status = "✓" if rc["allowed"] else "✗"
-    print(f"  Query certification: R={rc['R']:.2f} κ={rc['kappa']:.2f} → {'ALLOWED' if rc['allowed'] else 'BLOCKED'} {status}")
+    print(f"  Query certification: R={rc['R']:.2f} kappa_coupling={rc['kappa_coupling']:.2f} -> {'ALLOWED' if rc['allowed'] else 'BLOCKED'} {status}")
 
     if ret_result["blocked"]:
         print("  → Pipeline stopped: query blocked")
@@ -178,7 +178,7 @@ def run_rag_pipeline(query: str, certifier: SwarmCertifier, swarm, retriever, sy
     syn_result = synthesizer.synthesize(query, ret_result["documents"], swarm, source_id="retriever")
     sc = syn_result["context_cert"]
     status = "✓" if sc["allowed"] else "✗"
-    print(f"  Context certification: R={sc['R']:.2f} κ={sc['kappa']:.2f} → {'ALLOWED' if sc['allowed'] else 'BLOCKED'} {status}")
+    print(f"  Context certification: R={sc['R']:.2f} kappa_coupling={sc['kappa_coupling']:.2f} -> {'ALLOWED' if sc['allowed'] else 'BLOCKED'} {status}")
 
     if syn_result["blocked"]:
         print("  → Pipeline stopped: context blocked")
@@ -191,7 +191,7 @@ def run_rag_pipeline(query: str, certifier: SwarmCertifier, swarm, retriever, sy
     val_result = validator.validate(syn_result["answer"], swarm, source_id="synthesizer")
     vc = val_result["output_cert"]
     quality = "✓" if val_result["quality_ok"] else "✗"
-    print(f"  Output certification: R={vc['R']:.2f} κ={vc['kappa']:.2f} → QUALITY {'OK' if val_result['quality_ok'] else 'LOW'} {quality}")
+    print(f"  Output certification: R={vc['R']:.2f} kappa_coupling={vc['kappa_coupling']:.2f} -> QUALITY {'OK' if val_result['quality_ok'] else 'LOW'} {quality}")
     print(f"  Validation: {val_result['validation']}")
 
 

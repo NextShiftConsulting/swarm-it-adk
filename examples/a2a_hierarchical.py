@@ -80,7 +80,7 @@ class ManagerAgent:
             results.append({
                 "worker_id": worker_id,
                 "subtask": subtask,
-                "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+                "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             })
 
         return results
@@ -114,7 +114,7 @@ class WorkerAgent:
 
         return {
             "result": result,
-            "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+            "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
         }
 
 
@@ -150,7 +150,7 @@ class AggregatorAgent:
 Overall sector outlook: BULLISH with cloud and AI driving growth."""
 
         return {
-            "input_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa": msg.kappa, "allowed": msg.allowed},
+            "input_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "synthesis": synthesis,
         }
 
@@ -219,7 +219,7 @@ def main():
     for d in distributions:
         status = "✓" if d["cert"]["allowed"] else "✗"
         print(f"  → {d['worker_id']}: \"{d['subtask'][:40]}...\"")
-        print(f"     κ={d['cert']['kappa']:.2f} {status}")
+        print(f"     kappa_coupling={d['cert']['kappa_coupling']:.2f} {status}")
 
     # Workers process
     print()
@@ -234,7 +234,7 @@ def main():
 
         status = "✓" if result["cert"]["allowed"] else "✗"
         print(f"  {worker_id}: \"{result['result'][:45]}...\"")
-        print(f"     κ={result['cert']['kappa']:.2f} {status}")
+        print(f"     kappa_coupling={result['cert']['kappa_coupling']:.2f} {status}")
 
     # Aggregator combines
     print()
@@ -244,7 +244,7 @@ def main():
 
     agg_result = agg.aggregate(worker_results, swarm)
     status = "✓" if agg_result["input_cert"]["allowed"] else "✗"
-    print(f"  Input certification: κ={agg_result['input_cert']['kappa']:.2f} {status}")
+    print(f"  Input certification: kappa_coupling={agg_result['input_cert']['kappa_coupling']:.2f} {status}")
     print("\n  Combined analysis:")
     for line in agg_result["synthesis"].split("\n"):
         print(f"    {line}")
@@ -261,7 +261,7 @@ def main():
     for d in attack_dist:
         status = "✓" if d["cert"]["allowed"] else "✗ BLOCKED"
         print(f"  → {d['worker_id']}: \"{d['subtask'][:40]}...\"")
-        print(f"     R={d['cert']['R']:.2f} N={d['cert']['N']:.2f} κ={d['cert']['kappa']:.2f} {status}")
+        print(f"     R={d['cert']['R']:.2f} N={d['cert']['N']:.2f} kappa_coupling={d['cert']['kappa_coupling']:.2f} {status}")
 
     # === Swarm summary ===
     print()

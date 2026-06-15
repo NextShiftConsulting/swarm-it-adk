@@ -40,7 +40,7 @@ def chat_with_certification(
         },
     )
 
-    print(f"[Certification] R={cert.R:.3f}, N={cert.N:.3f}, kappa={cert.kappa:.3f}")
+    print(f"[Certification] R={cert.R:.3f}, N={cert.N:.3f}, kappa_coupling={cert.kappa_coupling:.3f}")
     print(f"[Certification] Decision: {cert.decision.value}")
 
     if not cert.allowed:

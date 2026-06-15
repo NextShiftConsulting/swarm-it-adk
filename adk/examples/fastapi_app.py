@@ -163,7 +163,7 @@ async def certify_only(request: ChatRequest):
         },
         "metrics": {
             "alpha": cert.alpha,
-            "kappa": cert.kappa,
+            "kappa_coupling": cert.kappa_coupling,
             "sigma": cert.sigma,
             "margin": cert.margin,
         },

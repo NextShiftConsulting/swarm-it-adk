@@ -108,7 +108,7 @@ class SwarmCertifier:
         msg.R = cert["R"]
         msg.S = cert["S"]
         msg.N = cert["N"]
-        msg.kappa = cert.get("kappa", cert.get("kappa_compat", 0))
+        msg.kappa_coupling = cert.get("kappa_coupling", cert.get("kappa_compat", 0))
         msg.decision = cert["decision"]
         msg.allowed = cert["allowed"]
 
@@ -200,7 +200,7 @@ class SwarmCertifier:
         """Check if message should be blocked based on certification."""
         if not msg.allowed:
             return True
-        if msg.kappa and msg.kappa < self.BLOCK_THRESHOLD:
+        if msg.kappa_coupling and msg.kappa_coupling < self.BLOCK_THRESHOLD:
             return True
         return False
 

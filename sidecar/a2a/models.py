@@ -112,7 +112,7 @@ class Message:
     R: Optional[float] = None
     S: Optional[float] = None
     N: Optional[float] = None
-    kappa: Optional[float] = None
+    kappa_coupling: Optional[float] = None
     decision: Optional[str] = None
     allowed: bool = False
 

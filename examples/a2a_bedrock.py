@@ -109,7 +109,7 @@ class BedrockAgent:
                 "R": req_msg.R,
                 "S": req_msg.S,
                 "N": req_msg.N,
-                "kappa": req_msg.kappa,
+                "kappa_coupling": req_msg.kappa_coupling,
                 "allowed": req_msg.allowed,
                 "decision": req_msg.decision,
             }
@@ -157,7 +157,7 @@ class BedrockAgent:
                 "R": resp_msg.R,
                 "S": resp_msg.S,
                 "N": resp_msg.N,
-                "kappa": resp_msg.kappa,
+                "kappa_coupling": resp_msg.kappa_coupling,
                 "allowed": resp_msg.allowed,
             }
 
@@ -214,7 +214,7 @@ def main():
         rc = result["request_cert"]
         status = "✓" if rc["allowed"] else "✗"
         print("\nRequest Certification:")
-        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f} → {status}")
+        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} kappa_coupling={rc['kappa_coupling']:.2f} -> {status}")
 
     if result["response"]:
         print("\nBedrock Response:")
@@ -223,7 +223,7 @@ def main():
     if result["response_cert"]:
         rc = result["response_cert"]
         print("\nResponse Certification:")
-        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f} → Quality verified ✓")
+        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} kappa_coupling={rc['kappa_coupling']:.2f} -> Quality verified")
 
     # === Test 2: Blocked request ===
     print()
@@ -240,7 +240,7 @@ def main():
     if result["blocked"]:
         rc = result["request_cert"]
         print("\nRequest Certification:")
-        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} κ={rc['kappa']:.2f}")
+        print(f"  R={rc['R']:.2f} S={rc['S']:.2f} N={rc['N']:.2f} kappa_coupling={rc['kappa_coupling']:.2f}")
         print(f"  → BLOCKED ✗ ({rc['decision']})")
         print("\n  Bedrock was NOT called - attack prevented!")
 

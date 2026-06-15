@@ -228,7 +228,7 @@ def run_real_experiment():
                 "dim": dim,
                 "n_samples": len(EXPANDED_SAMPLES),
                 "stable_rank": round(stable_rank, 2),
-                "kappa": round(kappa, 2),
+                "kappa_coupling": round(kappa, 2),
                 "is_choked": is_choked,
                 "k_optimal": k_optimal,
                 "kappa_after": round(kappa_after, 2),

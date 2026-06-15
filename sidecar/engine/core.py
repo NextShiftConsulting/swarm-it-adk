@@ -49,7 +49,7 @@ class RSCTEngine:
             "R": round(R, 4),
             "S": round(S, 4),
             "N": round(N, 4),
-            "kappa": round(kappa, 4),
+            "kappa_coupling": round(kappa, 4),
             "decision": decision,
             "gate": gate,
             "allowed": decision in ("EXECUTE", "REPAIR"),
@@ -58,7 +58,7 @@ class RSCTEngine:
     def _reject(self, prompt: str, reason: str) -> Dict[str, Any]:
         return {
             "R": 0.0, "S": 0.0, "N": 1.0,
-            "kappa": 0.0,
+            "kappa_coupling": 0.0,
             "decision": "REJECT",
             "gate": 0,
             "allowed": False,

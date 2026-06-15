@@ -90,7 +90,7 @@ class TestKappaViability:
         embeddings = np.random.randn(10, 384).astype(np.float32)
         result = check_kappa(embeddings)
 
-        assert hasattr(result, 'kappa')
+        assert hasattr(result, 'kappa_coupling')
         assert hasattr(result, 'stable_rank')
         assert hasattr(result, 'is_viable')
         assert hasattr(result, 'recommended_k')
@@ -102,7 +102,7 @@ class TestKappaViability:
         result = check_kappa(embeddings)
 
         # With random data, kappa should be reasonably high
-        assert result.kappa > 1.0
+        assert result.kappa_coupling > 1.0
         assert result.dim == 384
 
     def test_recommended_k_calculation(self):
