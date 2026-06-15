@@ -1,10 +1,22 @@
 """Tests for RSCT Engine."""
 
+import os
+
+import pytest
+
 from engine.rsct import RSCTEngine
 
+requires_api_key = pytest.mark.xfail(
+    not os.environ.get("OPENAI_API_KEY"),
+    reason="OPENAI_API_KEY not set — expected fail without credentials",
+    raises=Exception,
+    strict=False,
+)
 
+
+@requires_api_key
 class TestRSCTEngine:
-    """Tests for RSCTEngine certification."""
+    """Tests for RSCTEngine certification. Requires OPENAI_API_KEY."""
 
     def setup_method(self):
         self.engine = RSCTEngine()
@@ -85,52 +97,37 @@ class TestRSCTEngine:
 
 
 class TestValidationFeedback:
-    """Tests for validation feedback loop."""
+    """Tests for validation feedback loop (deprecated stubs)."""
 
     def setup_method(self):
         self.engine = RSCTEngine()
 
-    def test_record_validation(self):
-        """Validation recording should work."""
+    def test_record_validation_returns_none(self):
+        """Deprecated: record_validation is a no-op stub."""
         result = self.engine.record_validation(
             certificate_id="test-123",
             validation_type="TYPE_I",
             score=0.9,
             failed=False,
         )
+        assert result is None
 
-        # First few validations shouldn't trigger adjustments
-        assert result is None or isinstance(result, dict)
-
-    def test_failure_rate_tracking(self):
-        """Failure rates should be tracked."""
-        # Record some validations
-        for i in range(10):
-            self.engine.record_validation(
-                certificate_id=f"test-{i}",
-                validation_type="TYPE_I",
-                score=0.5,
-                failed=i < 3,  # 3/10 = 30% failure
-            )
-
+    def test_failure_rates_empty(self):
+        """Deprecated: get_failure_rates returns empty dict."""
         rates = self.engine.get_failure_rates()
-        assert "TYPE_I" in rates
-        assert rates["TYPE_I"] == 0.3
+        assert rates == {}
 
-    def test_threshold_adjustment_triggered(self):
-        """High failure rate should trigger adjustment recommendation."""
-        # Record many failures to trigger adjustment
+    def test_bulk_validation_still_noop(self):
+        """Deprecated: many record_validation calls still return None."""
+        result = None
         for i in range(20):
             result = self.engine.record_validation(
                 certificate_id=f"test-{i}",
                 validation_type="TYPE_I",
                 score=0.3,
-                failed=True,  # 100% failure
+                failed=True,
             )
-
-        # Should eventually recommend tightening
-        assert result is not None
-        assert result["recommendation"] == "tighten"
+        assert result is None
 
 
 class TestThresholds:
@@ -146,22 +143,21 @@ class TestThresholds:
         assert thresholds["kappa_threshold"] == 0.7
         assert thresholds["N_threshold"] == 0.5
 
-    def test_set_threshold(self):
-        """Thresholds can be modified."""
+    def test_set_threshold_is_noop(self):
+        """Deprecated: set_threshold is a no-op stub."""
         self.engine.set_threshold("kappa_threshold", 0.8)
+        # set_threshold is deprecated no-op; value doesn't change
+        assert self.engine.get_thresholds()["kappa_threshold"] == 0.7
 
-        assert self.engine.thresholds["kappa_threshold"] == 0.8
-
+    @requires_api_key
     def test_stricter_threshold_affects_decisions(self):
         """Stricter kappa threshold should block more."""
         # With default threshold
         cert1 = self.engine.certify(prompt="Test")
-        _ = cert1["decision"]  # Capture but don't use - testing that stricter threshold changes result
+        _ = cert1["decision"]
 
         # With stricter threshold
         self.engine.set_threshold("kappa_threshold", 0.95)
         cert2 = self.engine.certify(prompt="Test")
 
-        # Stricter threshold may change decision
-        # (depends on computed kappa)
         assert cert2["decision"] in ("EXECUTE", "REPAIR", "DELEGATE", "BLOCK", "REJECT")

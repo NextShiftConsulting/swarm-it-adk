@@ -1,8 +1,6 @@
 """Tests for certificate store."""
 
 import pytest
-import tempfile
-import os
 
 from store.certificates import MemoryCertificateStore, SQLiteCertificateStore
 
@@ -102,11 +100,8 @@ class TestSQLiteStore:
     """Tests for SQLiteCertificateStore."""
 
     @pytest.fixture
-    def db_path(self):
-        fd, path = tempfile.mkstemp(suffix=".db")
-        os.close(fd)
-        yield path
-        os.unlink(path)
+    def db_path(self, tmp_path):
+        return str(tmp_path / "test.db")
 
     def test_store_and_get(self, db_path):
         store = SQLiteCertificateStore(db_path)
