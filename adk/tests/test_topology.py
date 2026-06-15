@@ -19,10 +19,11 @@ from swarm_it.topology.patterns import (
 
 
 def test_no_kappa_gate_on_certificate():
-    """ADR-020 D7: kappa_gate must not exist; kappa_compat must exist."""
-    from swarm_it.client import RSCTCertificate
-    assert not hasattr(RSCTCertificate, 'kappa_gate'), "kappa_gate still on RSCTCertificate"
-    assert hasattr(RSCTCertificate, 'kappa_compat'), "kappa_compat missing from RSCTCertificate"
+    """ADR-020 D7: kappa_gate must not exist; kappa_coupling must exist (Q-007)."""
+    from swarm_it.client import Certificate
+    fields = Certificate.__dataclass_fields__
+    assert 'kappa_gate' not in fields, "kappa_gate still on Certificate"
+    assert 'kappa_coupling' in fields, "kappa_coupling missing from Certificate"
 
 
 class TestSolverType:

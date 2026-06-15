@@ -173,11 +173,12 @@ def _classify_mode(cert: "RSCTCertificate") -> RSCTMode:
 
     # Group 4: Execution (requires kappa decomposition)
     if cert.has_kappa_decomposition:
+        # Interface check first — more specific than weakest-link
+        if cert.kappa_interface is not None and cert.kappa_interface < 0.3:
+            return RSCTMode.CROSS_MODAL_DESYNC
         kappas = [k for k in [cert.kappa_H, cert.kappa_L, cert.kappa_interface] if k is not None]
         if kappas and min(kappas) < 0.3:
             return RSCTMode.WEAKEST_LINK_CASCADE
-        if cert.kappa_interface is not None and cert.kappa_interface < 0.3:
-            return RSCTMode.CROSS_MODAL_DESYNC
 
     return RSCTMode.NOMINAL
 

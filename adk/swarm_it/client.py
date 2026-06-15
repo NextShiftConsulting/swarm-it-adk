@@ -513,7 +513,7 @@ class SwarmIt:
             total_n += cert.N
 
             if cert.kappa_coupling < min_kappa:
-                min_kappa = cert.kappa
+                min_kappa = cert.kappa_coupling
                 weakest_link = agent["agent_id"]
 
         n_agents = len(agents)
