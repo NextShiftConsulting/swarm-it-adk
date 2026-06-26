@@ -1,0 +1,58 @@
+# FAILURE_TAXONOMY.yaml — swarm-it-adk
+# Domain-specific gate adaptation declaration (ADR-057)
+# This file documents intentional divergences from canonical rsct-core gate evaluation.
+
+package: swarm-it-adk
+domain: sdk_orchestration
+canonical_reference: yrsn-controlplane.SequentialGatekeeper
+
+# NOTE: Gate 0 pre-screen is legitimate domain adaptation (Category A).
+# Sidecar Gates 1-5 hardcoded thresholds are copy-paste (Category B — to be fixed).
+
+execution_model: sequential_early_exit_with_pre_screen
+# Extends canonical with Gate 0 pre-screen before RSCT evaluation.
+
+vocabulary:
+  # Uses canonical internal vocabulary
+  EXECUTE: "All gates pass"
+  REJECT: "Gate 0 pre-screen or Gate 1 integrity failure"
+  BLOCK: "Gate 2 consensus failure"
+  RE_ENCODE: "Gate 3 admissibility failure"
+  REPAIR: "Gate 4 grounding failure"
+
+gates:
+  gate_0:
+    canonical_name: null  # No canonical equivalent
+    domain_name: "Severity pre-screen"
+    metric: pre_screen.max_severity
+    threshold: "max_severity >= 0.90"
+    decision: REJECT
+    divergence: >
+      Domain-specific safety gate with no canonical equivalent.
+      Short-circuits all RSCT evaluation when sidecar detects
+      severe pattern (>= 90% severity). Returns gate_reached=0.
+    file: sidecar/engine/yrsn_adapter.py
+    line: 177
+
+  # Gates 1-5: Currently hardcoded copy-paste of canonical thresholds.
+  # TO BE FIXED in Phase 2: delegate to yrsn-controlplane opaquely.
+  # Gate 0 pre-screen stays as domain-specific adaptation.
+
+delegation:
+  calls_rsct_core: []
+  delegates_to_controlplane:
+    - certifier.py  # Already delegates correctly (topology/certifier.py:226)
+  reimplements:
+    - sidecar_gate_evaluation  # Hardcoded Gates 1-5 — TO BE FIXED
+  adapts:
+    - gate_0_pre_screen  # Domain-specific safety gate — KEEP
+  reason: >
+    SDK sidecar adds Gate 0 pre-screen for severe pattern detection
+    before RSCT evaluation. This is a domain-specific safety gate
+    that canonical does not provide. Gates 1-5 in the sidecar are
+    copy-paste and will be replaced with opaque controlplane calls.
+
+files:
+  domain_adaptation: sidecar/engine/yrsn_adapter.py  # Gate 0 — Category A — keep
+  copy_paste: sidecar/engine/yrsn_adapter.py  # Gates 1-5 — Category B — fix pending
+  correct_delegation: adk/swarm_it/topology/certifier.py  # Already correct
