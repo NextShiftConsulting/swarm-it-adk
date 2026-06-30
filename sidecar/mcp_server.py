@@ -266,6 +266,8 @@ def handle_request(request: dict) -> dict:
         tool_name = params.get("name")
         tool_args = params.get("arguments", {})
 
+        sys.stderr.write(f"mcp.tool_call: tool={tool_name}\n")
+        sys.stderr.flush()
         handler = TOOL_HANDLERS.get(tool_name)
         if handler is None:
             return {
@@ -318,6 +320,15 @@ def handle_request(request: dict) -> dict:
 
 def main():
     """MCP server main loop - reads JSON-RPC from stdin, writes to stdout."""
+    # Require MCP_AUTH_TOKEN to prevent unauthorized launches
+    auth_token = os.environ.get("MCP_AUTH_TOKEN")
+    if not auth_token:
+        sys.stderr.write(
+            "ERROR: MCP_AUTH_TOKEN env var required. "
+            "Set it in your MCP client config to authorize this server.\n"
+        )
+        sys.exit(1)
+
     # Log to stderr so it doesn't interfere with protocol
     sys.stderr.write("Swarm-It MCP Server starting...\n")
     sys.stderr.flush()
