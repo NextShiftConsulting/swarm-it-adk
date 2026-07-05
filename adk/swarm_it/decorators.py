@@ -147,6 +147,7 @@ def certify_output(
     client: Optional["SwarmIt"] = None,
     policy: Optional[str] = None,
     on_block: Optional[Callable[["Certificate"], Any]] = None,
+    cycle_guard: Optional[Any] = None,
 ):
     """
     Decorator that certifies function OUTPUT (Claim 9/18 handoff loop).
@@ -154,6 +155,11 @@ def certify_output(
     Runs the function, then certifies the return value as a pair
     (input=premise, output=hypothesis). If the output fails certification,
     calls on_block or raises GateBlockedError.
+
+    Args:
+        cycle_guard: Optional CycleGuard (from yrsn_controlplane.coordinator).
+            If provided, enter_handoff() is called on entry and exit() on
+            return, enforcing Claim 9 mutual exclusivity with repair cycles.
 
     Usage:
         @certify_output
@@ -172,31 +178,39 @@ def certify_output(
 
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            # Extract input context for pair certification
-            input_context = _extract_context(f, args, kwargs)
+            # Claim 9: enter handoff cycle (mutually exclusive with repair)
+            if cycle_guard is not None:
+                cycle_guard.enter_handoff()
 
-            # Execute the function first (no input gate)
-            result = f(*args, **kwargs)
+            try:
+                # Extract input context for pair certification
+                input_context = _extract_context(f, args, kwargs)
 
-            # Extract output text from result
-            output_text = str(result) if result is not None else ""
+                # Execute the function first (no input gate)
+                result = f(*args, **kwargs)
 
-            # Certify as pair if we have input context, else unary
-            if input_context:
-                cert = c.certify_pair(
-                    premise=input_context,
-                    hypothesis=output_text,
-                    policy=policy,
-                )
-            else:
-                cert = c.certify(output_text, policy=policy)
+                # Extract output text from result
+                output_text = str(result) if result is not None else ""
 
-            if not cert.allowed:
-                if on_block is not None:
-                    return on_block(cert)
-                raise GateBlockedError(cert)
+                # Certify as pair if we have input context, else unary
+                if input_context:
+                    cert = c.certify_pair(
+                        premise=input_context,
+                        hypothesis=output_text,
+                        policy=policy,
+                    )
+                else:
+                    cert = c.certify(output_text, policy=policy)
 
-            return result
+                if not cert.allowed:
+                    if on_block is not None:
+                        return on_block(cert)
+                    raise GateBlockedError(cert)
+
+                return result
+            finally:
+                if cycle_guard is not None:
+                    cycle_guard.exit()
 
         wrapper._swarm_it_client = c
         wrapper._swarm_it_output_cert = True

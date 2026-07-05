@@ -170,11 +170,13 @@ class SwarmItCallbackHandler:
         client: "SwarmIt",
         policy: Optional[str] = None,
         block_on_reject: bool = False,
+        cycle_guard: Optional[Any] = None,
     ):
         self.client = client
         self.policy = policy
         self.block_on_reject = block_on_reject
         self.certificates: List["Certificate"] = []
+        self._cycle_guard = cycle_guard
 
     def on_llm_start(
         self,
@@ -185,6 +187,10 @@ class SwarmItCallbackHandler:
         """Called when LLM starts - certify the prompts."""
         from ..exceptions import GateBlockedError
 
+        # Claim 9: enter handoff cycle (mutually exclusive with repair)
+        if self._cycle_guard is not None:
+            self._cycle_guard.enter_handoff()
+
         for prompt in prompts:
             cert = self.client.certify(prompt, policy=self.policy)
             # Stash input prompt for on_llm_end pair certification
@@ -192,6 +198,8 @@ class SwarmItCallbackHandler:
             self.certificates.append(cert)
 
             if self.block_on_reject and not cert.allowed:
+                if self._cycle_guard is not None:
+                    self._cycle_guard.exit()
                 raise GateBlockedError(cert)
 
     def on_chain_start(
@@ -238,12 +246,18 @@ class SwarmItCallbackHandler:
 
         self.certificates.append(cert)
 
+        # Claim 9: exit handoff cycle
+        if self._cycle_guard is not None:
+            self._cycle_guard.exit()
+
         if self.block_on_reject and not cert.allowed:
             raise GateBlockedError(cert)
 
     def on_llm_error(self, error, **kwargs) -> None:
         """Called on LLM error."""
-        pass
+        # Claim 9: exit handoff cycle even on error
+        if self._cycle_guard is not None:
+            self._cycle_guard.exit()
 
 
 def create_gated_chain(
