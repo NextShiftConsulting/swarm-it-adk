@@ -241,11 +241,11 @@ class TestSR117Formatter:
 
     def test_risk_level_computation(self):
         # High noise = critical
-        high_noise = create_test_certificate(R=0.2, S=0.2, N=0.6)
+        high_noise = create_test_certificate(R=0.2, S_sup=0.2, N=0.6)
         record = SR117AuditFormatter.format_validation_record(high_noise)
         assert record["risk_indicators"]["overall_risk"] == "CRITICAL"
 
         # Healthy = low
-        healthy = create_test_certificate(R=0.7, S=0.2, N=0.1)
+        healthy = create_test_certificate(R=0.7, S_sup=0.2, N=0.1)
         record = SR117AuditFormatter.format_validation_record(healthy)
         assert record["risk_indicators"]["overall_risk"] == "LOW"

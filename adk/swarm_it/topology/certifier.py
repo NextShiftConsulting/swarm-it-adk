@@ -210,16 +210,16 @@ class SwarmCertifier:
             kappa = agent.kappa_compat
             R = 0.6 + 0.3 * kappa  # Estimate R from kappa
             N = 0.1 + 0.2 * (1 - kappa)  # Estimate N inverse to kappa
-            S = 1.0 - R - N
+            S_sup = 1.0 - R - N
 
             R = max(0, min(1, R))
-            S = max(0, min(1, S))
+            S_sup = max(0, min(1, S_sup))
             N = max(0, min(1, N))
 
             # Delegate gate evaluation to controlplane
             alpha = R / (R + N) if (R + N) > 0 else 0.0
             cert_estimate = to_certificate_estimate(
-                R=R, S=S, N=N, kappa_compat=kappa, sigma=0.3, alpha=alpha,
+                R=R, S_sup=S_sup, N=N, kappa_compat=kappa, sigma=0.3, alpha=alpha,
                 kappa_H=agent.kappa_H, kappa_L=agent.kappa_L,
                 kappa_interface=agent.kappa_interface,
             )
@@ -233,7 +233,7 @@ class SwarmCertifier:
                 id=f"agent-{agent.id}-{uuid.uuid4().hex[:8]}",
                 timestamp=datetime.now(timezone.utc).isoformat() + "Z",
                 R=R,
-                S=S,
+                S_sup=S_sup,
                 N=N,
                 kappa_compat=kappa,
                 sigma=0.3,
@@ -260,7 +260,7 @@ class SwarmCertifier:
         alpha = 1.0 - N  # Approximate alpha from aggregate noise
         cert_estimate = to_certificate_estimate(
             R=1.0 - N,  # Approximate R from aggregate
-            S=0.0,
+            S_sup=0.0,
             N=N,
             kappa_compat=kappa_min,  # kappa_compat_chain_min passed as kappa_compat to controlplane
             sigma=sigma_max,

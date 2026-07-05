@@ -198,19 +198,19 @@ class BYOKEngine:
             N = float(rsn_dict['N'][0])
         else:
             # Fall back to hash-based approximation
-            R, S, N = self._hash_based_rsn(prompt)
+            R, S_sup, N = self._hash_based_rsn(prompt)
 
         # 3. Compute metrics
         alpha = R / (R + N) if (R + N) > 0 else 0.0
         kappa = 0.5 + 0.3 * R  # Simplified kappa estimate
-        sigma = N / (R + S + N)
+        sigma = N / (R + S_sup + N)
 
         # 4. Delegate gate evaluation to controlplane gatekeeper
         from ._compat import from_gatekeeper_result
         from .local.engine import _gate_identifier_to_int
 
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
+            R=R, S_sup=S_sup, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = self._gatekeeper.evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)
@@ -225,7 +225,7 @@ class BYOKEngine:
             "id": f"byok-{uuid.uuid4()}",
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "R": R,
-            "S": S,
+            "S": S_sup,
             "N": N,
             "alpha": alpha,
             "kappa_coupling": kappa,

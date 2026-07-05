@@ -240,7 +240,7 @@ def render_main_content(config: Dict[str, Any]):
                 certifier = certifier.with_thresholds(
                     kappa=config["kappa_threshold"],
                     R=config["R"],
-                    S=config["S"],
+                    S_sup=config.get("S_sup", config.get("S", 0.0)),
                     N=config["N"]
                 )
 

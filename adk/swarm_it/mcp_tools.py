@@ -315,7 +315,7 @@ class QualityGateTool(Tool):
         config = thresholds_to_config(self.thresholds)
         self._gatekeeper = SequentialGatekeeper(config)
 
-    def execute(self, R: float, S: float, N: float) -> Dict[str, Any]:
+    def execute(self, R: float, S_sup: float, N: float) -> Dict[str, Any]:
         """Apply quality gates via controlplane gatekeeper."""
         from ._compat import to_certificate_estimate
 
@@ -324,7 +324,7 @@ class QualityGateTool(Tool):
         sigma = 0.3
 
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
+            R=R, S_sup=S_sup, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         result = self._gatekeeper.evaluate(cert_estimate)
 
@@ -335,7 +335,7 @@ class QualityGateTool(Tool):
             "decision": result.decision.value,
             "gate_reached": gate,
             "reason": f"{result.decision.value} at {result.gate_reached.value} "
-                      f"(kappa={kappa:.3f}, R={R:.3f}, S={S:.3f})",
+                      f"(kappa={kappa:.3f}, R={R:.3f}, S_sup={S_sup:.3f})",
         }
 
     @property

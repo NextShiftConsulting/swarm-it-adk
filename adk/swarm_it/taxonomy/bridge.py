@@ -201,7 +201,7 @@ def from_yrsn_dict(data: Dict[str, Any]) -> "RSCTCertificate":
 
         # Core
         R=data.get("R", 0.0),
-        S=s_value,
+        S_sup=s_value,
         N=data.get("N", 0.0),
         kappa_compat=data.get("kappa_compat", data.get("kappa_coupling", 0.0)),
         sigma=data.get("sigma", 0.0),
