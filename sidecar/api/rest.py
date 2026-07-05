@@ -61,7 +61,7 @@ class Certificate(BaseModel):
     id: str
     timestamp: str
     R: float = Field(ge=0, le=1)
-    S: float = Field(ge=0, le=1)
+    S_sup: float = Field(ge=0, le=1, serialization_alias="S")
     N: float = Field(ge=0, le=1)
     kappa_compat: float = Field(ge=0, le=1)
     sigma: float = Field(ge=0, le=1)

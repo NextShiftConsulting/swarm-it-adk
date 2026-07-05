@@ -107,7 +107,7 @@ class BedrockAgent:
             )
             result["request_cert"] = {
                 "R": req_msg.R,
-                "S": req_msg.S,
+                "S": req_msg.S_sup,
                 "N": req_msg.N,
                 "kappa_coupling": req_msg.kappa_coupling,
                 "allowed": req_msg.allowed,
@@ -155,7 +155,7 @@ class BedrockAgent:
             )
             result["response_cert"] = {
                 "R": resp_msg.R,
-                "S": resp_msg.S,
+                "S": resp_msg.S_sup,
                 "N": resp_msg.N,
                 "kappa_coupling": resp_msg.kappa_coupling,
                 "allowed": resp_msg.allowed,

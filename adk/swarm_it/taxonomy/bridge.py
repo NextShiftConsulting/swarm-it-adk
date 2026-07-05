@@ -102,9 +102,9 @@ def to_yrsn_dict(cert: "RSCTCertificate") -> Dict[str, Any]:
         "certificate_id": cert.id,
         "timestamp": cert.timestamp,
 
-        # Core simplex (yrsn uses S_sup, SDK uses S)
+        # Core simplex
         "R": cert.R,
-        "S_sup": cert.S,  # yrsn naming
+        "S_sup": cert.S_sup,
         "N": cert.N,
 
         # Compatibility
@@ -281,7 +281,7 @@ def validate_round_trip(cert: "RSCTCertificate") -> bool:
     # Check core fields
     checks = [
         cert.R == restored.R,
-        cert.S == restored.S,
+        cert.S_sup == restored.S_sup,
         cert.N == restored.N,
         cert.kappa_compat == restored.kappa_compat,
         cert.sigma == restored.sigma,

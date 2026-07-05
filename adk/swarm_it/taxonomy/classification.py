@@ -156,7 +156,7 @@ def _classify_mode(cert: "RSCTCertificate") -> RSCTMode:
     # Group 1: Encoding
     if cert.N >= 0.5:
         return RSCTMode.NOISE_SATURATION
-    if cert.S > 0.6 and cert.R < 0.2:
+    if cert.S_sup > 0.6 and cert.R < 0.2:
         return RSCTMode.SUPERFLUOUS_DROWNING
 
     # Group 2: Dynamics
@@ -238,7 +238,7 @@ def _generate_error_codes(cert: "RSCTCertificate", mode: RSCTMode) -> List[str]:
     elif cert.N >= 0.3:
         codes.append("V1.1.1-WARN")
 
-    if cert.S > 0.6 and cert.R < 0.2:
+    if cert.S_sup > 0.6 and cert.R < 0.2:
         codes.append("V1.1.2")  # Superfluous Drowning
 
     if cert.sigma > 0.7:

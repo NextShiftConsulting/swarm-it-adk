@@ -80,7 +80,7 @@ class ManagerAgent:
             results.append({
                 "worker_id": worker_id,
                 "subtask": subtask,
-                "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+                "cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             })
 
         return results
@@ -114,7 +114,7 @@ class WorkerAgent:
 
         return {
             "result": result,
-            "cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+            "cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
         }
 
 
@@ -150,7 +150,7 @@ class AggregatorAgent:
 Overall sector outlook: BULLISH with cloud and AI driving growth."""
 
         return {
-            "input_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+            "input_cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "synthesis": synthesis,
         }
 

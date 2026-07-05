@@ -49,7 +49,7 @@ class OneShotResult:
 
     # Quality metrics
     R: float
-    S: float
+    S_sup: float
     N: float
     kappa_coupling: float
 
@@ -197,7 +197,7 @@ class OneShotCertifier:
             certificate=cert_result.get("certificate", {}),
             decision=cert_result["decision"],
             R=cert_result.get("R", 0.0),
-            S=cert_result.get("S", 0.0),
+            S_sup=cert_result.get("S", 0.0),
             N=cert_result.get("N", 0.0),
             kappa_coupling=cert_result.get("kappa_coupling", 0.0),
             gate_reached=cert_result.get("gate_reached", 0),

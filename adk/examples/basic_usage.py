@@ -27,7 +27,7 @@ def example_simple_check():
 
     print(f"Prompt: {prompt}")
     print(f"Certificate ID: {cert.id}")
-    print(f"RSN: R={cert.R:.3f}, S={cert.S:.3f}, N={cert.N:.3f}")
+    print(f"RSN: R={cert.R:.3f}, S={cert.S_sup:.3f}, N={cert.N:.3f}")
     print(f"Decision: {cert.decision.value}")
     print(f"Allowed: {cert.allowed}")
     print(f"Margin: {cert.margin:.3f}")

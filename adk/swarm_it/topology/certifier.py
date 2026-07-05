@@ -35,7 +35,7 @@ class SwarmCertificate:
 
     # Aggregate RSN (averaged across agents)
     R: float
-    S: float
+    S_sup: float
     N: float
 
     # Swarm-level metrics
@@ -79,7 +79,7 @@ class SwarmCertificate:
             "swarm_id": self.swarm_id,
             "aggregate": {
                 "R": self.R,
-                "S": self.S,
+                "S": self.S_sup,
                 "N": self.N,
             },
             "metrics": {
@@ -157,7 +157,7 @@ class SwarmCertifier:
 
         for cert in agent_certificates.values():
             R_sum += cert.R
-            S_sum += cert.S
+            S_sum += cert.S_sup
             N_sum += cert.N
             sigma_max = max(sigma_max, cert.sigma)
 
@@ -182,7 +182,7 @@ class SwarmCertifier:
             timestamp=datetime.now(timezone.utc).isoformat() + "Z",
             swarm_id=swarm.id,
             R=R,
-            S=S,
+            S_sup=S,
             N=N,
             consensus=consensus,
             kappa_compat_chain_min=kappa_min,

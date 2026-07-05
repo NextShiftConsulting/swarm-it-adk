@@ -80,7 +80,7 @@ cert4 = (
 print(f"FluentCertifier.certify() returns: {type(cert4).__name__}")
 print(f"  Decision: {cert4.decision.value}")
 print(f"  Policy: {cert4.policy}")
-print(f"  R={cert4.R:.3f}, S={cert4.S:.3f}, N={cert4.N:.3f}")
+print(f"  R={cert4.R:.3f}, S={cert4.S_sup:.3f}, N={cert4.N:.3f}")
 print()
 
 # ============================================================================
@@ -128,7 +128,7 @@ from swarm_it import to_yrsn_dict
 
 cert5 = certify("Test prompt for yrsn compatibility")
 print("RSCTCertificate preserves full structure:")
-print(f"  Core: R={cert5.R:.3f}, S={cert5.S:.3f}, N={cert5.N:.3f}")
+print(f"  Core: R={cert5.R:.3f}, S={cert5.S_sup:.3f}, N={cert5.N:.3f}")
 print(f"  Kappa: {cert5.kappa_compat:.3f}")
 print(f"  Extended: alpha={cert5.alpha}, omega={cert5.omega}")
 

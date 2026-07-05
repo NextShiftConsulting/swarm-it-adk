@@ -210,7 +210,7 @@ class SwarmItMiddleware:
             "certificate": {
                 "id": cert.id,
                 "R": cert.R,
-                "S": cert.S,
+                "S": cert.S_sup,
                 "N": cert.N,
                 "kappa_coupling": cert.kappa_coupling,
             },

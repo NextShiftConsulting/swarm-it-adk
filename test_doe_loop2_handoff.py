@@ -66,7 +66,7 @@ class EventNode:
 
     # Certificate from swarm-it gates
     R: float
-    S: float
+    S_sup: float
     N: float
     kappa_coupling: float
     sigma: float
@@ -84,7 +84,7 @@ class EventNode:
             "payload": self.payload[:100] + "..." if len(self.payload) > 100 else self.payload,
             "modality": self.modality.value,
             "certificate": {
-                "R": self.R, "S": self.S, "N": self.N,
+                "R": self.R, "S": self.S_sup, "N": self.N,
                 "kappa_coupling": self.kappa_coupling, "sigma": self.sigma,
                 "decision": self.decision, "gate": self.gate_reached,
             },
@@ -135,7 +135,7 @@ def certify_output(
     agent_id: str,
     parent_event_id: Optional[str] = None,
     R: float = 0.65,
-    S: float = 0.20,
+    S_sup: float = 0.20,
     N: float = 0.15,
     kappa_coupling: float = 0.75,
     sigma: float = 0.25,
@@ -158,7 +158,7 @@ def certify_output(
         payload=output,
         modality=EventModality.TEXT,
         R=R,
-        S=S,
+        S_sup=S,
         N=N,
         kappa_coupling=kappa_coupling,
         sigma=sigma,
@@ -201,7 +201,7 @@ def validate_handoff(
         parent_event_id=source_event.event_id,
         # Simulated certificate (would come from actual processing)
         R=source_event.R * 0.95,  # Slight degradation
-        S=source_event.S * 1.05,
+        S_sup=source_event.S_sup * 1.05,
         N=source_event.N * 1.02,
         kappa_coupling=source_event.kappa_coupling * 0.98,
         sigma=source_event.sigma * 1.05,
@@ -303,7 +303,7 @@ def run_doe():
         event = certify_output(
             output=f"Test output for {name}",
             agent_id="agent_single",
-            R=R, S=S, N=N, kappa_coupling=kappa, sigma=sigma,
+            R=R, S_sup=S, N=N, kappa_coupling=kappa, sigma=sigma,
         )
         g_r.add_event(event)
 
@@ -335,7 +335,7 @@ def run_doe():
             output=f"Source output for {level.name}",
             agent_id="agent_source",
             R=level.source_R,
-            S=level.source_S,
+            S_sup=level.source_S,
             N=level.source_N,
             kappa_coupling=level.source_kappa,
             sigma=level.source_sigma,
@@ -401,7 +401,7 @@ def run_doe():
                 agent_id=agent_id,
                 parent_event_id=parent_id,
                 R=0.65,
-                S=0.20,
+                S_sup=0.20,
                 N=0.15,
                 kappa_coupling=current_kappa,
                 sigma=0.25,
@@ -504,7 +504,7 @@ def run_doe():
             agent_id=agent_id,
             parent_event_id=parent_id,
             R=0.70 - (i * 0.02),
-            S=0.15 + (i * 0.02),
+            S_sup=0.15 + (i * 0.02),
             N=0.15 + (i * 0.01),
             kappa_coupling=kappa,
             sigma=sigma,

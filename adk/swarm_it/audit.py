@@ -108,7 +108,7 @@ class AuditLogEntry:
     decision: Optional[str] = None
     kappa_coupling: Optional[float] = None
     R: Optional[float] = None
-    S: Optional[float] = None
+    S_sup: Optional[float] = None
     N: Optional[float] = None
     gate_reached: Optional[int] = None
 
@@ -264,7 +264,7 @@ class AuditLogger:
         decision: Optional[str] = None,
         kappa_coupling: Optional[float] = None,
         R: Optional[float] = None,
-        S: Optional[float] = None,
+        S_sup: Optional[float] = None,
         N: Optional[float] = None,
         gate_reached: Optional[int] = None,
         latency_ms: Optional[float] = None,
@@ -280,7 +280,7 @@ class AuditLogger:
             decision=decision,
             kappa_coupling=kappa_coupling,
             R=R,
-            S=S,
+            S_sup=S_sup,
             N=N,
             gate_reached=gate_reached,
             latency_ms=latency_ms,

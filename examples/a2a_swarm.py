@@ -144,7 +144,7 @@ def main():
 
         print(f"  {msg.source_id} → {msg.target_id}:")
         print(f"    \"{msg.content[:50]}...\"")
-        print(f"    {color}R={msg.R:.2f} S={msg.S:.2f} N={msg.N:.2f} kappa_coupling={msg.kappa_coupling:.2f} -> {'ALLOWED' if msg.allowed else 'BLOCKED'} {status}{reset}")
+        print(f"    {color}R={msg.R:.2f} S={msg.S_sup:.2f} N={msg.N:.2f} kappa_coupling={msg.kappa_coupling:.2f} -> {'ALLOWED' if msg.allowed else 'BLOCKED'} {status}{reset}")
 
         if not msg.allowed:
             print(f"    Reason: {msg.decision}")

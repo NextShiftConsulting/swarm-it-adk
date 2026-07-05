@@ -236,7 +236,7 @@ class RSCTEngine:
             "id": response.id,
             "timestamp": response.timestamp,
             "R": response.R,
-            "S": response.S,
+            "S": response.S_sup,
             "N": response.N,
             "kappa_compat": response.kappa_compat,
             "sigma": response.sigma,

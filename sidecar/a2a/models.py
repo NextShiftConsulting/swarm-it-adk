@@ -40,7 +40,7 @@ class Agent:
 
     # RSN baseline for this agent's outputs
     baseline_R: float = 0.5
-    baseline_S: float = 0.3
+    baseline_S_sup: float = 0.3
     baseline_N: float = 0.2
 
     # Metadata
@@ -73,14 +73,14 @@ class AgentLink:
 
     # Running stats
     total_R: float = 0.0
-    total_S: float = 0.0
+    total_S_sup: float = 0.0
     total_N: float = 0.0
 
     def update(self, R: float, S: float, N: float):
         """Update link stats with new message RSN."""
         self.message_count += 1
         self.total_R += R
-        self.total_S += S
+        self.total_S_sup += S
         self.total_N += N
 
         # Recompute kappa_interface as average kappa
@@ -110,7 +110,7 @@ class Message:
 
     # Certification results (filled after certify())
     R: Optional[float] = None
-    S: Optional[float] = None
+    S_sup: Optional[float] = None
     N: Optional[float] = None
     kappa_coupling: Optional[float] = None
     decision: Optional[str] = None

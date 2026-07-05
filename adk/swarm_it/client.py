@@ -40,9 +40,9 @@ class Certificate:
     id: str
     timestamp: str
 
-    # RSN decomposition (R + S + N = 1)
+    # RSN decomposition (R + S_sup + N = 1)
     R: float  # Relevance
-    S: float  # Support (S_sup in RSCT)
+    S_sup: float  # Support (S_sup in RSCT)
     N: float  # Novelty/Noise
 
     # Quality metrics
@@ -80,7 +80,7 @@ class Certificate:
             "certificate_id": self.id,
             "timestamp": self.timestamp,
             "R": self.R,
-            "S": self.S,
+            "S": self.S_sup,
             "N": self.N,
             "alpha": self.alpha,
             "kappa_coupling": self.kappa_coupling,
@@ -500,7 +500,7 @@ class SwarmIt:
             agent_cert = {
                 "agent_id": agent["agent_id"],
                 "R": cert.R,
-                "S": cert.S,
+                "S": cert.S_sup,
                 "N": cert.N,
                 "kappa_coupling": cert.kappa_coupling,
                 "decision": cert.decision.value,
@@ -509,7 +509,7 @@ class SwarmIt:
             agent_certs.append(agent_cert)
 
             total_r += cert.R
-            total_s += cert.S
+            total_s += cert.S_sup
             total_n += cert.N
 
             if cert.kappa_coupling < min_kappa:
@@ -580,7 +580,7 @@ class SwarmIt:
             id=data.get("certificate_id", data.get("id", "")),
             timestamp=data.get("timestamp", ""),
             R=data.get("R", 0.0),
-            S=s_value,
+            S_sup=s_value,
             N=data.get("N", 0.0),
             alpha=data.get("alpha", 0.0),
             kappa_coupling=data.get("kappa_compat", data.get("kappa", 0.0)),
@@ -632,7 +632,7 @@ class SwarmIt:
 
         # Delegate gate evaluation to controlplane
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
+            R=R, S_sup=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = SequentialGatekeeper().evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)
@@ -645,7 +645,7 @@ class SwarmIt:
             id=str(uuid.uuid4()),
             timestamp=datetime.utcnow().isoformat() + "Z",
             R=R,
-            S=S,
+            S_sup=S,
             N=N,
             alpha=alpha,
             kappa_coupling=kappa,

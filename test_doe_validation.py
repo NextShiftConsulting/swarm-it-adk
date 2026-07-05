@@ -183,7 +183,7 @@ class Evidence:
     decision: Optional[str] = None
     kappa_coupling: Optional[float] = None
     R: Optional[float] = None
-    S: Optional[float] = None
+    S_sup: Optional[float] = None
     N: Optional[float] = None
     sigma: Optional[float] = None
     alpha: Optional[float] = None
@@ -288,7 +288,7 @@ class DOEValidator:
                 evidence.has_allowed_property = hasattr(cert.decision, 'allowed')
                 evidence.kappa_coupling = cert.kappa_compat
                 evidence.R = cert.R
-                evidence.S = cert.S
+                evidence.S_sup = cert.S_sup
                 evidence.N = cert.N
                 evidence.sigma = cert.sigma
                 evidence.alpha = cert.alpha
@@ -296,7 +296,7 @@ class DOEValidator:
                 evidence.reason = cert.reason
 
                 # Validate simplex constraint
-                evidence.simplex_sum = cert.R + cert.S + cert.N
+                evidence.simplex_sum = cert.R + cert.S_sup + cert.N
                 evidence.simplex_valid = abs(evidence.simplex_sum - 1.0) < 0.001
 
             # Generate proof
@@ -531,7 +531,7 @@ class DOEValidator:
             if all_valid:
                 evidence.kappa_coupling = sum(c.kappa_compat for c in certs) / len(certs)
                 evidence.R = sum(c.R for c in certs) / len(certs)
-                evidence.S = sum(c.S for c in certs) / len(certs)
+                evidence.S_sup = sum(c.S_sup for c in certs) / len(certs)
                 evidence.N = sum(c.N for c in certs) / len(certs)
                 evidence.notes.append(f"Processed {len(certs)} certificates")
 
@@ -749,7 +749,7 @@ def main():
     print(f"{status} {proof.experiment_id}: Batch processing {len(batch_prompts)} prompts")
     print(f"  Avg kappa_coupling: {fmt_float(evidence.kappa_coupling)}")
     print(f"  Avg R={fmt_float(evidence.R)}, "
-          f"S={fmt_float(evidence.S)}, "
+          f"S={fmt_float(evidence.S_sup)}, "
           f"N={fmt_float(evidence.N)}")
     exec_time = f"{evidence.execution_time_ms:.1f}" if evidence.execution_time_ms else "N/A"
     print(f"  Execution time: {exec_time}ms")
@@ -815,7 +815,7 @@ def main():
             print(f"  Decision: {proof.evidence.decision}")
             print(f"  Kappa Coupling: {fmt_float(proof.evidence.kappa_coupling)}")
             print(f"  Simplex: R={fmt_float(proof.evidence.R)}, "
-                  f"S={fmt_float(proof.evidence.S)}, "
+                  f"S={fmt_float(proof.evidence.S_sup)}, "
                   f"N={fmt_float(proof.evidence.N)} "
                   f"(sum={fmt_float(proof.evidence.simplex_sum)})")
 

@@ -67,7 +67,7 @@ class CertifyRequest(BaseModel):
         description="Relevance threshold (0.0-1.0)"
     )
 
-    S: Optional[float] = Field(
+    S_sup: Optional[float] = Field(
         None,
         ge=0.0,
         le=1.0,
@@ -202,7 +202,7 @@ class QualityThresholds(BaseModel):
         description="Relevance threshold"
     )
 
-    S: float = Field(
+    S_sup: float = Field(
         0.4,
         ge=0.0,
         le=1.0,

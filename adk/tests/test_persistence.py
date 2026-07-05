@@ -18,13 +18,13 @@ from swarm_it.persistence.audit import (
 def create_test_certificate(
     id: str = "test-123",
     R: float = 0.6,
-    S: float = 0.3,
+    S_sup: float = 0.3,
     N: float = 0.1,
 ) -> RSCTCertificate:
     return RSCTCertificate(
         id=id,
         timestamp="2024-01-01T00:00:00Z",
-        R=R, S=S, N=N,
+        R=R, S_sup=S_sup, N=N,
         kappa_compat=0.7,
         sigma=0.3,
         decision=GateDecision.EXECUTE,

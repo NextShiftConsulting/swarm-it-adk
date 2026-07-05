@@ -593,7 +593,7 @@ def test_h6_simplex_invariant() -> HypothesisResult:
             if cert is None:
                 continue
 
-            simplex_sum = cert.R + cert.S + cert.N
+            simplex_sum = cert.R + cert.S_sup + cert.N
             deviation = abs(simplex_sum - 1.0)
             max_deviation = max(max_deviation, deviation)
 
@@ -605,14 +605,14 @@ def test_h6_simplex_invariant() -> HypothesisResult:
             test_cases.append({
                 "complexity": level,
                 "R": cert.R,
-                "S": cert.S,
+                "S": cert.S_sup,
                 "N": cert.N,
                 "sum": simplex_sum,
                 "deviation": deviation,
                 "valid": is_valid,
             })
 
-            print(f"  [{level:10}] R={cert.R:.4f} S={cert.S:.4f} N={cert.N:.4f} "
+            print(f"  [{level:10}] R={cert.R:.4f} S={cert.S_sup:.4f} N={cert.N:.4f} "
                   f"→ Σ={simplex_sum:.6f} | {'✓' if is_valid else '✗'}")
 
     passed = violations == 0
@@ -681,20 +681,20 @@ def test_h7_api_consistency() -> HypothesisResult:
 
         # Entry point 1: certify()
         cert1 = certify(prompt)
-        results["certify"] = {"R": cert1.R, "S": cert1.S, "N": cert1.N, "kappa_coupling": cert1.kappa_compat}
+        results["certify"] = {"R": cert1.R, "S": cert1.S_sup, "N": cert1.N, "kappa_coupling": cert1.kappa_compat}
 
         # Entry point 2: certify_local()
         cert2 = certify_local(prompt)
-        results["certify_local"] = {"R": cert2.R, "S": cert2.S, "N": cert2.N, "kappa_coupling": cert2.kappa_compat}
+        results["certify_local"] = {"R": cert2.R, "S": cert2.S_sup, "N": cert2.N, "kappa_coupling": cert2.kappa_compat}
 
         # Entry point 3: LocalEngine
         engine = LocalEngine()
         cert3 = engine.certify(prompt)
-        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S, "N": cert3.N, "kappa_coupling": cert3.kappa_compat}
+        results["LocalEngine"] = {"R": cert3.R, "S": cert3.S_sup, "N": cert3.N, "kappa_coupling": cert3.kappa_compat}
 
         # Entry point 4: FluentCertifier
         cert4 = FluentCertifier().with_prompt(prompt).certify()
-        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S, "N": cert4.N, "kappa_coupling": cert4.kappa_compat}
+        results["FluentCertifier"] = {"R": cert4.R, "S": cert4.S_sup, "N": cert4.N, "kappa_coupling": cert4.kappa_compat}
 
         # Calculate variance
         R_values = [r["R"] for r in results.values()]

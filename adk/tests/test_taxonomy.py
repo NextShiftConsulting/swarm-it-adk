@@ -28,7 +28,7 @@ class TestClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.7, S=0.2, N=0.1,
+            R=0.7, S_sup=0.2, N=0.1,
             kappa_compat=0.8,
             sigma=0.2,
             decision=GateDecision.EXECUTE,
@@ -44,7 +44,7 @@ class TestClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.2, S=0.2, N=0.6,  # N >= 0.5
+            R=0.2, S_sup=0.2, N=0.6,  # N >= 0.5
             kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
@@ -59,7 +59,7 @@ class TestClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.3, S=0.5, N=0.2,  # kappa > 0.7, R < 0.4
+            R=0.3, S_sup=0.5, N=0.2,  # kappa > 0.7, R < 0.4
             kappa_compat=0.75,
             sigma=0.3,
             decision=GateDecision.REPAIR,
@@ -74,7 +74,7 @@ class TestClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.5, S=0.3, N=0.2,
+            R=0.5, S_sup=0.3, N=0.2,
             kappa_compat=0.6,
             sigma=0.8,  # sigma > 0.7
             decision=GateDecision.BLOCK,
@@ -88,7 +88,7 @@ class TestClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.2, S=0.2, N=0.6,
+            R=0.2, S_sup=0.2, N=0.6,
             kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
@@ -107,7 +107,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.25,  # min of decomposition
             sigma=0.3,
             kappa_H=0.8,  # Healthy
@@ -126,7 +126,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.25,
             sigma=0.3,
             kappa_H=0.7,
@@ -145,7 +145,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             kappa_H=0.8,
@@ -165,7 +165,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.5,
             sigma=0.3,
             kappa_H=0.8,
@@ -185,7 +185,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.3,
             sigma=0.3,
             kappa_H=0.8,
@@ -206,7 +206,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -221,7 +221,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.4,
             sigma=0.3,
             kappa_H=0.9,
@@ -240,7 +240,7 @@ class TestMultimodalClassification:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.25,  # This is what matters
             sigma=0.3,
             kappa_H=0.8,  # Individual kappas healthy
@@ -262,7 +262,7 @@ class TestAddErrorCodes:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.2, S=0.2, N=0.6,
+            R=0.2, S_sup=0.2, N=0.6,
             kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
@@ -320,7 +320,7 @@ class TestBridge:
         cert = RSCTCertificate(
             id="test-123",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -347,13 +347,13 @@ class TestBridge:
         }
         cert = from_yrsn_dict(data)
         assert cert.id == "test-456"
-        assert cert.S == 0.3
+        assert cert.S_sup == 0.3
 
     def test_round_trip(self):
         cert = RSCTCertificate(
             id="test-789",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -367,7 +367,7 @@ class TestBridge:
         cert = RSCTCertificate(
             id="test-multimodal",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.65,
             sigma=0.3,
             kappa_H=0.8,
@@ -389,7 +389,7 @@ class TestBridge:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.65,
             sigma=0.3,
             kappa_H=0.8,

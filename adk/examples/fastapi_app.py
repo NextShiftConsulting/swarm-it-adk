@@ -100,7 +100,7 @@ async def complete_endpoint(request: CompletionRequest):
                 "certificate": {
                     "id": cert.id,
                     "R": cert.R,
-                    "S": cert.S,
+                    "S": cert.S_sup,
                     "N": cert.N,
                     "decision": cert.decision.value,
                 },
@@ -158,7 +158,7 @@ async def certify_only(request: ChatRequest):
         "timestamp": cert.timestamp,
         "rsn": {
             "R": cert.R,
-            "S": cert.S,
+            "S": cert.S_sup,
             "N": cert.N,
         },
         "metrics": {

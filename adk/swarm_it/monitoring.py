@@ -216,14 +216,14 @@ class MetricsCollector:
         self,
         kappa_coupling: float,
         R: float,
-        S: float,
+        S_sup: float,
         N: float,
         domain: str = "research"
     ):
-        """Record quality metrics (kappa_coupling, R, S, N)."""
+        """Record quality metrics (kappa_coupling, R, S_sup, N)."""
         self.kappa_gauge.labels(domain=domain).set(kappa_coupling)
         self.rsn_gauges['R'].labels(domain=domain).set(R)
-        self.rsn_gauges['S'].labels(domain=domain).set(S)
+        self.rsn_gauges['S'].labels(domain=domain).set(S_sup)
         self.rsn_gauges['N'].labels(domain=domain).set(N)
 
     def record_cache_hit(self, cache_type: str = "rotor"):

@@ -28,7 +28,7 @@ def thresholds_to_config(thresholds: dict[str, Any]) -> GatekeeperConfig:
     return GatekeeperConfig(
         N_thr=thresholds.get("N", 0.5),
         alpha_min=thresholds.get("R", 0.3),
-        c_min=thresholds.get("S", 0.4),
+        c_min=thresholds.get("S_sup", thresholds.get("S", 0.4)),
         kappa_base=thresholds.get("kappa_threshold", 0.5),
         kappa_L_min=thresholds.get("kappa_L", 0.3),
     )

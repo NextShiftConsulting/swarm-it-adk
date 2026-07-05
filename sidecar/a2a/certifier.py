@@ -106,7 +106,7 @@ class SwarmCertifier:
 
         # Fill certification results
         msg.R = cert["R"]
-        msg.S = cert["S"]
+        msg.S_sup = cert["S"]
         msg.N = cert["N"]
         msg.kappa_coupling = cert.get("kappa_coupling", cert.get("kappa_compat", 0))
         msg.decision = cert["decision"]
@@ -115,7 +115,7 @@ class SwarmCertifier:
         # Update link stats
         link = swarm.get_link(source_id, target_id)
         if link:
-            link.update(msg.R, msg.S, msg.N)
+            link.update(msg.R, msg.S_sup, msg.N)
 
         return msg
 

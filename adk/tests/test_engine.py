@@ -36,7 +36,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -49,7 +49,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.2,  # Sum > 1
+            R=0.6, S_sup=0.3, N=0.2,  # Sum > 1
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -62,7 +62,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -76,7 +76,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -89,7 +89,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             alpha=0.85,
@@ -104,7 +104,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             kappa_H=0.8,
@@ -119,7 +119,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.2, S=0.2, N=0.6,  # N >= 0.5
+            R=0.2, S_sup=0.2, N=0.6,  # N >= 0.5
             kappa_compat=0.5,
             sigma=0.3,
             decision=GateDecision.REJECT,
@@ -132,7 +132,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.3, S=0.5, N=0.2,  # kappa > 0.7, R < 0.4
+            R=0.3, S_sup=0.5, N=0.2,  # kappa > 0.7, R < 0.4
             kappa_compat=0.75,
             sigma=0.3,
             decision=GateDecision.REPAIR,
@@ -145,7 +145,7 @@ class TestRSCTCertificate:
         cert = RSCTCertificate(
             id="test-123",
             timestamp="2024-01-01T00:00:00Z",
-            R=0.6, S=0.3, N=0.1,
+            R=0.6, S_sup=0.3, N=0.1,
             kappa_compat=0.7,
             sigma=0.3,
             decision=GateDecision.EXECUTE,
@@ -194,7 +194,7 @@ class TestLocalEngine:
         cert2 = engine.certify("Same input")
 
         assert cert1.R == cert2.R
-        assert cert1.S == cert2.S
+        assert cert1.S_sup == cert2.S_sup
         assert cert1.N == cert2.N
 
     def test_certify_high_noise_rejects(self):

@@ -202,7 +202,7 @@ def certify_with_thresholds(text: str, domain: str, thresholds: Dict,
 
         cert_dict = {
             "R": cert.R,
-            "S": cert.S,
+            "S": cert.S_sup,
             "N": cert.N,
             "kappa_coupling": cert.kappa_compat,
             "decision": cert.decision.value,

@@ -43,9 +43,9 @@ class RSCTCertificate:
     id: str
     timestamp: str
 
-    # === REQUIRED: Core Simplex (R + S + N = 1) ===
+    # === REQUIRED: Core Simplex (R + S_sup + N = 1) ===
     R: float  # Relevance [0, 1]
-    S: float  # Support/Superfluous [0, 1]
+    S_sup: float  # Support/Superfluous [0, 1]
     N: float  # Noise [0, 1]
 
     # === REQUIRED: Compatibility ===
@@ -97,7 +97,7 @@ class RSCTCertificate:
     @property
     def simplex_valid(self) -> bool:
         """Check R + S + N ≈ 1."""
-        return abs(self.R + self.S + self.N - 1.0) < 0.01
+        return abs(self.R + self.S_sup + self.N - 1.0) < 0.01
 
     @property
     def has_extended_signals(self) -> bool:
@@ -147,7 +147,7 @@ class RSCTCertificate:
         # Group 1: Encoding
         if self.N >= 0.5:
             return "1.1"  # Noise Saturation
-        if self.S > 0.6 and self.R < 0.2:
+        if self.S_sup > 0.6 and self.R < 0.2:
             return "1.2"  # Superfluous Drowning
 
         # Group 2: Dynamics
@@ -183,7 +183,7 @@ class RSCTCertificate:
 
             # Core simplex
             "R": self.R,
-            "S": self.S,
+            "S": self.S_sup,
             "N": self.N,
             "kappa_compat": self.kappa_compat,
             "sigma": self.sigma,
@@ -268,7 +268,7 @@ class RSCTCertificate:
 
             # Core
             R=data.get("R", 0.0),
-            S=s_value,
+            S_sup=s_value,
             N=data.get("N", 0.0),
             kappa_compat=data.get("kappa_compat", data.get("kappa_coupling", 0.0)),
             sigma=data.get("sigma", 0.0),
@@ -372,7 +372,7 @@ class LocalEngine:
 
         # Delegate gate evaluation to controlplane gatekeeper
         cert_estimate = to_certificate_estimate(
-            R=R, S=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
+            R=R, S_sup=S, N=N, kappa_compat=kappa, sigma=sigma, alpha=alpha,
         )
         gk_result = self._gatekeeper.evaluate(cert_estimate)
         decision = from_gatekeeper_result(gk_result)
@@ -382,7 +382,7 @@ class LocalEngine:
             id=str(uuid.uuid4()),
             timestamp=datetime.utcnow().isoformat() + "Z",
             R=R,
-            S=S,
+            S_sup=S,
             N=N,
             kappa_compat=kappa,
             sigma=sigma,

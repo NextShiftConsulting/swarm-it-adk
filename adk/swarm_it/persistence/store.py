@@ -253,7 +253,7 @@ class SQLiteStore(CertificateStore):
                 cert.decision.value,
                 cert.gate_reached,
                 cert.R,
-                cert.S,
+                cert.S_sup,
                 cert.N,
                 cert.kappa_compat,
                 cert.sigma,

@@ -145,7 +145,7 @@ class FluentCertifier:
         self,
         kappa_threshold: Optional[float] = None,
         R: Optional[float] = None,
-        S: Optional[float] = None,
+        S_sup: Optional[float] = None,
         N: Optional[float] = None
     ) -> 'FluentCertifier':
         """Set multiple thresholds at once."""
@@ -153,8 +153,8 @@ class FluentCertifier:
             self._kappa = kappa_threshold
         if R is not None:
             self._R = R
-        if S is not None:
-            self._S = S
+        if S_sup is not None:
+            self._S = S_sup
         if N is not None:
             self._N = N
         return self
@@ -220,7 +220,7 @@ class FluentCertifier:
         """Use medical domain presets (strict)."""
         return (
             self.for_domain("medical")
-            .with_thresholds(kappa=0.9, R=0.5, S=0.6, N=0.3)
+            .with_thresholds(kappa=0.9, R=0.5, S_sup=0.6, N=0.3)
             .enable_audit()
             .export_evidence()
         )
@@ -229,7 +229,7 @@ class FluentCertifier:
         """Use legal domain presets (strict)."""
         return (
             self.for_domain("legal")
-            .with_thresholds(kappa=0.85, R=0.5, S=0.5, N=0.4)
+            .with_thresholds(kappa=0.85, R=0.5, S_sup=0.5, N=0.4)
             .enable_audit()
             .export_evidence()
         )
@@ -238,14 +238,14 @@ class FluentCertifier:
         """Use research domain presets (moderate)."""
         return (
             self.for_domain("research")
-            .with_thresholds(kappa=0.7, R=0.3, S=0.4, N=0.5)
+            .with_thresholds(kappa=0.7, R=0.3, S_sup=0.4, N=0.5)
         )
 
     def for_development(self) -> 'FluentCertifier':
         """Use development domain presets (permissive)."""
         return (
             self.for_domain("dev")
-            .with_thresholds(kappa=0.5, R=0.2, S=0.2, N=0.7)
+            .with_thresholds(kappa=0.5, R=0.2, S_sup=0.2, N=0.7)
         )
 
     def with_performance(self) -> 'FluentCertifier':
@@ -324,7 +324,7 @@ class FluentCertifier:
                 if cert.decision.value == "EXECUTE":
                     collector.record_success(cert.decision.value, self._domain)
                     collector.record_quality_metrics(
-                        cert.kappa_compat, cert.R, cert.S, cert.N, self._domain
+                        cert.kappa_compat, cert.R, cert.S_sup, cert.N, self._domain
                     )
                 else:
                     collector.record_failure("gate_failed", self._domain)
@@ -343,7 +343,7 @@ class FluentCertifier:
                     decision=cert.decision.value,
                     kappa=cert.kappa_compat,
                     R=cert.R,
-                    S=cert.S,
+                    S_sup=cert.S_sup,
                     N=cert.N
                 )
             except ImportError:

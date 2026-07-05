@@ -106,7 +106,7 @@ class LocalYRSNAdapter(YRSNAdapter):
             id=cert_id,
             timestamp=timestamp,
             R=round(R, 4),
-            S=round(S, 4),
+            S_sup=round(S, 4),
             N=round(N, 4),
             kappa_compat=round(kappa_compat, 4),
             sigma=round(sigma, 4),
@@ -157,7 +157,7 @@ class LocalYRSNAdapter(YRSNAdapter):
     def _gate_decision(
         self,
         R: float,
-        S: float,
+        S_sup: float,
         N: float,
         kappa_coupling: float,
         sigma: float,
@@ -303,7 +303,7 @@ class LightweightAdapter(YRSNAdapter):
         return CertifyResponse(
             id=f"lite-{cert_id}",
             R=R,
-            S=S,
+            S_sup=S,
             N=N,
             kappa_compat=kappa,
             sigma=sigma,

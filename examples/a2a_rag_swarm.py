@@ -77,7 +77,7 @@ class RetrieverAgent:
         )
 
         result = {
-            "query_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+            "query_cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "documents": [],
             "blocked": not msg.allowed,
         }
@@ -113,7 +113,7 @@ class SynthesizerAgent:
         )
 
         result = {
-            "context_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+            "context_cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "answer": None,
             "blocked": not msg.allowed,
         }
@@ -147,7 +147,7 @@ class ValidatorAgent:
         quality_ok = msg.kappa_coupling >= 0.5 if msg.kappa_coupling else False
 
         result = {
-            "output_cert": {"R": msg.R, "S": msg.S, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
+            "output_cert": {"R": msg.R, "S": msg.S_sup, "N": msg.N, "kappa_coupling": msg.kappa_coupling, "allowed": msg.allowed},
             "quality_ok": quality_ok,
             "validation": "PASS" if quality_ok else "FAIL",
         }

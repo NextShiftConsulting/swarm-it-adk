@@ -103,7 +103,7 @@ class PDFReaderAgent:
         result = {
             "cert": {
                 "R": msg.R,
-                "S": msg.S,
+                "S": msg.S_sup,
                 "N": msg.N,
                 "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,
@@ -206,7 +206,7 @@ class AnalyzerAgent:
         result = {
             "cert": {
                 "R": msg.R,
-                "S": msg.S,
+                "S": msg.S_sup,
                 "N": msg.N,
                 "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,
@@ -348,7 +348,7 @@ class AdvisorAgent:
         result = {
             "cert": {
                 "R": msg.R,
-                "S": msg.S,
+                "S": msg.S_sup,
                 "N": msg.N,
                 "kappa_coupling": msg.kappa_coupling,
                 "allowed": msg.allowed,

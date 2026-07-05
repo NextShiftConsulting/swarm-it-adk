@@ -106,7 +106,7 @@ def from_gatekeeper_result(result: GatekeeperResult) -> GateDecision:
 
 def to_measurement_estimate(
     R: float,
-    S: float,
+    S_sup: float,
     N: float,
     kappa_compat: float,
     sigma: float,
@@ -134,7 +134,7 @@ def to_measurement_estimate(
     evidence: dict = {
         "N": N,
         "R": R,
-        "S_sup": S,
+        "S_sup": S_sup,
         "noise_admissibility": noise_admissibility,
         "noise_admissibility_method": "raw_N_v1",
     }

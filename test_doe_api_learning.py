@@ -110,7 +110,7 @@ class ConstraintLevel:
     """Factor 3: Constraint Graph Levels"""
     name: str
     R: float
-    S: float
+    S_sup: float
     N: float
     kappa_coupling: float
     sigma: float
@@ -430,12 +430,12 @@ class DOEAPIValidator:
 
             # Get ACTUAL decision (what API uses)
             actual_decision, actual_gate = yrsn_gate_decision(
-                level.R, level.S, level.N, level.kappa_coupling, level.sigma
+                level.R, level.S_sup, level.N, level.kappa_coupling, level.sigma
             )
 
             # Get enrichment (for diagnosis, recommendations)
             enrichment = evaluate_paper_constraints(
-                level.R, level.S, level.N, level.kappa_coupling, level.sigma,
+                level.R, level.S_sup, level.N, level.kappa_coupling, level.sigma,
                 track_evolution=False
             )
 

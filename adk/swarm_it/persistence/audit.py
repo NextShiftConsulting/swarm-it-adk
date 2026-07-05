@@ -146,7 +146,7 @@ class AuditEntry:
             outcome=cert.decision.value,
             policy=cert.policy,
             reason=cert.reason,
-            simplex={"R": cert.R, "S": cert.S, "N": cert.N},
+            simplex={"R": cert.R, "S": cert.S_sup, "N": cert.N},
             session_id=session_id,
             user_id=user_id,
         )
@@ -302,7 +302,7 @@ class SR117AuditFormatter:
 
             "quantitative_metrics": {
                 "relevance_score": cert.R,
-                "support_score": cert.S,
+                "support_score": cert.S_sup,
                 "noise_score": cert.N,
                 "purity_ratio": entry.alpha,
                 "compatibility_score": cert.kappa_compat,

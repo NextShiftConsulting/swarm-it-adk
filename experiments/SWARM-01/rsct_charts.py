@@ -125,7 +125,7 @@ class YRSNColors:
 class CertificateData:
     """Minimal certificate data for visualization."""
     R: float
-    S: float
+    S_sup: float
     N: float
     kappa_coupling: float
     sigma: float
@@ -141,7 +141,7 @@ class CertificateData:
     def from_dict(cls, d: Dict[str, Any]) -> 'CertificateData':
         return cls(
             R=d.get('R', 0),
-            S=d.get('S', 0),
+            S_sup=d.get('S', 0),
             N=d.get('N', 0),
             kappa_coupling=d.get('kappa_coupling', d.get('kappa_compat', 0)),
             sigma=d.get('sigma', 0.3),
@@ -704,7 +704,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
     certs = []
     for i, tc in enumerate(test_cases[:8]):  # Sample 8
         certs.append(CertificateData(
-            R=tc["R"], S=tc["S"], N=tc["N"],
+            R=tc["R"], S_sup=tc["S"], N=tc["N"],
             kappa=0.5 + 0.3 * tc["R"],  # Estimated
             sigma=0.3,  # Default
             decision="EXECUTE" if tc["N"] < 0.5 else "REJECT",
@@ -736,7 +736,7 @@ def generate_swarm01_enhanced_figures(evidence_dir: Path, output_dir: Path):
     # 5. α vs κ quadrant
     gen.create_alpha_kappa_quadrant(
         certificates=[
-            CertificateData(R=0.6, S=0.2, N=0.2, kappa=0.75, sigma=0.3,
+            CertificateData(R=0.6, S_sup=0.2, N=0.2, kappa=0.75, sigma=0.3,
                           alpha=0.75, decision="EXECUTE", label="Avg"),
         ],
         output_path=output_dir / "fig_alpha_kappa_quadrant.png",

@@ -53,7 +53,7 @@ def main():
 
         status = "+" if cert.decision.allowed else "X"
         print(f"[{status}] {cert.decision.value:<8} {prompt[:40]}")
-        print(f"    R={cert.R:.2f} S={cert.S:.2f} N={cert.N:.2f} kappa={cert.kappa_compat:.2f}")
+        print(f"    R={cert.R:.2f} S={cert.S_sup:.2f} N={cert.N:.2f} kappa={cert.kappa_compat:.2f}")
         if not cert.decision.allowed:
             print(f"    Reason: {cert.reason or 'blocked by gate'}")
         print()

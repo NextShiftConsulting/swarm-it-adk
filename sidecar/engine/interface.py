@@ -63,7 +63,7 @@ class CertifyResponse:
 
     # RSN simplex (computed by yrsn, NOT sidecar)
     R: float
-    S: float
+    S_sup: float
     N: float
 
     # Gate scores (computed by yrsn)
