@@ -2,9 +2,9 @@
 
 This repository is licensed under the **Apache License 2.0** (see [`LICENSE`](LICENSE)).
 
-This repository implements concepts described in US Patent No. 19/575,615,
-"Methods and Systems for Structured Compatibility Certification and Execution
-Control in One or More External Systems" (granted June 19, 2026, all 20 claims).
+This repository implements concepts described in US Patent Application
+No. 19/575,615, "Methods and Systems for Structured Compatibility Certification
+and Execution Control in One or More External Systems" (patent pending).
 
 This file is provided **for transparency** and does **not** add restrictions beyond Apache 2.0.
 
