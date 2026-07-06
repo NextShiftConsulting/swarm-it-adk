@@ -88,11 +88,14 @@ class BedrockProvider(LLMProvider):
         self._model_id = self.MODELS[model]
         self._config = config or LLMProviderConfig(model=model)
 
-        # Initialize Bedrock client
+        # Initialize Bedrock client (P18: swarm_auth for all AWS access)
+        from swarm_auth import get_aws_credentials
         import boto3
+        aws = get_aws_credentials()
         self._client = boto3.client(
             "bedrock-runtime",
-            region_name=region
+            region_name=region,
+            **aws,
         )
 
     @property
