@@ -492,7 +492,7 @@ Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
 **Important Notices**:
 - Patent status / disclosures: [PATENT_NOTICE.md](PATENT_NOTICE.md)
 - Trademarks: [TRADEMARK_NOTICE.md](TRADEMARK_NOTICE.md)
-- Commercial use: [COMMERCIAL_USE.md](COMMERCIAL_USE.md)
+- Commercial licensing: legal@nextshiftconsulting.com
 
 ---
 
