@@ -142,6 +142,36 @@ def test_decision_is_frozen_dataclass():
         decision.action = "REFUSE"
 
 
+def test_repair_continues_when_improving():
+    state = _make_state(
+        capable=True,
+        repair_attempts=1,
+        repair_improved_kappa=True,
+        successor_available=True,
+    )
+    budget = P10Budget(max_repair_retries=2, max_chain_hops=5, max_total_attempts=10)
+
+    decision = decide(state, budget)
+
+    assert decision.action == "REPAIR"
+    assert decision.reason == "LOCAL_REPAIR"
+
+
+def test_handoff_on_budget_exhaustion_not_stall():
+    state = _make_state(
+        capable=True,
+        repair_attempts=2,
+        repair_improved_kappa=True,
+        successor_available=True,
+    )
+    budget = P10Budget(max_repair_retries=2, max_chain_hops=5, max_total_attempts=10)
+
+    decision = decide(state, budget)
+
+    assert decision.action == "HANDOFF"
+    assert decision.reason == "CAPABILITY_MATCHED_HANDOFF"
+
+
 def test_no_prohibited_tokens_in_source():
     from swarm_it.governance import p10
 
