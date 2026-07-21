@@ -360,6 +360,35 @@ def test_low_chain_kappa_fails_closed():
     assert verdict.new_certificate_ref is None
 
 
+def test_receive_certifier_exception_fails_closed():
+    """A crashing real certifier on the receive side must fail closed with
+    a typed RECEIVE_CERTIFIER_ERROR verdict, mirroring output_boundary's
+    OUTPUT_CERTIFIER_ERROR pattern -- never let the exception propagate
+    unhandled out of validate_on_receive."""
+    env = _make_envelope()
+    predecessor = FakeCert(id="cert-A", verdict="EXECUTE", kappa_compat=0.6)
+
+    def crashing_certifier(state):
+        raise RuntimeError("certifier blew up")
+
+    verdict = validate_on_receive(
+        env,
+        GOOD_PAYLOAD,
+        successor_representation_id=env.representation_id,
+        cert_resolver=lambda ref: predecessor,
+        certifier=crashing_certifier,
+        min_chain_kappa=0.5,
+    )
+
+    assert verdict.ok is False
+    assert verdict.reason == "RECEIVE_CERTIFIER_ERROR"
+    assert verdict.new_certificate_ref is None
+
+    trace = get_trace()
+    assert trace[-1].reason == "RECEIVE_CERTIFIER_ERROR"
+    assert trace[-1].handoff_id == env.handoff_id
+
+
 def test_no_prohibited_tokens_in_source():
     from pathlib import Path
 

@@ -236,6 +236,11 @@ def validate_on_receive(
     fails closed (MISSING_CHAIN_KAPPA_THRESHOLD) — this module never
     invents a default threshold, so the caller must supply the named
     preset value explicitly.
+
+    A crashing `cert_resolver` fails closed (RECEIVE_CERT_RESOLVER_ERROR)
+    and a crashing `certifier` fails closed (RECEIVE_CERTIFIER_ERROR) —
+    mirroring output_boundary's OUTPUT_CERTIFIER_ERROR pattern — rather
+    than letting the exception propagate unhandled out of this boundary.
     """
     shape_verdict = _validate_shape(envelope, received_payload)
     if not shape_verdict.ok:
@@ -254,7 +259,10 @@ def validate_on_receive(
             {"cert_resolver_provided": cert_resolver is not None, "certifier_provided": certifier is not None},
         )
 
-    predecessor = cert_resolver(envelope.input_certificate_ref)
+    try:
+        predecessor = cert_resolver(envelope.input_certificate_ref)
+    except Exception as exc:
+        return _fail(envelope, "RECEIVE_CERT_RESOLVER_ERROR", {"error": str(exc)})
     if predecessor is None:
         return _fail(envelope, "UNRESOLVED_CERT", {"input_certificate_ref": envelope.input_certificate_ref})
 
@@ -266,7 +274,10 @@ def validate_on_receive(
     if stale_failure is not None:
         return stale_failure
 
-    derived = certifier(successor_state)
+    try:
+        derived = certifier(successor_state)
+    except Exception as exc:
+        return _fail(envelope, "RECEIVE_CERTIFIER_ERROR", {"error": str(exc)})
 
     recert_failure = _check_recert(envelope, derived)
     if recert_failure is not None:

@@ -161,3 +161,27 @@ def test_hub_spoke_emits_trace_record():
     trace = get_trace()
     assert len(trace) >= 1
     assert trace[-1].event == "topology_decision"
+
+
+def test_hub_spoke_reports_true_cross_hop_min_with_carried_prior():
+    """decision.detail["chain_kappa_min"] must be the TRUE weakest link
+    across every spoke -- including a non-first spoke's OWN carried
+    envelope.prior_chain_kappa_min, not just the certified derived kappas.
+    spoke0 carries no prior (None) and certifies at 0.9; spoke1 carries its
+    own prior of 0.1 (weaker than either spoke's certified kappa) and
+    certifies at 0.85. min_chain_kappa is set deliberately low (0.05) so
+    both spokes EXECUTE at the boundary -- isolating this reporting check
+    from gating. Before the fix, running_min was only seeded from spoke0's
+    prior and never folded in spoke1's own prior, so it wrongly reported
+    0.85 instead of the true 0.1."""
+    spokes = _make_spokes([0.9, 0.85])
+    spokes[1] = dataclasses.replace(
+        spokes[1], envelope=dataclasses.replace(spokes[1].envelope, prior_chain_kappa_min=0.1)
+    )
+
+    decision = accept_hub_spoke(
+        spokes, certifier=_certifier_from_kappas([0.9, 0.85]), cert_resolver=_cert_resolver, min_chain_kappa=0.05
+    )
+
+    assert decision.verdict == "EXECUTE"
+    assert decision.detail["chain_kappa_min"] == 0.1

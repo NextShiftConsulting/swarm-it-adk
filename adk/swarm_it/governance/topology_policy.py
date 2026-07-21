@@ -355,7 +355,7 @@ def accept_hub_spoke(
     if not hops:
         return _refuse("hub_spoke", "EMPTY_CHAIN", None, None)
 
-    running_min: Optional[float] = hops[0].envelope.prior_chain_kappa_min
+    running_min: Optional[float] = None
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
 
@@ -372,7 +372,13 @@ def accept_hub_spoke(
             min_chain_kappa=min_chain_kappa,
             now_epoch=now_epoch,
         )
-        running_min = _min_aware(running_min, derived_kappa)
+        # Every spoke's own carried prior_chain_kappa_min must be folded in
+        # here too, not just its certified derived kappa -- otherwise a
+        # non-first spoke carrying a weaker prior than its certified value
+        # never surfaces in this REPORTING-only running_min (gating is
+        # already correct at the boundary, which reads each spoke's own
+        # envelope unchanged).
+        running_min = _min_aware(_min_aware(running_min, hop.envelope.prior_chain_kappa_min), derived_kappa)
         if boundary_refusal is not None:
             return replace(boundary_refusal, detail={**boundary_refusal.detail, "chain_kappa_min": running_min})
 
