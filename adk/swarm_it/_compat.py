@@ -155,3 +155,76 @@ def to_measurement_estimate(
 
 # Backward-compat alias
 to_certificate_estimate = to_measurement_estimate
+
+
+# ---------------------------------------------------------------------------
+# Output-direction normalization (V-013 reconciliation, ADR-079.b Decision 2).
+# Folded in from the removed governance/certifier_adapter.py so that _compat is
+# the single home for "map between ADK certificate types and a uniform shape."
+# Maps either real certificate type onto one NormalizedCertificate:
+#   - RSCTCertificate (local.engine) exposes `.kappa_compat` directly.
+#   - SwarmCertificate (topology.certifier) exposes the same enforced proxy under
+#     `.kappa_compat_chain_min` and has no `.kappa_compat`.
+# Contains no gate math and makes no allow/refuse decision of its own; `allowed`
+# is read fail-closed via _cert_allowed (the one duck-type site).
+# ---------------------------------------------------------------------------
+
+from dataclasses import dataclass as _dataclass  # noqa: E402
+from typing import Any as _Any, Callable as _Callable, Optional as _Optional  # noqa: E402
+
+
+def _cert_allowed(cert: _Any) -> bool:
+    """Fail-closed verdict read: `.allowed` if present, else `.verdict == 'EXECUTE'`.
+
+    Unknown shape (neither attribute) -> False (never admit what we cannot read).
+    """
+    if hasattr(cert, "allowed"):
+        return bool(cert.allowed)
+    if hasattr(cert, "verdict"):
+        return cert.verdict == "EXECUTE"
+    return False
+
+
+@_dataclass(frozen=True)
+class NormalizedCertificate:
+    """Uniform read shape for a derived certificate.
+
+    kappa_compat: prefer `.kappa_compat`; else fall back to
+    `.kappa_compat_chain_min` (SwarmCertificate); None if neither (treat as
+    incomparable). expires_at is None-safe (real types carry none today).
+    """
+
+    id: _Optional[str]
+    kappa_compat: _Optional[float]
+    allowed: bool
+    expires_at: _Optional[float] = None
+
+
+def normalize_certificate(cert: _Any) -> "NormalizedCertificate":
+    """Map a real (or duck-type-compatible) certificate onto NormalizedCertificate."""
+    kappa_compat = getattr(cert, "kappa_compat", None)
+    if kappa_compat is None:
+        kappa_compat = getattr(cert, "kappa_compat_chain_min", None)
+    return NormalizedCertificate(
+        id=getattr(cert, "id", None),
+        kappa_compat=kappa_compat,
+        allowed=_cert_allowed(cert),
+        expires_at=getattr(cert, "expires_at", None),
+    )
+
+
+def make_certifier(
+    certify_fn: _Callable[[_Any], _Any]
+) -> _Callable[[_Any], "NormalizedCertificate"]:
+    """Wrap a raw certification function so it returns a NormalizedCertificate.
+
+    `certify_fn` is any callable producing a real certificate (a bound
+    `LocalEngine.certify`, `SwarmCertifier.certify`, or a controlplane-backed
+    certifier). The returned callable is what a recert boundary consumes as its
+    `certifier` port.
+    """
+
+    def _certifier(state: _Any) -> "NormalizedCertificate":
+        return normalize_certificate(certify_fn(state))
+
+    return _certifier
