@@ -10,6 +10,15 @@ from swarm_it.governance.cycle_guard import CycleGuard
 from swarm_it.governance.envelope import HandoffEnvelope
 from swarm_it.governance.output_boundary import OutputVerdict, recertify_on_output
 from swarm_it.governance.receive_boundary import ReceiveVerdict, validate_on_receive
+from swarm_it.governance.topology_policy import (
+    HopInput,
+    TopologyDecision,
+    UnsupportedTopologyError,
+    accept,
+    accept_hub_spoke,
+    accept_mesh,
+    accept_pipeline,
+)
 from swarm_it.governance.trace import TraceRecord, emit, get_trace, reset_trace
 
 __all__ = [
@@ -25,4 +34,11 @@ __all__ = [
     "ChainKappaState",
     "recertify_on_output",
     "OutputVerdict",
+    "TopologyDecision",
+    "HopInput",
+    "UnsupportedTopologyError",
+    "accept",
+    "accept_pipeline",
+    "accept_hub_spoke",
+    "accept_mesh",
 ]
