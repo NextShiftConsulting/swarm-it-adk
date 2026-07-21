@@ -5,6 +5,7 @@ carries per-handoff evidence (HandoffEnvelope) between agents without
 self-authorizing any gate decision.
 """
 
+from swarm_it.governance.chain_kappa import ChainKappaState, ChainKappaTracker
 from swarm_it.governance.cycle_guard import CycleGuard
 from swarm_it.governance.envelope import HandoffEnvelope
 from swarm_it.governance.receive_boundary import ReceiveVerdict, validate_on_receive
@@ -19,4 +20,6 @@ __all__ = [
     "CycleGuard",
     "validate_on_receive",
     "ReceiveVerdict",
+    "ChainKappaTracker",
+    "ChainKappaState",
 ]
