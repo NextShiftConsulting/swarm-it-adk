@@ -214,6 +214,43 @@ class TestSwarmCertifier:
         # May block due to low consensus or weakest agent
         assert cert.gate_reached <= 3
 
+    def test_kappa_min_threshold_alters_verdict(self):
+        # ADR-079.b Decision 4 / tranche step 1-2: the configured SwarmCertifier
+        # thresholds must actually affect the verdict (were dead-plumbed before).
+        from swarm_it.topology.certifier import SwarmCertifier
+        swarm = Swarm(
+            id="s1", name="Healthy",
+            agents=[
+                Agent(id="a1", name="A", role="r", kappa_H=0.8, kappa_L=0.8),
+                Agent(id="a2", name="B", role="r", kappa_H=0.7, kappa_L=0.7),
+            ],
+            channels=[Channel("a1", "a2", "delegation", kappa_interface=0.8)],
+        )
+        # Swarm.kappa_compat_chain_min == 0.7
+        lenient = SwarmCertifier(kappa_min_threshold=0.1).certify(swarm)
+        strict = SwarmCertifier(kappa_min_threshold=0.95).certify(swarm)
+        assert lenient.decision.value == "EXECUTE"
+        # 0.7 < 0.95 -> swarm-level threshold downgrades the admit (stricter-only)
+        assert strict.decision.value == "REPAIR"
+        assert strict.decision.value != lenient.decision.value
+        assert "threshold" in strict.reason.lower()
+
+    def test_swarm_threshold_is_stricter_only(self):
+        # A lenient threshold must NOT upgrade a controlplane non-admit to EXECUTE
+        # (gate authority stays with the controlplane; the overlay only tightens).
+        from swarm_it.topology.certifier import SwarmCertifier
+        swarm = Swarm(
+            id="s2", name="Weak",
+            agents=[
+                Agent(id="a1", name="A", role="r", kappa_H=0.15, kappa_L=0.15),
+                Agent(id="a2", name="B", role="r", kappa_H=0.15, kappa_L=0.15),
+            ],
+        )
+        cert = SwarmCertifier(
+            kappa_min_threshold=0.0, consensus_threshold=0.0, interface_threshold=0.0
+        ).certify(swarm)
+        assert cert.decision.value != "EXECUTE"
+
 
 class TestSwarmPatterns:
     """Tests for swarm pattern factories."""

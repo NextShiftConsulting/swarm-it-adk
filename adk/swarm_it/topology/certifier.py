@@ -274,6 +274,34 @@ class SwarmCertifier:
         from ..local.engine import _gate_identifier_to_int
         gate_int = _gate_identifier_to_int(gk_result.gate_reached)
 
+        # Swarm-level admission overlay (ADR-079.b Decision 4): the configured
+        # SwarmCertifier thresholds are STRICTER-ONLY. They downgrade an admit to
+        # REPAIR when a swarm aggregate is below its configured minimum, but never
+        # admit what the controlplane rejected -- gate authority stays with the
+        # controlplane (ADR-004/064). Previously these thresholds were stored in
+        # __init__ and never read (dead plumbing).
+        _ADMIT = (
+            GateDecision.EXECUTE,
+            GateDecision.PASS_FAST,
+            GateDecision.PASS_GUARDED,
+        )
+        if decision in _ADMIT:
+            below = []
+            if consensus < self.consensus_threshold:
+                below.append(f"consensus={consensus:.3f}<{self.consensus_threshold}")
+            if kappa_min < self.kappa_min_threshold:
+                below.append(f"kappa_min={kappa_min:.3f}<{self.kappa_min_threshold}")
+            if interface_min is not None and interface_min < self.interface_threshold:
+                below.append(
+                    f"kappa_interface={interface_min:.3f}<{self.interface_threshold}"
+                )
+            if below:
+                return (
+                    GateDecision.REPAIR,
+                    gate_int,
+                    "Swarm below configured threshold(s): " + "; ".join(below),
+                )
+
         reason = f"Swarm: {gk_result.decision.value} at {gk_result.gate_reached.value}"
         if decision == GateDecision.REPAIR and gate_int == 4:
             weakest = swarm.weakest_channel
