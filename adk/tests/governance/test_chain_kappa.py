@@ -79,7 +79,22 @@ def test_single_hop_dispersion_zero():
     state = tracker.observe(_make_envelope(handoff_id="h1"), 0.7)
 
     assert state.hops == 1
+    assert state.comparable_hops == 1
     assert state.chain_kappa_dispersion == pytest.approx(0.0)
+
+
+def test_comparable_hops_excludes_incomparable_observations():
+    """hops counts every observe(); comparable_hops counts only the ones
+    that actually backed the running min/dispersion."""
+    tracker = ChainKappaTracker()
+
+    s1 = tracker.observe(_make_envelope(handoff_id="h1"), 0.8)
+    assert s1.hops == 1
+    assert s1.comparable_hops == 1
+
+    s2 = tracker.observe(_make_envelope(handoff_id="h2"), None)
+    assert s2.hops == 2
+    assert s2.comparable_hops == 1
 
 
 def test_missing_value_marks_incomparable():
@@ -120,6 +135,11 @@ def test_representation_mismatch_marks_incomparable():
     # A mismatched-representation value is not comparable, so it must not
     # silently raise (or otherwise move) the running min.
     assert s2.chain_kappa_min == pytest.approx(0.8)
+    # ...nor may it enter the dispersion population: dispersion over a
+    # single comparable hop (0.8) must still be zero, not influenced by
+    # the excluded 0.9 from the mismatched-representation hop.
+    assert s2.chain_kappa_dispersion == pytest.approx(0.0)
+    assert s2.comparable_hops == 1
 
 
 def test_is_proxy_always_true():
@@ -171,9 +191,102 @@ def test_chain_kappa_state_is_frozen():
         chain_kappa_min=0.5,
         chain_kappa_dispersion=0.1,
         hops=1,
+        comparable_hops=1,
         incomparable=False,
         is_proxy=True,
     )
 
     with pytest.raises(dataclasses.FrozenInstanceError):
         state.hops = 2
+
+
+def test_from_envelope_seeds_min_and_hops_monotone():
+    """A receiving hop must be able to continue the running chain aggregate
+    from the envelope's prior fields alone, without the sender's in-memory
+    tracker. Min-monotonicity must hold ACROSS the boundary: a later,
+    higher local hop must never raise the seeded min back up."""
+    envelope = _make_envelope(
+        handoff_id="h-seed",
+        representation_id="rep-1",
+        prior_chain_kappa_min=0.4,
+        prior_chain_dispersion=0.05,
+        prior_hops=2,
+    )
+
+    tracker = ChainKappaTracker.from_envelope(envelope)
+
+    # A stronger local hop must never raise the seeded min back up.
+    s1 = tracker.observe(_make_envelope(handoff_id="h3", representation_id="rep-1"), 0.9)
+    assert s1.chain_kappa_min == pytest.approx(0.4)
+    assert s1.hops == 3
+
+
+def test_from_envelope_local_hop_can_lower_seeded_min():
+    envelope = _make_envelope(
+        handoff_id="h-seed",
+        representation_id="rep-1",
+        prior_chain_kappa_min=0.4,
+        prior_chain_dispersion=0.05,
+        prior_hops=2,
+    )
+
+    tracker = ChainKappaTracker.from_envelope(envelope)
+
+    s1 = tracker.observe(_make_envelope(handoff_id="h3", representation_id="rep-1"), 0.2)
+    assert s1.chain_kappa_min == pytest.approx(0.2)
+    assert s1.hops == 3
+
+
+def test_from_envelope_with_no_prior_min_stays_none_until_local_hop():
+    envelope = _make_envelope(
+        handoff_id="h-seed",
+        representation_id="rep-1",
+        prior_chain_kappa_min=None,
+        prior_chain_dispersion=None,
+        prior_hops=0,
+    )
+
+    tracker = ChainKappaTracker.from_envelope(envelope)
+
+    s1 = tracker.observe(_make_envelope(handoff_id="h3", representation_id="rep-1"), 0.6)
+    assert s1.chain_kappa_min == pytest.approx(0.6)
+    assert s1.hops == 1
+
+
+def test_from_envelope_dispersion_reflects_only_local_segment():
+    """The envelope carries only a prior dispersion summary, not the prior
+    raw hop values, so a pooled cross-boundary stdev cannot be honestly
+    reconstructed. Post-seed dispersion must reflect only hops this
+    tracker directly observes locally."""
+    envelope = _make_envelope(
+        handoff_id="h-seed",
+        representation_id="rep-1",
+        prior_chain_kappa_min=0.4,
+        prior_chain_dispersion=0.9,
+        prior_hops=5,
+    )
+
+    tracker = ChainKappaTracker.from_envelope(envelope)
+
+    state = tracker.observe(_make_envelope(handoff_id="h6", representation_id="rep-1"), 0.6)
+
+    # Single local observation: local-segment dispersion is zero, not
+    # influenced by the large prior_chain_dispersion carried in evidence.
+    assert state.chain_kappa_dispersion == pytest.approx(0.0)
+    assert state.comparable_hops == 1
+
+
+def test_from_envelope_seeds_emit_trace_record():
+    envelope = _make_envelope(
+        handoff_id="h-seed",
+        prior_chain_kappa_min=0.4,
+        prior_chain_dispersion=0.05,
+        prior_hops=2,
+    )
+
+    ChainKappaTracker.from_envelope(envelope)
+
+    trace = get_trace()
+    assert len(trace) == 1
+    assert trace[0].handoff_id == "h-seed"
+    assert trace[0].detail["prior_chain_dispersion"] == pytest.approx(0.05)
