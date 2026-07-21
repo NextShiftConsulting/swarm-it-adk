@@ -42,8 +42,17 @@ class ReceiveVerdict:
     this hop (read off the freshly-derived successor certificate, the same
     object whose id backs new_certificate_ref) — this is the only kappa
     value a topology-layer chain-kappa aggregator may trust for this hop.
-    It is populated only on a successful enforcement-mode recertification;
-    inert-mode and every fail-closed path leave it None.
+
+    It is populated whenever the certifier successfully derives and
+    recertifies a certificate for this hop's successor state, REGARDLESS
+    of whether the boundary's own chain-kappa gate then passes or fails —
+    a per-hop certified value is real evidence even when it is the exact
+    value that drives the running chain-kappa below threshold (a topology
+    layer needs this to report the TRUE cross-hop min on a REFUSE, not
+    just on an EXECUTE). It stays None when no certificate was ever
+    derived at all — shape/hash failures, unresolved/stale predecessor,
+    incompatible representation, a refusing/erroring certifier verdict —
+    and in inert mode.
     """
 
     ok: bool
@@ -57,8 +66,15 @@ def _hash_payload(payload: bytes) -> str:
     return HASH_PREFIX + hashlib.sha256(payload).hexdigest()
 
 
-def _fail(envelope: HandoffEnvelope, reason: str, detail: Optional[dict] = None) -> ReceiveVerdict:
-    verdict = ReceiveVerdict(ok=False, reason=reason, handoff_id=envelope.handoff_id)
+def _fail(
+    envelope: HandoffEnvelope,
+    reason: str,
+    detail: Optional[dict] = None,
+    derived_kappa_compat: Optional[float] = None,
+) -> ReceiveVerdict:
+    verdict = ReceiveVerdict(
+        ok=False, reason=reason, handoff_id=envelope.handoff_id, derived_kappa_compat=derived_kappa_compat
+    )
     emit(
         TraceRecord(
             event="receive_boundary",
@@ -145,19 +161,35 @@ def _check_chain_kappa(
     hop_kappa = getattr(derived, "kappa_compat", None)
     state = tracker.observe(envelope, hop_kappa)
 
+    # hop_kappa (this hop's own certified value) is threaded onto every
+    # fail-closed ReceiveVerdict below, even though the chain-kappa gate
+    # itself is refusing — a topology-layer caller needs the TRUE per-hop
+    # certified value to report the real cross-hop min on a REFUSE, not
+    # just on a passing verdict.
     if state.incomparable:
-        return _fail(envelope, "CHAIN_KAPPA_INCOMPARABLE", {"chain_kappa_min": state.chain_kappa_min})
+        return _fail(
+            envelope,
+            "CHAIN_KAPPA_INCOMPARABLE",
+            {"chain_kappa_min": state.chain_kappa_min},
+            derived_kappa_compat=hop_kappa,
+        )
     # Enforcement-mode callers must supply a named-preset threshold; a
     # None here is a missing-config error, not "skip the gate" — this
     # module must not invent a default threshold, but it also must not
     # silently pass a comparable-but-low chain-kappa.
     if min_chain_kappa is None:
-        return _fail(envelope, "MISSING_CHAIN_KAPPA_THRESHOLD", {"chain_kappa_min": state.chain_kappa_min})
+        return _fail(
+            envelope,
+            "MISSING_CHAIN_KAPPA_THRESHOLD",
+            {"chain_kappa_min": state.chain_kappa_min},
+            derived_kappa_compat=hop_kappa,
+        )
     if state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa:
         return _fail(
             envelope,
             "CHAIN_KAPPA_BELOW_THRESHOLD",
             {"chain_kappa_min": state.chain_kappa_min, "min_chain_kappa": min_chain_kappa},
+            derived_kappa_compat=hop_kappa,
         )
     return None
 

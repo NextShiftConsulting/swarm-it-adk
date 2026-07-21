@@ -225,6 +225,70 @@ def test_pipeline_empty_hops_refuses():
     assert decision.gating_hop is None
 
 
+def test_pipeline_carried_weak_prior_refuses_locally_healthy_hop():
+    """V-013 I2: a SINGLE hop whose certifier-derived kappa is locally
+    healthy (0.9, >= threshold 0.5) but whose envelope ARRIVES carrying a
+    weak prior_chain_kappa_min (0.3, from an earlier chain segment/handoff)
+    must REFUSE -- the carried prior caps the chain at 0.3 regardless of
+    how healthy this hop's own certified kappa is.
+
+    NOTE: this specific case is already correctly handled even WITHOUT any
+    topology-layer wiring, because `_cross_hop_boundaries` forwards
+    `hop.envelope` unmodified straight into `validate_on_receive`, whose
+    `ChainKappaTracker.from_envelope` already seeds off
+    envelope.prior_chain_kappa_min. This test therefore PASSES both
+    pre- and post-fix -- it is a regression/behavior-preservation test for
+    the boundary's pre-existing carried-prior protection surviving the
+    topology layer unmolested, not a fix-discriminating test. (Given
+    weakest-link MIN aggregation plus this module's return-immediately-on-
+    first-refusal control flow, NO multi-hop, same-batch construction can
+    make a later hop's carried state change a REFUSE/EXECUTE outcome: any
+    hop weak enough to matter is always caught at its own position
+    regardless of what any prior seeds it with, and the loop exits the
+    instant a hop refuses -- so a "poisoned by an earlier hop in this same
+    batch" scenario can never be observed. The load-bearing, fix-
+    discriminating proof of I2 is chain_kappa_min REPORTING, covered by
+    the two tests below.)
+    """
+    hop = HopInput(
+        envelope=_make_envelope(handoff_id="h0", prior_chain_kappa_min=0.3),
+        produced_payload=GOOD_PAYLOAD,
+        successor_representation_id="rep-1",
+        successor_state={"i": 0},
+        hop_kappa=0.9,
+    )
+
+    decision = accept_pipeline(
+        [hop], certifier=_certifier_from_kappas([0.9]), cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "REFUSE"
+    assert decision.gating_hop == 0
+
+
+def test_pipeline_reports_true_cross_hop_min():
+    hops = _make_hops([0.8, 0.4, 0.9])
+
+    decision = accept_pipeline(
+        hops, certifier=_certifier_from_kappas([0.8, 0.4, 0.9]), cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "REFUSE"
+    assert decision.gating_hop == 1
+    assert decision.detail["chain_kappa_min"] == 0.4
+
+
+def test_pipeline_healthy_chain_reports_running_min():
+    hops = _make_hops([0.8, 0.7, 0.9])
+
+    decision = accept_pipeline(
+        hops, certifier=_certifier_from_kappas([0.8, 0.7, 0.9]), cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "EXECUTE"
+    assert decision.detail["chain_kappa_min"] == 0.7
+
+
 def test_pipeline_wrong_representation_refuses():
     """A hop whose successor_representation_id disagrees with its
     envelope's representation_id must REFUSE at the receive boundary --

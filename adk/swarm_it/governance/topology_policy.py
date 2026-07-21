@@ -25,7 +25,7 @@ forbidden dispersion or enforcement-threshold lexemes, no wall-clock
 reads.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Callable, Optional
 
 from swarm_it.governance.chain_kappa import ChainKappaTracker
@@ -58,6 +58,19 @@ class TopologyDecision:
     reason: str
     gating_hop: Optional[int] = None
     detail: dict = field(default_factory=dict)
+
+
+def _min_aware(a: Optional[float], b: Optional[float]) -> Optional[float]:
+    """None-aware, min-monotone combine: never lets a later None erase an
+    already-known running value, and never lets a later value raise the
+    running min back up — the same weakest-link discipline ChainKappaTracker
+    itself enforces, just applied to the topology's own reporting-only
+    running_min bookkeeping."""
+    if a is None:
+        return b
+    if b is None:
+        return a
+    return min(a, b)
 
 
 @dataclass(frozen=True)
@@ -127,15 +140,26 @@ def _cross_hop_boundaries(
 ) -> tuple[Optional[TopologyDecision], Optional[float]]:
     """Route one hop through the real receive-then-output boundaries.
 
-    Returns (REFUSE TopologyDecision, None) when either boundary fails the
-    hop closed (tampered payload, incompatible representation, unresolved
-    or stale predecessor cert, a refusing/erroring certifier verdict, a
-    below-threshold/incomparable chain-kappa read at the receive boundary,
-    or a passing receive verdict that somehow carries no certified kappa),
-    or (None, derived_kappa_compat) once the hop has cleanly crossed both
-    boundaries — derived_kappa_compat is the CERTIFIER-DERIVED value read
-    off the receive verdict, the only kappa this hop's caller may feed
-    into the topology's own ChainKappaTracker.
+    Returns (REFUSE TopologyDecision, best-known certified kappa) when
+    either boundary fails the hop closed (tampered payload, incompatible
+    representation, unresolved or stale predecessor cert, a
+    refusing/erroring certifier verdict, a below-threshold/incomparable
+    chain-kappa read at the receive boundary, or a passing receive verdict
+    that somehow carries no certified kappa), or (None, derived_kappa_compat)
+    once the hop has cleanly crossed both boundaries — derived_kappa_compat
+    is the CERTIFIER-DERIVED value read off the receive verdict, the only
+    kappa this hop's caller may feed into the topology's own running
+    chain-kappa bookkeeping.
+
+    The "best-known certified kappa" returned alongside a REFUSE is
+    `receive_verdict.derived_kappa_compat` — populated whenever the receive
+    boundary actually derived a certificate for this hop, even if it then
+    refused on its OWN chain-kappa gate (below-threshold or incomparable);
+    it is None when no certificate was ever derived at all (shape/hash,
+    representation, staleness, or recertification failures). This lets a
+    topology-layer caller report the TRUE cross-hop chain-kappa min even on
+    a REFUSE, without this module re-deriving or overriding anything the
+    boundary already decided.
 
     Nothing here re-derives or overrides the boundaries' own verdicts —
     their `reason` is propagated as-is so a topology-layer REFUSE always
@@ -161,7 +185,7 @@ def _cross_hop_boundaries(
                 {"boundary": "receive"},
                 hop.envelope.trace_parent,
             ),
-            None,
+            receive_verdict.derived_kappa_compat,
         )
 
     # Defensive: an ok=True enforcement-mode verdict should always carry a
@@ -192,7 +216,7 @@ def _cross_hop_boundaries(
                 {"boundary": "output"},
                 hop.envelope.trace_parent,
             ),
-            None,
+            receive_verdict.derived_kappa_compat,
         )
 
     return None, receive_verdict.derived_kappa_compat
@@ -207,13 +231,39 @@ def accept_pipeline(
     now_epoch: Optional[float] = None,
 ) -> TopologyDecision:
     """PIPELINE (A -> B -> C, linear): each hop is routed through the real
-    receive/output boundaries, then fed in order through ONE
-    ChainKappaTracker; the weakest hop gates the whole chain.
+    receive/output boundaries; the REAL cross-hop carry is threaded through
+    the boundary itself (ADR-004/064: the boundary stays the single
+    chain-kappa GATING authority; this loop only feeds it carried state and
+    reports what it certified).
 
-    gating_hop is the index of the hop that FIRST drove the running
-    chain-kappa min below min_chain_kappa, or the first hop refused by a
-    boundary check (evaluation stops there — later hops never get a
-    chance to "fix" an already-refused chain).
+    Before hop i's boundary call, this loop replaces hop i's envelope's
+    `prior_chain_kappa_min` with `running_min` — the running weakest-link
+    minimum of every CERTIFIED kappa this evaluation has observed so far,
+    seeded from the FIRST hop's OWN envelope.prior_chain_kappa_min (a chain
+    that arrives mid-flight already carrying a weak prior from an earlier
+    handoff). The boundary's own `ChainKappaTracker.from_envelope` then
+    seeds on that carried value and gates
+    `min(carried_prior, this_hop_certified) < min_chain_kappa` — there is
+    no second, topology-level below-threshold gate: given weakest-link MIN
+    aggregation, a topology-level re-check of that same inequality over
+    hops that individually already cleared the boundary is mathematically
+    unreachable (min(all) < threshold iff some hop < threshold, and any
+    such hop is caught at its own position by the boundary first). What
+    the review flagged as a dead branch has been removed; `running_min` is
+    kept purely to REPORT the true cross-hop chain-kappa min in
+    `TopologyDecision.detail["chain_kappa_min"]`, on both EXECUTE and
+    REFUSE, for audit and as a chain-health degradation metric.
+
+    A representation-consistency tracker is still run across hops (a
+    concern the single-hop boundary genuinely cannot see, since it only
+    ever observes one hop per call): a hop whose envelope.representation_id
+    disagrees with the chain's first observed representation_id REFUSEs
+    (reason="CHAIN_KAPPA_INCOMPARABLE") — an unrelated representation must
+    never be silently folded into the same running aggregate.
+
+    gating_hop is the index of the first hop refused by a boundary check or
+    the representation-consistency check (evaluation stops there — later
+    hops never get a chance to "fix" an already-refused chain).
 
     An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
     through the never-entered loop into an EXECUTE — a vacuous
@@ -224,6 +274,7 @@ def accept_pipeline(
         return _refuse("pipeline", "EMPTY_CHAIN", None, None)
 
     tracker = ChainKappaTracker()
+    running_min: Optional[float] = hops[0].envelope.prior_chain_kappa_min
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
 
@@ -231,40 +282,35 @@ def accept_pipeline(
         last_handoff_id = hop.envelope.handoff_id
         last_trace_parent = hop.envelope.trace_parent
 
+        carried_hop = replace(hop, envelope=replace(hop.envelope, prior_chain_kappa_min=running_min))
+
         boundary_refusal, derived_kappa = _cross_hop_boundaries(
             "pipeline",
-            hop,
+            carried_hop,
             index,
             cert_resolver=cert_resolver,
             certifier=certifier,
             min_chain_kappa=min_chain_kappa,
             now_epoch=now_epoch,
         )
+        running_min = _min_aware(running_min, derived_kappa)
         if boundary_refusal is not None:
-            return boundary_refusal
+            return replace(boundary_refusal, detail={**boundary_refusal.detail, "chain_kappa_min": running_min})
 
         state = tracker.observe(hop.envelope, derived_kappa)
-
         if state.incomparable:
             return _refuse(
                 "pipeline",
                 "CHAIN_KAPPA_INCOMPARABLE",
                 index,
                 hop.envelope.handoff_id,
-                {"chain_kappa_min": state.chain_kappa_min},
-                hop.envelope.trace_parent,
-            )
-        if state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa:
-            return _refuse(
-                "pipeline",
-                "CHAIN_KAPPA_BELOW_THRESHOLD",
-                index,
-                hop.envelope.handoff_id,
-                {"chain_kappa_min": state.chain_kappa_min, "min_chain_kappa": min_chain_kappa},
+                {"chain_kappa_min": running_min},
                 hop.envelope.trace_parent,
             )
 
-    return _execute("pipeline", "CHAIN_HEALTHY", last_handoff_id, {"hops": len(hops)}, last_trace_parent)
+    return _execute(
+        "pipeline", "CHAIN_HEALTHY", last_handoff_id, {"hops": len(hops), "chain_kappa_min": running_min}, last_trace_parent
+    )
 
 
 def accept_hub_spoke(
@@ -276,14 +322,30 @@ def accept_hub_spoke(
     now_epoch: Optional[float] = None,
 ) -> TopologyDecision:
     """HUB_SPOKE (coordinator <-> spokes): each spoke handoff is routed
-    through the real receive/output boundaries and evaluated
-    INDEPENDENTLY, on its own ChainKappaTracker, so one spoke's weakness
-    can never be masked or diluted by another spoke's strength.
+    through the real receive/output boundaries and evaluated INDEPENDENTLY
+    — each spoke's own envelope (including its own
+    prior_chain_kappa_min, if any) is passed to the boundary UNCHANGED, so
+    one spoke's weakness can never be threaded into, mask, or dilute
+    another spoke's own gating check (unlike PIPELINE/MESH, spokes are not
+    a sequential chain of each other; the boundary already honors each
+    spoke's OWN carried prior via `ChainKappaTracker.from_envelope` with
+    zero topology-level intervention needed).
 
-    The hub aggregates: ANY failing spoke (boundary refusal,
-    chain_kappa_min below threshold, or incomparable) makes the whole hub
-    result REFUSE — a failing spoke must never be silently passed by the
-    hub. gating_hop is the failing spoke's index.
+    The per-spoke topology-level ChainKappaTracker the review flagged as
+    dead has been removed outright (not just its below-threshold branch):
+    re-created fresh, unseeded, on every single spoke with exactly one
+    observe() call, it could only ever reproduce a value the boundary had
+    already gated moments earlier — it could never independently reject
+    anything, and (recreated per spoke) it could never even see a
+    cross-spoke representation drift the way PIPELINE/MESH's shared
+    trackers can. `chain_kappa_min` reported in `TopologyDecision.detail`
+    is now a pure, non-gating REPORTING aggregate — the weakest-link
+    minimum of every spoke's CERTIFIED kappa evaluated so far — for audit
+    and as a hub-wide degradation metric only.
+
+    The hub aggregates: ANY failing spoke (boundary refusal) makes the
+    whole hub result REFUSE — a failing spoke must never be silently
+    passed by the hub. gating_hop is the failing spoke's index.
 
     An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
     through the never-entered loop into an EXECUTE — a vacuous
@@ -293,6 +355,7 @@ def accept_hub_spoke(
     if not hops:
         return _refuse("hub_spoke", "EMPTY_CHAIN", None, None)
 
+    running_min: Optional[float] = hops[0].envelope.prior_chain_kappa_min
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
 
@@ -309,32 +372,13 @@ def accept_hub_spoke(
             min_chain_kappa=min_chain_kappa,
             now_epoch=now_epoch,
         )
+        running_min = _min_aware(running_min, derived_kappa)
         if boundary_refusal is not None:
-            return boundary_refusal
+            return replace(boundary_refusal, detail={**boundary_refusal.detail, "chain_kappa_min": running_min})
 
-        spoke_tracker = ChainKappaTracker()
-        state = spoke_tracker.observe(hop.envelope, derived_kappa)
-
-        if state.incomparable:
-            return _refuse(
-                "hub_spoke",
-                "SPOKE_CHAIN_KAPPA_INCOMPARABLE",
-                index,
-                hop.envelope.handoff_id,
-                {"chain_kappa_min": state.chain_kappa_min},
-                hop.envelope.trace_parent,
-            )
-        if state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa:
-            return _refuse(
-                "hub_spoke",
-                "SPOKE_CHAIN_KAPPA_BELOW_THRESHOLD",
-                index,
-                hop.envelope.handoff_id,
-                {"chain_kappa_min": state.chain_kappa_min, "min_chain_kappa": min_chain_kappa},
-                hop.envelope.trace_parent,
-            )
-
-    return _execute("hub_spoke", "ALL_SPOKES_HEALTHY", last_handoff_id, {"spokes": len(hops)}, last_trace_parent)
+    return _execute(
+        "hub_spoke", "ALL_SPOKES_HEALTHY", last_handoff_id, {"spokes": len(hops), "chain_kappa_min": running_min}, last_trace_parent
+    )
 
 
 def accept_mesh(
@@ -366,6 +410,24 @@ def accept_mesh(
     healthy one — two independent root edges must never be forced onto
     one shared running chain-kappa aggregate.
 
+    The REAL cross-hop carry is threaded through the boundary itself, per
+    lineage: before a non-root edge's boundary call, this loop replaces
+    that edge's envelope's `prior_chain_kappa_min` with the running
+    weakest-link minimum of every CERTIFIED kappa observed so far in THIS
+    edge's lineage (seeded, for a root edge, from that root edge's OWN
+    envelope.prior_chain_kappa_min — a lineage that arrives mid-flight
+    already carrying a weak prior from an earlier handoff). The boundary's
+    own ChainKappaTracker then gates on that carried value, so the
+    per-lineage tracker's below-threshold re-check the review flagged as
+    dead has been removed: given weakest-link MIN aggregation, it is
+    mathematically unreachable once the boundary gates every edge with its
+    lineage's true carried prior. The per-lineage tracker itself is KEPT
+    (not removed) purely for representation-consistency across edges of
+    the SAME lineage — a check the single-hop boundary genuinely cannot
+    perform, since it only ever observes one edge per call — and its
+    running min now doubles as this evaluation's REPORTING value, surfaced
+    in `TopologyDecision.detail["chain_kappa_min"]`.
+
     An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
     through the never-entered loop into an EXECUTE — a vacuous
     authorization where no certifier was ever called and no edge was
@@ -377,6 +439,7 @@ def accept_mesh(
     traversed_handoff_ids: set[str] = set()
     lineage_root_of: dict[str, str] = {}
     lineage_trackers: dict[str, ChainKappaTracker] = {}
+    lineage_running_min: dict[str, Optional[float]] = {}
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
 
@@ -402,17 +465,28 @@ def accept_mesh(
             lineage_root_of[envelope.handoff_id] = lineage_root
             tracker = lineage_trackers.setdefault(lineage_root, ChainKappaTracker())
 
+            if envelope.trace_parent is None:
+                lineage_running_min[lineage_root] = envelope.prior_chain_kappa_min
+            running_min = lineage_running_min[lineage_root]
+
+            carried_hop = replace(hop, envelope=replace(envelope, prior_chain_kappa_min=running_min))
+
             boundary_refusal, derived_kappa = _cross_hop_boundaries(
                 "mesh",
-                hop,
+                carried_hop,
                 index,
                 cert_resolver=cert_resolver,
                 certifier=certifier,
                 min_chain_kappa=min_chain_kappa,
                 now_epoch=now_epoch,
             )
+            running_min = _min_aware(running_min, derived_kappa)
+            lineage_running_min[lineage_root] = running_min
             if boundary_refusal is not None:
-                return boundary_refusal
+                return replace(
+                    boundary_refusal,
+                    detail={**boundary_refusal.detail, "chain_kappa_min": running_min, "lineage_root": lineage_root},
+                )
 
             state = tracker.observe(envelope, derived_kappa)
 
@@ -422,20 +496,7 @@ def accept_mesh(
                     "CHAIN_KAPPA_INCOMPARABLE",
                     index,
                     envelope.handoff_id,
-                    {"chain_kappa_min": state.chain_kappa_min, "lineage_root": lineage_root},
-                    envelope.trace_parent,
-                )
-            if state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa:
-                return _refuse(
-                    "mesh",
-                    "CHAIN_KAPPA_BELOW_THRESHOLD",
-                    index,
-                    envelope.handoff_id,
-                    {
-                        "chain_kappa_min": state.chain_kappa_min,
-                        "min_chain_kappa": min_chain_kappa,
-                        "lineage_root": lineage_root,
-                    },
+                    {"chain_kappa_min": running_min, "lineage_root": lineage_root},
                     envelope.trace_parent,
                 )
 
