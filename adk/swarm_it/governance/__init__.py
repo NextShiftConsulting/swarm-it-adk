@@ -9,6 +9,7 @@ from swarm_it.governance.chain_kappa import ChainKappaState, ChainKappaTracker
 from swarm_it.governance.cycle_guard import CycleGuard
 from swarm_it.governance.envelope import HandoffEnvelope
 from swarm_it.governance.output_boundary import OutputVerdict, recertify_on_output
+from swarm_it.governance.p10 import P10Budget, P10Decision, P10State, decide
 from swarm_it.governance.receive_boundary import ReceiveVerdict, validate_on_receive
 from swarm_it.governance.topology_policy import (
     HopInput,
@@ -41,4 +42,8 @@ __all__ = [
     "accept_pipeline",
     "accept_hub_spoke",
     "accept_mesh",
+    "P10Budget",
+    "P10State",
+    "P10Decision",
+    "decide",
 ]
