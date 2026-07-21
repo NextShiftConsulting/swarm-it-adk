@@ -5,6 +5,11 @@ carries per-handoff evidence (HandoffEnvelope) between agents without
 self-authorizing any gate decision.
 """
 
+from swarm_it.governance.certifier_adapter import (
+    NormalizedCertificate,
+    make_certifier,
+    normalize_certificate,
+)
 from swarm_it.governance.chain_kappa import ChainKappaState, ChainKappaTracker
 from swarm_it.governance.cycle_guard import CycleGuard
 from swarm_it.governance.envelope import HandoffEnvelope
@@ -23,6 +28,9 @@ from swarm_it.governance.topology_policy import (
 from swarm_it.governance.trace import TraceRecord, emit, get_trace, reset_trace
 
 __all__ = [
+    "NormalizedCertificate",
+    "make_certifier",
+    "normalize_certificate",
     "HandoffEnvelope",
     "TraceRecord",
     "emit",
