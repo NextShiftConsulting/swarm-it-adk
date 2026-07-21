@@ -28,6 +28,7 @@ MECHANISM_DIRS = {
     "providers",      # port interfaces + null / reference implementations
     "taxonomy",       # failure / decision taxonomy
     "topology",       # coordination patterns
+    "governance",     # handoff evidence contracts (HandoffEnvelope) for MAS coordination
     # --- agreed target structure (governed-envelope ADK); checked only if present ---
     "contracts",      # stable canonical objects (identity, delegation, execution, certificate, events)
     "runtime",        # execution guard / tool + handoff interceptors / outcome reporter
