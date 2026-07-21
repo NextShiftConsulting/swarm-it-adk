@@ -90,6 +90,7 @@ def test_receive_derives_new_cert_never_mutates_predecessor():
         certifier=certifier,
         successor_state={"intermediate": "state"},
         now_epoch=1_000.0,
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is True
@@ -107,6 +108,7 @@ def test_unresolvable_cert_ref_fails_closed():
         successor_representation_id=env.representation_id,
         cert_resolver=lambda ref: None,
         certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -128,6 +130,7 @@ def test_representation_mismatch_fails_closed():
         successor_representation_id="rep-2",
         cert_resolver=lambda ref: predecessor,
         certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -145,6 +148,7 @@ def test_recert_refused_fails_closed():
         successor_representation_id=env.representation_id,
         cert_resolver=lambda ref: predecessor,
         certifier=lambda state: FakeCert(id="cert-B", verdict="REPAIR", kappa_compat=0.1),
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -164,6 +168,7 @@ def test_no_inherited_trust():
         successor_representation_id=env.representation_id,
         cert_resolver=lambda ref: predecessor,
         certifier=lambda state: FakeCert(id="cert-B", verdict="BLOCK", kappa_compat=0.05),
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -203,6 +208,7 @@ def test_shape_failure_short_circuits_before_enforcement():
         successor_representation_id=env.representation_id,
         cert_resolver=cert_resolver,
         certifier=certifier,
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -222,6 +228,7 @@ def test_stale_cert_fails_closed():
         cert_resolver=lambda ref: predecessor,
         certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
         now_epoch=600.0,
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
@@ -255,10 +262,102 @@ def test_missing_hop_kappa_marks_chain_incomparable_fails_closed():
         successor_representation_id=env.representation_id,
         cert_resolver=lambda ref: predecessor,
         certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=None),
+        min_chain_kappa=0.5,
     )
 
     assert verdict.ok is False
     assert verdict.reason == "CHAIN_KAPPA_INCOMPARABLE"
+
+
+def test_enforcement_missing_representation_fails_closed():
+    """Enforcement mode with successor_representation_id=None must fail
+    closed rather than silently skipping the representation check."""
+    env = _make_envelope()
+    predecessor = FakeCert(id="cert-A", verdict="EXECUTE", kappa_compat=0.6)
+
+    verdict = validate_on_receive(
+        env,
+        GOOD_PAYLOAD,
+        successor_representation_id=None,
+        cert_resolver=lambda ref: predecessor,
+        certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
+        min_chain_kappa=0.5,
+    )
+
+    assert verdict.ok is False
+    assert verdict.reason == "MISSING_REPRESENTATION"
+    assert verdict.new_certificate_ref is None
+
+    trace = get_trace()
+    assert trace[-1].reason == "MISSING_REPRESENTATION"
+    assert trace[-1].handoff_id == env.handoff_id
+
+
+def test_enforcement_missing_threshold_fails_closed():
+    """Enforcement mode with min_chain_kappa=None must fail closed rather
+    than silently skipping the chain-kappa threshold gate."""
+    env = _make_envelope()
+    predecessor = FakeCert(id="cert-A", verdict="EXECUTE", kappa_compat=0.6)
+
+    verdict = validate_on_receive(
+        env,
+        GOOD_PAYLOAD,
+        successor_representation_id=env.representation_id,
+        cert_resolver=lambda ref: predecessor,
+        certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
+        min_chain_kappa=None,
+    )
+
+    assert verdict.ok is False
+    assert verdict.reason == "MISSING_CHAIN_KAPPA_THRESHOLD"
+    assert verdict.new_certificate_ref is None
+
+    trace = get_trace()
+    assert trace[-1].reason == "MISSING_CHAIN_KAPPA_THRESHOLD"
+    assert trace[-1].handoff_id == env.handoff_id
+
+
+def test_partial_injection_fails_closed():
+    """Providing only one of cert_resolver/certifier must fail closed with
+    a typed reason, never raise a raw TypeError from calling None."""
+    env = _make_envelope()
+
+    verdict = validate_on_receive(
+        env,
+        GOOD_PAYLOAD,
+        successor_representation_id=env.representation_id,
+        cert_resolver=None,
+        certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.7),
+        min_chain_kappa=0.5,
+    )
+
+    assert verdict.ok is False
+    assert verdict.reason == "INCOMPLETE_ENFORCEMENT_CONFIG"
+    assert verdict.new_certificate_ref is None
+
+    trace = get_trace()
+    assert trace[-1].reason == "INCOMPLETE_ENFORCEMENT_CONFIG"
+    assert trace[-1].handoff_id == env.handoff_id
+
+
+def test_low_chain_kappa_fails_closed():
+    """A supplied min_chain_kappa threshold must actually gate: a
+    comparable-but-low chain-kappa fails closed rather than passing."""
+    env = _make_envelope()
+    predecessor = FakeCert(id="cert-A", verdict="EXECUTE", kappa_compat=0.6)
+
+    verdict = validate_on_receive(
+        env,
+        GOOD_PAYLOAD,
+        successor_representation_id=env.representation_id,
+        cert_resolver=lambda ref: predecessor,
+        certifier=lambda state: FakeCert(id="cert-B", verdict="EXECUTE", kappa_compat=0.2),
+        min_chain_kappa=0.5,
+    )
+
+    assert verdict.ok is False
+    assert verdict.reason == "CHAIN_KAPPA_BELOW_THRESHOLD"
+    assert verdict.new_certificate_ref is None
 
 
 def test_no_prohibited_tokens_in_source():

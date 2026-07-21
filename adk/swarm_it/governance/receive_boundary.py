@@ -91,8 +91,11 @@ def _validate_shape(envelope: HandoffEnvelope, received_payload: bytes) -> Recei
 def _check_representation(
     envelope: HandoffEnvelope, successor_representation_id: Optional[str]
 ) -> Optional[ReceiveVerdict]:
+    # Enforcement-mode callers must supply the successor's representation
+    # id; a None here is a missing-config error, not "skip this check" —
+    # silently passing would let an incompatible representation through.
     if successor_representation_id is None:
-        return None
+        return _fail(envelope, "MISSING_REPRESENTATION")
     if successor_representation_id != envelope.representation_id:
         return _fail(
             envelope,
@@ -145,7 +148,13 @@ def _check_chain_kappa(
 
     if state.incomparable:
         return _fail(envelope, "CHAIN_KAPPA_INCOMPARABLE", {"chain_kappa_min": state.chain_kappa_min})
-    if min_chain_kappa is not None and (state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa):
+    # Enforcement-mode callers must supply a named-preset threshold; a
+    # None here is a missing-config error, not "skip the gate" — this
+    # module must not invent a default threshold, but it also must not
+    # silently pass a comparable-but-low chain-kappa.
+    if min_chain_kappa is None:
+        return _fail(envelope, "MISSING_CHAIN_KAPPA_THRESHOLD", {"chain_kappa_min": state.chain_kappa_min})
+    if state.chain_kappa_min is None or state.chain_kappa_min < min_chain_kappa:
         return _fail(
             envelope,
             "CHAIN_KAPPA_BELOW_THRESHOLD",
@@ -177,8 +186,17 @@ def validate_on_receive(
     certificate — never re-evaluating or mutating the predecessor. A
     refusing (non-EXECUTE) derived verdict fails closed regardless of the
     predecessor's own verdict: no inherited trust. Chain-kappa is updated
-    from the derived certificate's kappa_compat; an incomparable chain, or
-    one below `min_chain_kappa` (when given), also fails closed.
+    from the derived certificate's kappa_compat; an incomparable chain
+    also fails closed.
+
+    Supplying exactly one of cert_resolver/certifier is a caller
+    misconfiguration and fails closed (INCOMPLETE_ENFORCEMENT_CONFIG)
+    rather than crashing. Once in enforcement mode, `None` is never
+    treated as "skip this check": a missing `successor_representation_id`
+    fails closed (MISSING_REPRESENTATION) and a missing `min_chain_kappa`
+    fails closed (MISSING_CHAIN_KAPPA_THRESHOLD) — this module never
+    invents a default threshold, so the caller must supply the named
+    preset value explicitly.
     """
     shape_verdict = _validate_shape(envelope, received_payload)
     if not shape_verdict.ok:
@@ -186,6 +204,16 @@ def validate_on_receive(
 
     if cert_resolver is None and certifier is None:
         return shape_verdict
+
+    # Exactly one of the two enforcement ports being supplied is a caller
+    # misconfiguration, not a mode to support: fail closed with a typed
+    # reason instead of crashing on the missing port below.
+    if cert_resolver is None or certifier is None:
+        return _fail(
+            envelope,
+            "INCOMPLETE_ENFORCEMENT_CONFIG",
+            {"cert_resolver_provided": cert_resolver is not None, "certifier_provided": certifier is not None},
+        )
 
     predecessor = cert_resolver(envelope.input_certificate_ref)
     if predecessor is None:
