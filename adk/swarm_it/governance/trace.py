@@ -7,6 +7,7 @@ The sink is append-only by construction: emit() appends and nothing in
 this module ever overwrites or deletes an existing record.
 """
 
+import types
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -20,6 +21,13 @@ class TraceRecord:
     handoff_id: Optional[str]
     detail: dict = field(default_factory=dict)
     trace_parent: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        # frozen=True only stops attribute rebinding, not in-place mutation
+        # of a mutable field. Wrap detail in a read-only view (over a copy,
+        # so mutating the caller's original dict can't reach into the
+        # record either) to keep the audit trail append-only in practice.
+        object.__setattr__(self, "detail", types.MappingProxyType(dict(self.detail)))
 
 
 _TRACE: list[TraceRecord] = []

@@ -16,6 +16,11 @@ from typing import Optional
 from swarm_it.governance.envelope import HandoffEnvelope
 from swarm_it.governance.trace import TraceRecord, emit
 
+# Envelope producers must prefix payload_hash with this literal so receivers
+# can identify the digest algorithm; validate_on_receive fails closed on any
+# other prefix (or a missing one) because the hashes simply won't match.
+HASH_PREFIX = "sha256:"
+
 
 @dataclass(frozen=True)
 class ReceiveVerdict:
@@ -27,7 +32,7 @@ class ReceiveVerdict:
 
 
 def _hash_payload(payload: bytes) -> str:
-    return "sha256:" + hashlib.sha256(payload).hexdigest()
+    return HASH_PREFIX + hashlib.sha256(payload).hexdigest()
 
 
 def validate_on_receive(envelope: HandoffEnvelope, received_payload: bytes) -> ReceiveVerdict:

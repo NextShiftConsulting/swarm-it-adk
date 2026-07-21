@@ -10,12 +10,19 @@ inside a repair, or a handoff inside a handoff) is fine and expected.
 """
 
 import contextlib
-import threading
-from typing import Literal
+import contextvars
+from typing import Literal, Optional
 
 Mode = Literal["repair", "handoff"]
 
-_state = threading.local()
+# contextvars.ContextVar, not threading.local: this guard must stay correctly
+# scoped across `await` points. A thread.local would leak/lose state across
+# suspensions of a coroutine on the same OS thread (asyncio can interleave
+# multiple logical tasks on one thread), which would let a repair and a
+# handoff coroutine appear to share (or clobber) the same guard state.
+# Token-based reset() restores the exact prior value on exit, so nesting
+# (same mode inside itself) "just works" without a separate depth counter.
+_mode: contextvars.ContextVar[Optional[Mode]] = contextvars.ContextVar("cycle_guard_mode", default=None)
 
 
 class CycleGuard:
@@ -24,19 +31,15 @@ class CycleGuard:
     @staticmethod
     @contextlib.contextmanager
     def enter(mode: Mode):
-        current = getattr(_state, "mode", None)
+        current = _mode.get()
         if current is not None and current != mode:
             raise RuntimeError(
                 f"CycleGuard violation: cannot enter '{mode}' while inside '{current}' "
                 "(morph-repair and handoff are mutually exclusive)"
             )
 
-        depth = getattr(_state, "depth", 0)
-        _state.mode = mode
-        _state.depth = depth + 1
+        token = _mode.set(mode)
         try:
             yield
         finally:
-            _state.depth -= 1
-            if _state.depth == 0:
-                _state.mode = None
+            _mode.reset(token)
