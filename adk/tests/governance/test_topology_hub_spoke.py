@@ -138,6 +138,19 @@ def test_hub_spoke_each_evaluated_independently():
     assert decision.gating_hop is None
 
 
+def test_hub_spoke_empty_hops_refuses():
+    """An empty hop list must REFUSE, not fall through the (never-entered)
+    loop into an EXECUTE -- that would be a vacuous authorization where no
+    certifier was ever called and no spoke was ever validated."""
+    decision = accept_hub_spoke(
+        [], certifier=_fake_certifier_always_execute, cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "REFUSE"
+    assert decision.reason == "EMPTY_CHAIN"
+    assert decision.gating_hop is None
+
+
 def test_hub_spoke_emits_trace_record():
     spokes = _make_spokes([0.8, 0.7])
 

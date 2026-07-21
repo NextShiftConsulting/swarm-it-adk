@@ -212,6 +212,19 @@ def test_topology_aggregates_certified_kappa_not_caller_value():
     assert decision.gating_hop is None
 
 
+def test_pipeline_empty_hops_refuses():
+    """An empty hop list must REFUSE, not fall through the (never-entered)
+    loop into an EXECUTE -- that would be a vacuous authorization where no
+    certifier was ever called and no hop was ever validated."""
+    decision = accept_pipeline(
+        [], certifier=_fake_certifier_always_execute, cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "REFUSE"
+    assert decision.reason == "EMPTY_CHAIN"
+    assert decision.gating_hop is None
+
+
 def test_pipeline_wrong_representation_refuses():
     """A hop whose successor_representation_id disagrees with its
     envelope's representation_id must REFUSE at the receive boundary --

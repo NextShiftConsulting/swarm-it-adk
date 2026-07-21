@@ -116,6 +116,17 @@ def test_mesh_properly_parented_executes():
     assert decision.gating_hop is None
 
 
+def test_mesh_empty_hops_refuses():
+    """An empty hop list must REFUSE, not fall through the (never-entered)
+    loop into an EXECUTE -- that would be a vacuous authorization where no
+    certifier was ever called and no edge was ever validated."""
+    decision = accept_mesh([], certifier=_fake_certifier_always_execute, cert_resolver=_cert_resolver, min_chain_kappa=0.5)
+
+    assert decision.verdict == "REFUSE"
+    assert decision.reason == "EMPTY_CHAIN"
+    assert decision.gating_hop is None
+
+
 def test_mesh_emits_trace_record():
     hops = [_hop("edge-A", trace_parent=None)]
 

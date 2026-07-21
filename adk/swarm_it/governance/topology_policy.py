@@ -214,7 +214,15 @@ def accept_pipeline(
     chain-kappa min below min_chain_kappa, or the first hop refused by a
     boundary check (evaluation stops there — later hops never get a
     chance to "fix" an already-refused chain).
+
+    An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
+    through the never-entered loop into an EXECUTE — a vacuous
+    authorization where no certifier was ever called and no hop was ever
+    validated is a default-permissive path, not a healthy chain.
     """
+    if not hops:
+        return _refuse("pipeline", "EMPTY_CHAIN", None, None)
+
     tracker = ChainKappaTracker()
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
@@ -276,7 +284,15 @@ def accept_hub_spoke(
     chain_kappa_min below threshold, or incomparable) makes the whole hub
     result REFUSE — a failing spoke must never be silently passed by the
     hub. gating_hop is the failing spoke's index.
+
+    An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
+    through the never-entered loop into an EXECUTE — a vacuous
+    authorization where no certifier was ever called and no spoke was
+    ever validated is a default-permissive path, not a healthy hub.
     """
+    if not hops:
+        return _refuse("hub_spoke", "EMPTY_CHAIN", None, None)
+
     last_handoff_id: Optional[str] = None
     last_trace_parent: Optional[str] = None
 
@@ -349,7 +365,15 @@ def accept_mesh(
     keeps an unrelated, weak/incomparable lineage from poisoning a
     healthy one — two independent root edges must never be forced onto
     one shared running chain-kappa aggregate.
+
+    An empty hop list REFUSEs (reason="EMPTY_CHAIN") rather than falling
+    through the never-entered loop into an EXECUTE — a vacuous
+    authorization where no certifier was ever called and no edge was
+    ever validated is a default-permissive path, not a healthy mesh.
     """
+    if not hops:
+        return _refuse("mesh", "EMPTY_CHAIN", None, None)
+
     traversed_handoff_ids: set[str] = set()
     lineage_root_of: dict[str, str] = {}
     lineage_trackers: dict[str, ChainKappaTracker] = {}
@@ -435,6 +459,10 @@ def accept(
     (RING, HIERARCHICAL, or anything else) fails closed with a REFUSE
     TopologyDecision (reason="UNSUPPORTED_TOPOLOGY") rather than being
     silently accepted by a shared/default path.
+
+    An empty hop list REFUSEs (reason="EMPTY_CHAIN") here too, before any
+    dispatch — every entry point into this module must fail closed on a
+    vacuous authorization, not just the per-topology accept_* functions.
     """
     if pattern not in _SUPPORTED_PATTERNS:
         decision = TopologyDecision(
@@ -443,6 +471,11 @@ def accept(
             gating_hop=None,
             detail={"pattern": getattr(pattern, "value", str(pattern))},
         )
+        _emit_decision(getattr(pattern, "value", str(pattern)), decision, None, None)
+        return decision
+
+    if not hops:
+        decision = TopologyDecision(verdict="REFUSE", reason="EMPTY_CHAIN", gating_hop=None, detail={})
         _emit_decision(getattr(pattern, "value", str(pattern)), decision, None, None)
         return decision
 

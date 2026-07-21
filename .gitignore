@@ -115,3 +115,6 @@ experiments/*/checkpoints/
 # Credential protection (recursive)
 **/keys/
 **/keys/**
+
+# Scratch / working notes
+.superpowers/

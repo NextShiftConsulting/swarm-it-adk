@@ -110,6 +110,19 @@ def test_accept_ring_refuses_unsupported():
     assert decision.reason == "UNSUPPORTED_TOPOLOGY"
 
 
+def test_accept_pipeline_empty_hops_refuses():
+    """The top-level accept() dispatcher must itself fail closed on an
+    empty hop list -- every entry point (not just the per-topology
+    accept_* functions) must refuse a vacuous authorization."""
+    decision = accept(
+        SwarmPattern.PIPELINE, [], certifier=_fake_certifier_always_execute, cert_resolver=_cert_resolver, min_chain_kappa=0.5
+    )
+
+    assert decision.verdict == "REFUSE"
+    assert decision.reason == "EMPTY_CHAIN"
+    assert decision.gating_hop is None
+
+
 def test_accept_hierarchical_refuses_unsupported():
     hops = _one_hop(SwarmPattern.HIERARCHICAL)
 
