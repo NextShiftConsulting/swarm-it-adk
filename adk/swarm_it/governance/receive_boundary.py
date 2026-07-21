@@ -23,6 +23,7 @@ import hashlib
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
+from swarm_it.governance._certifier_shims import derived_verdict_ok
 from swarm_it.governance.chain_kappa import ChainKappaTracker
 from swarm_it.governance.envelope import HandoffEnvelope
 from swarm_it.governance.trace import TraceRecord, emit
@@ -122,19 +123,8 @@ def _check_stale(
     return None
 
 
-def _derived_verdict_ok(derived: Any) -> bool:
-    # Duck-typed: real controlplane certs expose .allowed; simple test
-    # doubles may only expose .verdict == "EXECUTE". Neither present means
-    # the outcome can't be confirmed, so it fails closed.
-    if hasattr(derived, "allowed"):
-        return bool(derived.allowed)
-    if hasattr(derived, "verdict"):
-        return derived.verdict == "EXECUTE"
-    return False
-
-
 def _check_recert(envelope: HandoffEnvelope, derived: Any) -> Optional[ReceiveVerdict]:
-    if not _derived_verdict_ok(derived):
+    if not derived_verdict_ok(derived):
         return _fail(envelope, "RECERT_REFUSED", {"derived_certificate_id": getattr(derived, "id", None)})
     return None
 
