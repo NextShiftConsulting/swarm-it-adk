@@ -28,7 +28,7 @@ MECHANISM_DIRS = {
     "providers",      # port interfaces + null / reference implementations
     "taxonomy",       # failure / decision taxonomy
     "topology",       # coordination patterns
-    "governance",     # handoff evidence contracts (HandoffEnvelope) for MAS coordination
+    # governance/ removed from main 2026-07-21 (V-013 orphaned parallel stack; snapshot tag v013-orphan-snapshot; see ADR-079 amendment). Re-add when reconciled onto canonical surfaces.
     # --- agreed target structure (governed-envelope ADK); checked only if present ---
     "contracts",      # stable canonical objects (identity, delegation, execution, certificate, events)
     "runtime",        # execution guard / tool + handoff interceptors / outcome reporter
