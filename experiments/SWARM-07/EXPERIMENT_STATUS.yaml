@@ -1,0 +1,44 @@
+experiment: SWARM-07
+title: "Coordination-Governance Empirical Validation (V-013 empirical closure)"
+program: mas-coordination-governance
+tracks: [V-013 empirical, ADR-079 §Rollout, open-thread mas-coordination-empirical-gaps]
+last_updated: 2026-07-21
+execution: local-deterministic   # drives live swarm_it.governance; seeded RNG
+status: DRAFT   # DOE not yet locked: stochastic model + adversary set + power + seeds OPEN
+
+phases:
+  trace_generator:
+    status: DESIGNED
+    description: "seeded stochastic + adversarial handoff-chain generator; ground truth from generator, never from a governance stat"
+    depends_on: []
+    open_before_lock:
+      - per_hop_kappa_model      # distribution + drift schedule for derived kappa_compat
+      - adversary_set            # {inflated_kappa, stale_representation, incomparable_chain, missing_threshold, incomplete_enforcement_config}
+      - power                    # traces per cell (>=200) + seed list
+  h1_monotonicity:              # H1
+    status: DESIGNED
+    description: "ChainKappaTracker.chain_kappa_min monotone non-increasing == exact running min; probes SWARM-01 H8 rise"
+    depends_on: [trace_generator]
+  h2_adversarial_receive:        # H2
+    status: DESIGNED
+    description: "validate_on_receive fails closed on adversarial handoffs; false-authorization=0; correct typed reason"
+    depends_on: [trace_generator]
+  h3_p10:                        # H3
+    status: DESIGNED
+    description: "p10.decide mutual-exclusivity {repair|handoff|refuse} + budget termination (Claim 9, never empirically tested)"
+    depends_on: []
+  h4_degradation_lead:           # H4 (stretch)
+    status: DESIGNED
+    description: "compounding degradation refused at/before first sub-threshold hop; warning lead >= 0"
+    depends_on: [trace_generator]
+  verdicts:
+    status: DESIGNED
+    description: "HYPOTHESIS_VERDICTS.md + evidence JSONs; closes empirical half of V-013 on H1-H3 pass"
+    depends_on: [h1_monotonicity, h2_adversarial_receive, h3_p10]
+
+baseline:
+  swarm01_h8: experiments/SWARM-01/evidence/h8_multiagent_handoff.json   # single trace/length; underpowered datum this series replaces
+
+open_threads:
+  - mas-coordination-empirical-gaps   # SWARM-07 is the scoped vehicle (adaptive-context-research/OPEN_THREADS.yaml)
+  - v013-empirical-closure            # register: code side RESOLVED 2026-07-21; empirical side = this series
