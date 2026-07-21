@@ -5,18 +5,25 @@ REPAIR locally, must HAND OFF to a capability-matched successor, or must
 REFUSE. It is pure decision logic over injected state + budget: no
 network/model calls, no gate or kappa math (it consumes flags such as
 capable/successor_available/chain_incomparable, it does not compute
-kappa itself). This module never enters CycleGuard — deciding "REPAIR"
-or "HANDOFF" here only picks the mode; the caller is responsible for
-actually entering CycleGuard.enter("repair") / CycleGuard.enter("handoff")
-under the morph-repair/handoff XOR mutual exclusion (Claim 9).
+kappa itself). `decide()` itself never enters CycleGuard — deciding
+"REPAIR" or "HANDOFF" only picks the mode.
+
+`enter_p10_cycle()` (V-013 I4) is the wiring a caller uses to ACT on a
+P10Decision: it enters CycleGuard.enter("repair") for REPAIR,
+CycleGuard.enter("handoff") for HANDOFF, and is a no-op context for
+REFUSE (nothing to guard). This is what makes the morph-repair/handoff
+XOR mutual exclusion (Claim 9) correct-by-construction end-to-end,
+instead of relying on every caller to remember to enter the right guard.
 
 Fail-closed by construction: any budget limit hit (chain hops, total
 attempts) or an incomparable chain-kappa signal is REFUSE before REPAIR
 or HANDOFF is ever considered. There is no default-permissive path.
 """
 
+import contextlib
 from dataclasses import dataclass
 
+from swarm_it.governance.cycle_guard import CycleGuard
 from swarm_it.governance.trace import TraceRecord, emit
 
 
@@ -103,3 +110,29 @@ def decide(state: P10State, budget: P10Budget) -> P10Decision:
     )
 
     return decision
+
+
+@contextlib.contextmanager
+def enter_p10_cycle(decision: P10Decision):
+    """Enter the CycleGuard mode implied by a P10Decision (V-013 I4).
+
+    The wiring that makes "act on a P10 decision" correct-by-construction
+    w.r.t. the morph-repair/handoff XOR mutual exclusion (Claim 9):
+
+    - action == "REPAIR"  -> CycleGuard.enter("repair")
+    - action == "HANDOFF" -> CycleGuard.enter("handoff")
+    - action == "REFUSE"  -> no-op context; there is nothing to guard
+      because a refusal neither mutates state in place nor hands it to
+      another agent.
+
+    This function contains no gate/kappa math and makes no decision of
+    its own — it only dispatches on the `action` decide() already chose.
+    """
+    if decision.action == "REPAIR":
+        with CycleGuard.enter("repair"):
+            yield
+    elif decision.action == "HANDOFF":
+        with CycleGuard.enter("handoff"):
+            yield
+    else:
+        yield

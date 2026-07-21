@@ -140,6 +140,14 @@ def _check_stale(
     # Staleness is only assessed when both the predecessor exposes an
     # expiry and the caller injects "now" — this module never reads the
     # wall clock itself (no time/datetime calls).
+    #
+    # V-013 I3: neither real controlplane cert type (RSCTCertificate,
+    # SwarmCertificate) currently exposes `expires_at`, so
+    # getattr(predecessor, "expires_at", None) reads None for both and
+    # this check is inert (None-safe no-op) against real certs today. A
+    # certifier_adapter.NormalizedCertificate with expires_at set (or any
+    # future real cert type that grows one) activates it immediately —
+    # no other change required.
     expires_at = getattr(predecessor, "expires_at", None)
     if expires_at is None or now_epoch is None:
         return None
