@@ -16,9 +16,13 @@ satisfied by a tampered or wrong-representation handoff.
 
 Gate authority stays with the injected `certifier` port (ADR-004/064):
 this module contains no R/S/N math and no threshold decision beyond
-reading ChainKappaTracker's aggregation of the per-hop enforced kappa
-proxy (`hop_kappa`) each caller supplies. No forbidden dispersion or
-enforcement-threshold lexemes, no wall-clock reads.
+reading ChainKappaTracker's aggregation of the per-hop CERTIFIER-DERIVED
+kappa_compat — read from `validate_on_receive`'s `ReceiveVerdict.
+derived_kappa_compat`, never the raw caller-supplied `HopInput.hop_kappa`
+directly. That value only feeds the injected certifier(s); the topology
+layer never trusts a caller's unreconciled claim about a hop's kappa. No
+forbidden dispersion or enforcement-threshold lexemes, no wall-clock
+reads.
 """
 
 from dataclasses import dataclass, field
@@ -64,6 +68,10 @@ class HopInput:
     produced_payload: bytes
     successor_representation_id: str
     successor_state: Any
+    # Fixture/caller convenience only: feeds the injected (fake/real)
+    # certifier so it can derive kappa_compat for this hop. The topology
+    # tracker never reads this field directly — it aggregates the
+    # CERTIFIED derived value returned on the receive verdict instead.
     hop_kappa: Optional[float]
 
 
@@ -116,14 +124,18 @@ def _cross_hop_boundaries(
     certifier: Callable[[Any], Any],
     min_chain_kappa: float,
     now_epoch: Optional[float],
-) -> Optional[TopologyDecision]:
+) -> tuple[Optional[TopologyDecision], Optional[float]]:
     """Route one hop through the real receive-then-output boundaries.
 
-    Returns a REFUSE TopologyDecision when either boundary fails the hop
-    closed (tampered payload, incompatible representation, unresolved or
-    stale predecessor cert, a refusing/erroring certifier verdict, or a
-    below-threshold/incomparable chain-kappa read at the receive
-    boundary), or None once the hop has cleanly crossed both boundaries.
+    Returns (REFUSE TopologyDecision, None) when either boundary fails the
+    hop closed (tampered payload, incompatible representation, unresolved
+    or stale predecessor cert, a refusing/erroring certifier verdict, a
+    below-threshold/incomparable chain-kappa read at the receive boundary,
+    or a passing receive verdict that somehow carries no certified kappa),
+    or (None, derived_kappa_compat) once the hop has cleanly crossed both
+    boundaries — derived_kappa_compat is the CERTIFIER-DERIVED value read
+    off the receive verdict, the only kappa this hop's caller may feed
+    into the topology's own ChainKappaTracker.
 
     Nothing here re-derives or overrides the boundaries' own verdicts —
     their `reason` is propagated as-is so a topology-layer REFUSE always
@@ -140,27 +152,50 @@ def _cross_hop_boundaries(
         now_epoch=now_epoch,
     )
     if not receive_verdict.ok:
-        return _refuse(
-            pattern_name,
-            receive_verdict.reason,
-            index,
-            hop.envelope.handoff_id,
-            {"boundary": "receive"},
-            hop.envelope.trace_parent,
+        return (
+            _refuse(
+                pattern_name,
+                receive_verdict.reason,
+                index,
+                hop.envelope.handoff_id,
+                {"boundary": "receive"},
+                hop.envelope.trace_parent,
+            ),
+            None,
+        )
+
+    # Defensive: an ok=True enforcement-mode verdict should always carry a
+    # certified kappa. If it somehow doesn't, this must fail closed rather
+    # than let the topology tracker silently fall back to the caller's
+    # unreconciled hop.hop_kappa.
+    if receive_verdict.derived_kappa_compat is None:
+        return (
+            _refuse(
+                pattern_name,
+                "UNCERTIFIED_HOP_KAPPA",
+                index,
+                hop.envelope.handoff_id,
+                {"boundary": "receive"},
+                hop.envelope.trace_parent,
+            ),
+            None,
         )
 
     output_verdict = recertify_on_output(hop.successor_state, certifier=certifier, handoff_id=hop.envelope.handoff_id)
     if not output_verdict.released:
-        return _refuse(
-            pattern_name,
-            output_verdict.reason,
-            index,
-            hop.envelope.handoff_id,
-            {"boundary": "output"},
-            hop.envelope.trace_parent,
+        return (
+            _refuse(
+                pattern_name,
+                output_verdict.reason,
+                index,
+                hop.envelope.handoff_id,
+                {"boundary": "output"},
+                hop.envelope.trace_parent,
+            ),
+            None,
         )
 
-    return None
+    return None, receive_verdict.derived_kappa_compat
 
 
 def accept_pipeline(
@@ -188,7 +223,7 @@ def accept_pipeline(
         last_handoff_id = hop.envelope.handoff_id
         last_trace_parent = hop.envelope.trace_parent
 
-        boundary_refusal = _cross_hop_boundaries(
+        boundary_refusal, derived_kappa = _cross_hop_boundaries(
             "pipeline",
             hop,
             index,
@@ -200,7 +235,7 @@ def accept_pipeline(
         if boundary_refusal is not None:
             return boundary_refusal
 
-        state = tracker.observe(hop.envelope, hop.hop_kappa)
+        state = tracker.observe(hop.envelope, derived_kappa)
 
         if state.incomparable:
             return _refuse(
@@ -249,7 +284,7 @@ def accept_hub_spoke(
         last_handoff_id = hop.envelope.handoff_id
         last_trace_parent = hop.envelope.trace_parent
 
-        boundary_refusal = _cross_hop_boundaries(
+        boundary_refusal, derived_kappa = _cross_hop_boundaries(
             "hub_spoke",
             hop,
             index,
@@ -262,7 +297,7 @@ def accept_hub_spoke(
             return boundary_refusal
 
         spoke_tracker = ChainKappaTracker()
-        state = spoke_tracker.observe(hop.envelope, hop.hop_kappa)
+        state = spoke_tracker.observe(hop.envelope, derived_kappa)
 
         if state.incomparable:
             return _refuse(
@@ -343,7 +378,7 @@ def accept_mesh(
             lineage_root_of[envelope.handoff_id] = lineage_root
             tracker = lineage_trackers.setdefault(lineage_root, ChainKappaTracker())
 
-            boundary_refusal = _cross_hop_boundaries(
+            boundary_refusal, derived_kappa = _cross_hop_boundaries(
                 "mesh",
                 hop,
                 index,
@@ -355,7 +390,7 @@ def accept_mesh(
             if boundary_refusal is not None:
                 return boundary_refusal
 
-            state = tracker.observe(envelope, hop.hop_kappa)
+            state = tracker.observe(envelope, derived_kappa)
 
             if state.incomparable:
                 return _refuse(

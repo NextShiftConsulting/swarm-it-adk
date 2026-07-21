@@ -36,12 +36,21 @@ HASH_PREFIX = "sha256:"
 
 @dataclass(frozen=True)
 class ReceiveVerdict:
-    """Outcome of receive-boundary validation, inert or enforcement."""
+    """Outcome of receive-boundary validation, inert or enforcement.
+
+    derived_kappa_compat carries the CERTIFIER-DERIVED kappa_compat for
+    this hop (read off the freshly-derived successor certificate, the same
+    object whose id backs new_certificate_ref) — this is the only kappa
+    value a topology-layer chain-kappa aggregator may trust for this hop.
+    It is populated only on a successful enforcement-mode recertification;
+    inert-mode and every fail-closed path leave it None.
+    """
 
     ok: bool
     reason: str
     handoff_id: Optional[str]
     new_certificate_ref: Optional[str] = None
+    derived_kappa_compat: Optional[float] = None
 
 
 def _hash_payload(payload: bytes) -> str:
@@ -232,6 +241,7 @@ def validate_on_receive(
         reason="RECERTIFIED",
         handoff_id=envelope.handoff_id,
         new_certificate_ref=derived.id,
+        derived_kappa_compat=getattr(derived, "kappa_compat", None),
     )
     emit(
         TraceRecord(

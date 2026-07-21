@@ -294,3 +294,121 @@ changes caused no regressions elsewhere in the repo.
   swarm_it.governance.* coverage directly; verification here relies on
   the full green test run plus manual enumeration of the new/changed
   branches rather than a machine coverage percentage.
+
+---
+
+# V-013 Task 6 -- Re-review Fix Pass (topology-tracker kappa reconciliation)
+
+Fixes the integrity gap flagged in a later review: the topology-level
+`ChainKappaTracker` aggregated the CALLER-supplied `HopInput.hop_kappa`,
+never reconciled with the certifier's actual derived `kappa_compat` --
+so the "weakest-hop gates the chain" invariant and its audit trace could
+report a `chain_kappa_min` that no certifier ever produced.
+
+## Fix 1 -- expose the derived kappa on the receive verdict
+
+`ReceiveVerdict` (`adk/swarm_it/governance/receive_boundary.py`) gained
+`derived_kappa_compat: Optional[float] = None`. `validate_on_receive`
+populates it (`getattr(derived, "kappa_compat", None)`) only on the
+`ok=True` enforcement-mode success path; every fail-closed/inert path
+leaves it `None` (the `_fail` helper never sets it).
+
+## Fix 2 -- topology aggregates the certified value, not the caller's
+
+`_cross_hop_boundaries` (`topology_policy.py`) now returns
+`(Optional[TopologyDecision], Optional[float])` instead of just a
+decision. On a clean pass through both boundaries it returns
+`(None, receive_verdict.derived_kappa_compat)`. Added a defensive check:
+if an `ok=True` receive verdict somehow carries no `derived_kappa_compat`,
+the hop REFUSEs with a new typed reason `UNCERTIFIED_HOP_KAPPA` rather
+than falling through to any caller-supplied fallback.
+
+All three call sites (`accept_pipeline`, `accept_hub_spoke`,
+`accept_mesh`) now unpack `(boundary_refusal, derived_kappa)` and feed
+`derived_kappa` into `tracker.observe(...)` / `spoke_tracker.observe(...)`
+-- `hop.hop_kappa` is no longer read by any tracker.
+
+## Fix 3 -- `HopInput.hop_kappa` re-scoped to fixture/caller convenience
+
+Added a comment on the field (dataclass fields can't carry a real
+per-attribute docstring): it exists only to feed the injected
+(fake/real) certifier when constructing its derived `kappa_compat`; the
+topology tracker never reads it directly. Module docstring's mention of
+"the per-hop enforced kappa proxy (`hop_kappa`) each caller supplies"
+was corrected to describe the certifier-derived, verdict-carried value.
+
+## Preserved behavior
+
+`test_pipeline_weakest_hop_gates_chain` ([0.8, 0.4, 0.9] -> gating_hop=1)
+needed no fixture change: every topology test file's certifier fixture
+already derives `kappa_compat` equal to each hop's intended `hop_kappa`
+(`_certifier_from_kappas`), so the values the tracker now reads
+(certified) are identical to what it read before (caller-supplied) in
+every pre-existing test. All adversarial, mesh-isolation, hub-spoke, and
+dispatch tests pass unchanged.
+
+## New test proving the fix
+
+`test_topology_aggregates_certified_kappa_not_caller_value`
+(`adk/tests/governance/test_topology_pipeline.py`). Before writing it,
+empirically verified (via `git stash` of the source changes, probing
+with a throwaway script) that the literal "caller inflates hop_kappa to
+mask a certifier-derived LOW value" framing does NOT discriminate
+pre-fix from post-fix code here: the receive boundary's own internal
+`_check_chain_kappa` already independently gates every hop's true
+derived `kappa_compat` against `min_chain_kappa` (a pre-existing,
+unrelated check), so a genuinely low certified value for any hop is
+already caught there before the topology's own tracker ever runs --
+both pre- and post-fix code refuse identically in that scenario
+(`reason="CHAIN_KAPPA_BELOW_THRESHOLD"`, `detail={"boundary": "receive"}`).
+
+The framing that DOES discriminate (confirmed empirically the same way):
+the caller's `hop_kappa` falsely claims a hop is UNHEALTHY (0.1) while
+the certifier actually derives a HEALTHY `kappa_compat` (0.6, still >=
+`min_chain_kappa=0.5`) for that hop -- every hop's true certified value
+individually clears the receive boundary's per-hop check, so the only
+remaining place that could get it wrong is the topology's own
+cross-hop tracker. Pre-fix: REFUSEs on hop 1 with
+`detail={"chain_kappa_min": 0.1, ...}` -- 0.1 is a number no certifier
+ever produced, exactly the "chain_kappa_min that nobody certified" gap
+under review. Post-fix: EXECUTEs, `chain_kappa_min` never drops because
+the tracker used the certified 0.6. Both runs verified directly against
+the working tree via `git stash push -- <the two changed source files>`
+before writing the test into the suite.
+
+## Verify
+
+    cd adk && python -m pytest tests/governance -v
+
+Result: 69 passed (68 pre-existing/updated + 1 new), 0 failed, 0 skipped.
+
+    cd adk && python -m pytest -q
+
+Result: 221 passed (full adk suite; 220 pre-existing + 1 new), 0 failed,
+0 skipped -- no regressions.
+
+## Files changed
+
+- adk/swarm_it/governance/receive_boundary.py (`ReceiveVerdict.
+  derived_kappa_compat` field + population on success)
+- adk/swarm_it/governance/topology_policy.py (`_cross_hop_boundaries`
+  returns the certified kappa; all three `accept_*` call sites and
+  `HopInput.hop_kappa` / module docstring updated)
+- adk/tests/governance/test_topology_pipeline.py (new discriminating
+  test)
+
+## Concerns / open items
+
+- The receive boundary's own per-hop chain-kappa check and the
+  topology's cross-hop tracker remain two independent gates (as flagged
+  in the prior report's "Concerns" section) -- this fix makes both gates
+  read from the same trustworthy source (the certifier, via
+  `derived_kappa_compat`) instead of one trusting the certifier and the
+  other trusting the caller, closing the reconciliation gap without
+  collapsing the two gates into one. `UNCERTIFIED_HOP_KAPPA` is a new
+  typed refusal reason; it is defensive (should not be reachable given
+  `validate_on_receive`'s own contract) and has no dedicated test beyond
+  the reasoning in Fix 2 above, since triggering it requires a
+  certifier/boundary combination that violates `validate_on_receive`'s
+  own invariant (an `ok=True` verdict always carrying `kappa_compat` in
+  enforcement mode).

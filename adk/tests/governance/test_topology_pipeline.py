@@ -161,6 +161,57 @@ def test_pipeline_tampered_payload_refuses():
     assert decision.gating_hop == 1
 
 
+def test_topology_aggregates_certified_kappa_not_caller_value():
+    """The topology-level ChainKappaTracker must aggregate the
+    CERTIFIER-DERIVED kappa_compat read off each hop's receive verdict --
+    never the untrusted, caller-supplied HopInput.hop_kappa.
+
+    hop 1's caller claims an unhealthy hop_kappa (0.1) while the injected
+    certifier actually derives a healthy kappa_compat (0.6, still >=
+    min_chain_kappa=0.5) for that same hop. Every hop's certified value
+    individually clears the receive boundary's own per-hop chain-kappa
+    check (0.9, 0.6, 0.9 are all >= 0.5), so the receive boundary never
+    refuses -- the only place left that could still get this wrong is the
+    topology's own running weakest-link tracker.
+
+    Against the pre-fix code (tracker.observe(hop.envelope, hop.hop_kappa)),
+    this REFUSEs on hop 1 with chain_kappa_min=0.1 in the detail -- a
+    number no certifier ever produced, exactly the "chain_kappa_min that
+    nobody certified" integrity gap under review. Fixed, the tracker reads
+    the certified 0.6 and the chain EXECUTEs. (The reverse framing --
+    caller inflates hop_kappa to mask a low certified value -- does NOT
+    distinguish pre- from post-fix here: the receive boundary already
+    reconciles and refuses on the true derived value for that hop before
+    the topology tracker ever runs, independent of this bug. This
+    deflated-caller framing is the one that actually depends on the fix,
+    confirmed by running it against the pre-fix tracker.)
+    """
+    caller_claims = [0.9, 0.1, 0.9]  # hop 1: caller falsely claims unhealthy
+    certified = [0.9, 0.6, 0.9]  # hop 1: certifier actually derives healthy
+
+    hops = []
+    for i, claim in enumerate(caller_claims):
+        hops.append(
+            HopInput(
+                envelope=_make_envelope(handoff_id=f"h{i}"),
+                produced_payload=GOOD_PAYLOAD,
+                successor_representation_id="rep-1",
+                successor_state={"i": i},
+                hop_kappa=claim,
+            )
+        )
+
+    decision = accept_pipeline(
+        hops,
+        certifier=_certifier_from_kappas(certified),
+        cert_resolver=_cert_resolver,
+        min_chain_kappa=0.5,
+    )
+
+    assert decision.verdict == "EXECUTE"
+    assert decision.gating_hop is None
+
+
 def test_pipeline_wrong_representation_refuses():
     """A hop whose successor_representation_id disagrees with its
     envelope's representation_id must REFUSE at the receive boundary --
