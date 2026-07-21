@@ -45,14 +45,14 @@ class HandoffEnvelope:
     trace_parent: Optional[str]
 
     def to_a2a_extension(self) -> dict:
-        """Serialize this envelope to a plain dict for the swarm-a2a extension payload."""
+        """Serialize this envelope to a plain dict for a swarm-a2a extension payload."""
         data = asdict(self)
         data["artifact_hashes"] = list(self.artifact_hashes)
         return data
 
     @classmethod
     def from_a2a_extension(cls, data: dict) -> "HandoffEnvelope":
-        """Reconstruct a HandoffEnvelope from an swarm-a2a extension payload dict."""
+        """Reconstruct a HandoffEnvelope from a swarm-a2a extension payload dict."""
         fields = dict(data)
         fields["artifact_hashes"] = tuple(fields["artifact_hashes"])
         return cls(**fields)
