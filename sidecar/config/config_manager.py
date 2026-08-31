@@ -21,7 +21,7 @@ Usage:
 
     config = get_config()
     api_key = config.openai_api_key
-    threshold = config.kappa_threshold
+    threshold = config.swarm_kappa_floor_config
 """
 
 import os
@@ -178,9 +178,20 @@ class ConfigManager:
     # === Thresholds ===
 
     @property
-    def kappa_threshold(self) -> float:
-        """Kappa gate threshold."""
-        val = os.getenv('SWARM_IT_KAPPA_THRESHOLD') or self.get('thresholds.kappa_threshold', self.DEFAULT_THRESHOLDS['kappa_threshold'])
+    def swarm_kappa_floor_config(self) -> float:
+        """Kappa gate floor (policy config constant).
+
+        Renamed from ``kappa_threshold`` per canonical errata E-02 to avoid the
+        name collision with the physics Gate-3 threshold. Env precedence:
+        ``SWARM_KAPPA_FLOOR_CONFIG`` (canonical) -> ``SWARM_IT_KAPPA_THRESHOLD``
+        (deprecated, still honoured) -> YAML ``thresholds.kappa_threshold`` -> default.
+        The ``thresholds.kappa_threshold`` dict key is unchanged (shared thresholds contract).
+        """
+        val = (
+            os.getenv('SWARM_KAPPA_FLOOR_CONFIG')
+            or os.getenv('SWARM_IT_KAPPA_THRESHOLD')  # deprecated alias (E-02)
+            or self.get('thresholds.kappa_threshold', self.DEFAULT_THRESHOLDS['kappa_threshold'])
+        )
         return float(val)
 
     @property
@@ -198,7 +209,7 @@ class ConfigManager:
     def get_thresholds(self) -> Dict[str, float]:
         """Get all threshold values."""
         return {
-            'kappa_threshold': self.kappa_threshold,
+            'kappa_threshold': self.swarm_kappa_floor_config,
             'N_threshold': self.N_threshold,
             'sigma_threshold': self.sigma_threshold,
             'R_min': float(os.getenv('SWARM_IT_R_MIN') or self.get('thresholds.R_min', self.DEFAULT_THRESHOLDS['R_min'])),
