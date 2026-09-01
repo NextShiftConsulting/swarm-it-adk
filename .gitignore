@@ -118,3 +118,5 @@ experiments/*/checkpoints/
 
 # Scratch / working notes
 .superpowers/
+.par/
+.deep/
