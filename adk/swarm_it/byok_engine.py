@@ -194,7 +194,7 @@ class BYOKEngine:
             # Rotor returns dict with 'R', 'S', 'N' tensors
             rsn_dict = self.rotor(embedding)
             R = float(rsn_dict['R'][0])
-            S = float(rsn_dict['S'][0])
+            S_sup = float(rsn_dict['S'][0])
             N = float(rsn_dict['N'][0])
         else:
             # Fall back to hash-based approximation
