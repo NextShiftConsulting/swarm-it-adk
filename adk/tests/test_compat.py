@@ -48,7 +48,8 @@ def test_unknown_shape_fails_closed():
 
 
 def test_make_certifier_returns_normalized():
-    raw = lambda state: SimpleNamespace(id="x", kappa_compat=0.6, allowed=True)
+    def raw(state):
+        return SimpleNamespace(id="x", kappa_compat=0.6, allowed=True)
     certifier = make_certifier(raw)
     n = certifier("some-state")
     assert isinstance(n, NormalizedCertificate)

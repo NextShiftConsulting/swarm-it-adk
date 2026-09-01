@@ -16,7 +16,7 @@ services:
       - "8080:8080"
     environment:
       - SWARM_IT_DB_PATH=/data/certificates.db
-      - SWARM_IT_KAPPA_THRESHOLD=0.7
+      - SWARM_KAPPA_FLOOR_CONFIG=0.7
       - SWARM_IT_DEBUG=true
     volumes:
       - swarm-data:/data
